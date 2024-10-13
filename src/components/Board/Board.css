@@ -1,0 +1,22 @@
+.board-grid {
+  display: grid;
+  gap: 5px;
+  margin-top: 20px;
+}
+.board-cell {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.board-cell.odd {
+  background-color: #808080;
+}
+.board-cell.even {
+  background-color: #ffffff;
+}
+.board-queen {
+  color: #000000;
+}

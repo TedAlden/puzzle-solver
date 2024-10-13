@@ -7,7 +7,7 @@ function Cell({ rowIndex, colIndex, board, toggleQueen}) {
 
   useEffect(() => {
     setPlaced(board[rowIndex][colIndex] === 1);
-  }, [board]);
+  }, [board, rowIndex, colIndex]);
 
   return (
     <div

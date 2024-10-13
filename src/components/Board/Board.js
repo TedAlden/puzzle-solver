@@ -3,11 +3,11 @@ import './Board.css';
 
 function Cell({ rowIndex, colIndex, board, toggleQueen}) {
 // Is queen placed in this cell
-  const [placed, setPlaced] = useState(board[rowIndex][colIndex] == 1);
+  const [placed, setPlaced] = useState(board[rowIndex][colIndex] === 1);
 
   useEffect(() => {
-    setPlaced(board[rowIndex][colIndex] == 1);
-  }, [board] );
+    setPlaced(board[rowIndex][colIndex] === 1);
+  }, [board]);
 
   return (
     <div

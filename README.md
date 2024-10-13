@@ -1,70 +1,100 @@
-# Getting Started with Create React App
+# Puzzle Solver
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![Tests][tests-shield]][tests-url]
+[![License][license-shield]][license-url]
 
-## Available Scripts
+> Puzzle-solving web application using ReactJS.
 
-In the project directory, you can run:
+[View Demo »](https://portfolio.tedalden.dev/puzzle-solver/)
 
-### `npm start`
+## Table of Contents
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Usage](#usage)
+    - [Run app in development mode](#run-app-in-development-mode)
+    - [Build app for production](#build-app-for-production)
+    - [Run Tests](#run-tests)
+- [Contributing](#contributing)
+- [License](#license)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Prerequisites
 
-### `npm test`
+- NodeJS `v22.5.1`
+- NPM `v10.8.2`
+- Git
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Installation
 
-### `npm run build`
+1. Clone the GitHub repository.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    ```bash
+    git clone https://github.com/TedAlden/puzzle-solver
+    cd puzzle-solver
+    ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Install Node packages.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    ```bash
+    npm install
+    ```
 
-### `npm run eject`
+## Usage
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Run app in development mode
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Start the React app server.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+    ```bash
+    npm start
+    ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+2. Visit the React webpage via the URL printed in your terminal.
 
-## Learn More
+    [http://localhost:3000/puzzle-solver](http://localhost:3000/puzzle-solver).
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Build app for production
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. Build the React app into the `/build` directory.
 
-### Code Splitting
+    ```bash
+    npm run build
+    ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+2. Host the page statically via an HTTP server.
 
-### Analyzing the Bundle Size
+### Run Tests
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1. Run Jest unit tests using the NPM command.
 
-### Making a Progressive Web App
+    ```bash
+    npm run test
+    ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Contributing
 
-### Advanced Configuration
+Currently not open to external contributors.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- [Report a bug](https://github.com/TedAlden/puzzle-solver/issues/new?assignees=&labels=bug&projects=&template=BUG-REPORT.yml&title=%F0%9F%90%9B+%5BBUG%5D+-+%3Ctitle%3E)
+- [Request a feature](https://github.com/TedAlden/puzzle-solver/issues/new?assignees=&labels=question&projects=&template=FEATURE-REQUEST.yml&title=%F0%9F%92%A1+%5BREQUEST%5D+-+%3Ctitle%3E)
 
-### Deployment
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+[contributors-shield]: https://img.shields.io/github/contributors/tedalden/puzzle-solver.svg?style=flat
+[contributors-url]: https://github.com/tedalden/puzzle-solver/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/tedalden/puzzle-solver.svg?style=flat
+[forks-url]: https://github.com/tedalden/puzzle-solver/network/members
+[stars-shield]: https://img.shields.io/github/stars/tedalden/puzzle-solver.svg?style=flat
+[stars-url]: https://github.com/tedalden/puzzle-solver/stargazers
+[issues-shield]: https://img.shields.io/github/issues/tedalden/puzzle-solver.svg?style=flat
+[issues-url]: https://github.com/tedalden/puzzle-solver/issues
+[tests-shield]: https://img.shields.io/github/actions/workflow/status/TedAlden/puzzle-solver/test.yml?style=flat
+[tests-url]: https://github.com/TedAlden/puzzle-solver/actions/workflows/test.yml
+[license-shield]: https://img.shields.io/github/license/tedalden/puzzle-solver?style=flat
+[license-url]: https://github.com/tedalden/puzzle-solver/blob/main/LICENSE.txt

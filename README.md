@@ -13,6 +13,8 @@
 
 ## Table of Contents
 
+- [About the Project](#about-the-project)
+    - [Built with](#built-with)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -21,6 +23,18 @@
     - [Run Tests](#run-tests)
 - [Contributing](#contributing)
 - [License](#license)
+
+## About the Project
+
+<br>
+<div align="center">
+  <img src="screenshot.png" width="80%">
+</div>
+<br>
+
+### Built with
+
+- ReactJS using [create-react-app](https://github.com/facebook/create-react-app).
 
 ## Prerequisites
 

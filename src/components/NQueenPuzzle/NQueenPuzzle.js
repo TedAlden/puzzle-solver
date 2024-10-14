@@ -22,6 +22,12 @@ function NQueenPuzzle() {
       setSolved(false);
     }
   };
+  
+  const clearBoard = () => {
+    const newBoard = Array.from({ length: boardSize }, () => Array(boardSize).fill(0));
+    setBoard(newBoard);
+    setSolved(false);
+  }
 
   const changeSize = (e) => {
     const newSize = parseInt(e.target.value);
@@ -44,6 +50,7 @@ function NQueenPuzzle() {
           min={4}
         />
         <button onClick={runSolve}>Solve</button>
+        <button onClick={clearBoard}>Clear</button>
       </div>
       {solved && <h2>Solution found</h2>}
       <div className="board-section">

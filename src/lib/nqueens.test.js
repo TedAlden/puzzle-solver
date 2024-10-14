@@ -161,4 +161,22 @@ describe("Test solveNQueens function", () => {
         ]
         expect(solveNQueens(board)).toBe(false);
     });
+    test("4x4 has a solution with queen in (0, 2)", () => {
+        let board = [
+            [0, 0, 1, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0]
+        ]
+        expect(solveNQueens(board)).toBe(true);
+    });
+    test("Solver rejects invalid board", () => {
+        let board = [
+            [0, 0, 1, 1],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0]
+        ]
+        expect(solveNQueens(board)).toBe(false);
+    });
 });

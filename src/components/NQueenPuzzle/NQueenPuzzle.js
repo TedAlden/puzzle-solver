@@ -3,39 +3,47 @@ import Board from '../Board/Board';
 import { solveNQueens } from '../../lib/nqueens';
 import './NQueenPuzzle.css';
 
+function createBoard (size) {
+  return Array(size).fill().map(() => Array(size).fill(0));
+}
+
 function NQueenPuzzle() {
-  // State Variables
   const [boardSize, setBoardSize] = useState(4);
-  const [board, setBoard] = useState(Array.from({ length: 4 }, () => Array(4).fill(0)));
+  const [board, setBoard] = useState(createBoard(boardSize));
   const [solved, setSolved] = useState(false);
 
-  const runSolve = () => {
-    // Create a copy of the chess board and attempt to solve
-    const copyBoard = board.map(row => [...row]);
+  const solveBoard = () => {
+    // Create a copy of the chess board
+    const copyBoard = Array.from(board);
+    // Attempt to solve NQueens
     const isSolved = solveNQueens(copyBoard);
+    setSolved(isSolved);
     if (isSolved) {
-      setBoard(copyBoard);  // Update the board state with the solution
-      setSolved(true);
-      console.log(copyBoard)
+      // Show completed board if successful
+      setBoard(copyBoard);
     } else {
       alert("No possible Solutions found");
-      setSolved(false);
     }
-  };
-  
+  }
+
   const clearBoard = () => {
-    const newBoard = Array.from({ length: boardSize }, () => Array(boardSize).fill(0));
+    // Reset board
+    const newBoard = createBoard(boardSize);
     setBoard(newBoard);
+    // Reset solved status
     setSolved(false);
   }
 
-  const changeSize = (e) => {
+  const resizeBoard = (e) => {
+    // Update the board size
     const newSize = parseInt(e.target.value);
-    const newBoard = Array.from({ length: newSize }, () => Array(newSize).fill(0));
-    setBoardSize(newSize);  // Update the board size
-    setBoard(newBoard);     // Reset the board
-    setSolved(false);       // Reset solved status
-  };
+    setBoardSize(newSize);
+    // Reset the board
+    const newBoard = createBoard(newSize);
+    setBoard(newBoard);
+    // Reset solved status
+    setSolved(false);
+  }
 
   return (
     <div className="puzzleOne">
@@ -46,10 +54,10 @@ function NQueenPuzzle() {
           type="number"
           id="board-size"
           value={boardSize}
-          onChange={changeSize}
+          onChange={resizeBoard}
           min={4}
         />
-        <button onClick={runSolve}>Solve</button>
+        <button onClick={solveBoard}>Solve</button>
         <button onClick={clearBoard}>Clear</button>
       </div>
       {solved && <h2>Solution found</h2>}

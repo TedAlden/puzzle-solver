@@ -36,7 +36,7 @@ function NQueenPuzzle() {
 
   const resizeBoard = (e) => {
     // Update the board size
-    const newSize = parseInt(e.target.value);
+    const newSize = Math.max(1, parseInt(e.target.value) || 0);
     setBoardSize(newSize);
     // Reset the board
     const newBoard = createBoard(newSize);
@@ -55,7 +55,7 @@ function NQueenPuzzle() {
           id="board-size"
           value={boardSize}
           onChange={resizeBoard}
-          min={4}
+          min={1}
         />
         <button onClick={solveBoard}>Solve</button>
         <button onClick={clearBoard}>Clear</button>

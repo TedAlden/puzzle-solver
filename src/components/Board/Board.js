@@ -1,8 +1,20 @@
 import { useState, useEffect } from 'react';
 import './Board.css';
 
+/**
+ * An individual cell from the N-Queens chess board.
+ *
+ * @typedef {object} CellProps
+ * @property {number} rowIndex The row index of the cell in the board
+ * @property {number} colIndex The column index of the cell in the board
+ * @property {number[][]} board The chess board
+ * @property {*} toggleQueen Callback when cell is clicked
+ * 
+ * @param {CellProps} props Component props
+ * @returns {React.JSX.Element}
+ */
 function Cell({ rowIndex, colIndex, board, toggleQueen}) {
-// Is queen placed in this cell
+  // Is queen placed in this cell
   const [placed, setPlaced] = useState(board[rowIndex][colIndex] === 1);
 
   useEffect(() => {
@@ -24,12 +36,27 @@ function Cell({ rowIndex, colIndex, board, toggleQueen}) {
   )
 }
 
+/**
+ * The N-Queens chess board.
+ * 
+ * @typedef {object} BoardProps
+ * @property {number[][]} board The board array that is being display
+ * @property {*} setBoard The callback to update the board array
+ * 
+ * @param {BoardProps} props Component props
+ * @returns {React.JSX.Element}
+ */
 function Board({ board, setBoard }) {
+  /**
+   * Toggle placement of a queen at a given row and column.
+   * @param {number} row The row to toggle queen placement
+   * @param {number} col The column to toggle queen placement
+   * @param {boolean} placed To set the placement of a queen
+   */
   const toggleQueen = (row, col, placed) => {
     let newBoard = board;
     newBoard[row][col] = placed ? 1 : 0;
     setBoard(newBoard);
-    console.log(newBoard)
   }
 
   return (

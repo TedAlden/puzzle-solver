@@ -89,6 +89,12 @@
     npm run test
     ```
 
+2. Check test code coverage.
+
+    ```bash
+    npm run coverage
+    ```
+
 ## Contributing
 
 Currently not open to external contributors.

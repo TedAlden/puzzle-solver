@@ -92,7 +92,7 @@
 2. Check test code coverage.
 
     ```bash
-    npm run coverage
+    npm run test:coverage
     ```
 
 ## Contributing

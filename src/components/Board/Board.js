@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Board.css';
 
 /**
@@ -23,6 +23,7 @@ function Cell({ rowIndex, colIndex, board, toggleQueen}) {
 
   return (
     <div
+      role="button"
       className={`board-cell ${(rowIndex + colIndex) % 2 === 0 ? 'even' : 'odd'}`}
       onClick={() => {
         let newState = !placed;

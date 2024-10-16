@@ -23,7 +23,7 @@ function Cell({ rowIndex, colIndex, board, toggleQueen}) {
 
   return (
     <div
-      role="button"
+      role="cell"
       className={`board-cell ${(rowIndex + colIndex) % 2 === 0 ? 'even' : 'odd'}`}
       onClick={() => {
         let newState = !placed;
@@ -61,6 +61,7 @@ function Board({ board, setBoard }) {
 
   return (
     <div
+      role="grid"
       className='board-grid'
       style={{gridTemplateColumns: `repeat(${board.length}, 40px)`}}
     >

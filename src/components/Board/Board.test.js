@@ -17,7 +17,7 @@ describe('N-Queens Board Integration Test', () => {
     const { getAllByRole } = render(<Board board={board} setBoard={setBoardMock} />);
 
     // Simulate click on the first cell (row 0, col 0)
-    const cells = getAllByRole('button');
+    const cells = getAllByRole('cell');
     fireEvent.click(cells[0]);
 
     // Assert that the setBoard function was called with the updated board
@@ -42,7 +42,7 @@ describe('N-Queens Board Integration Test', () => {
     const { getAllByRole, getByText } = render(<Board board={board} setBoard={setBoardMock} />);
 
     // Simulate click on the first cell (row 0, col 0)
-    const cells = getAllByRole('button');
+    const cells = getAllByRole('cell');
     fireEvent.click(cells[0]);
 
     // After clicking, the queen should be displayed

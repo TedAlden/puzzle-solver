@@ -66,7 +66,13 @@ function NQueenPuzzle() {
 
   return (
     <div className="puzzleOne">
-      <h2>The N-Queen Puzzle</h2>
+      <h2>The N-Queens Puzzle</h2>
+      <p><b>The N-Queens Problem </b> is a puzzle that involves placing <b>N</b> queens on an <b> N x N </b> 
+       chessboard in such a way that no two queens can attack each other - meaning no two queens share the same
+      row, column, or diagonal. In this app, you can place some of the queens manually, and the
+      algorithm will attempt to solve the rest of the puzzle for you.</p>
+      <p>Simply place your queens, click the <b>Solve</b> button, and the algorithm will find the 
+      remaining valid positions for the queens </p>
       <div className="input-section">
         <label htmlFor="board-size">Board Size:</label>
         <input

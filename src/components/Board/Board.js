@@ -53,7 +53,7 @@ function Board({ board, setBoard }) {
    * @param {boolean} placed To set the placement of a queen
    */
   const toggleQueen = (row, col, placed) => {
-    let newBoard = board;
+    let newBoard = board.map(row => [...row]);
     newBoard[row][col] = placed ? 1 : 0;
     setBoard(newBoard);
   }

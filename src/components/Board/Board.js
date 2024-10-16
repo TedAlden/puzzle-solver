@@ -24,7 +24,6 @@ function Cell({ rowIndex, colIndex, board, toggleQueen}) {
   return (
     <div
       className={`board-cell ${(rowIndex + colIndex) % 2 === 0 ? 'even' : 'odd'}`}
-      key={`${rowIndex}-${colIndex}`}
       onClick={() => {
         let newState = !placed;
         setPlaced(newState);
@@ -66,7 +65,13 @@ function Board({ board, setBoard }) {
     >
       {board.map((row, rowIndex) =>
         row.map((cell, colIndex) => (
-          <Cell rowIndex={rowIndex} colIndex={colIndex} board={board} toggleQueen={toggleQueen}/>
+          <Cell
+            key={`${rowIndex}-${colIndex}`}
+            rowIndex={rowIndex}
+            colIndex={colIndex}
+            board={board}
+            toggleQueen={toggleQueen}
+          />
         ))
       )}
     </div>

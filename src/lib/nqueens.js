@@ -9,10 +9,11 @@ function isValid(board) {
       if (board[i][j] === 1) {
         // Temporarily remove queen to not interfere with its own safety check
         board[i][j] = 0;
-        if (!isSafe(board, i, j)) {
+        let safe = isSafe(board, i, j);
+        board[i][j] = 1;
+        if (!safe) {
           return false;
         }
-        board[i][j] = 1;
       }
     }
   }

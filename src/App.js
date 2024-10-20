@@ -1,6 +1,5 @@
 import NQueenPuzzle from './components/NQueenPuzzle/NQueenPuzzle';
 import PolyspherePuzzle from './components/PolyspherePuzzle';
-import PolyBoard from './components/PolyBoard';
 import './App.css';
 
 function App() {

@@ -1,0 +1,14 @@
+.polyboard-grid {
+  display: grid;
+  gap: 5px;
+  margin-top: 20px;
+}
+.polyboard-cell {
+  background-color: #ffffff;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

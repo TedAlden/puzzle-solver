@@ -1,4 +1,5 @@
 import NQueenPuzzle from './components/NQueenPuzzle/NQueenPuzzle';
+import PolyspherePuzzle from './components/PolyspherePuzzle/PolyspherePuzzle';
 import './App.css';
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
         <h2>Welcome to the puzzle solver!</h2>
       </header>
       <NQueenPuzzle></NQueenPuzzle>
+      <PolyspherePuzzle></PolyspherePuzzle>
     </div>
   );
 }

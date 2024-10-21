@@ -44,58 +44,54 @@
 
 ## Installation
 
-1. Clone the GitHub repository.
+```bash
+# Clone the repository
+$ git clone https://github.com/TedAlden/puzzle-solver
 
-    ```bash
-    git clone https://github.com/TedAlden/puzzle-solver
-    cd puzzle-solver
-    ```
+# Navigate to the project directory
+$ cd puzzle-solver
 
-2. Install Node packages.
-
-    ```bash
-    npm install
-    ```
+# Install node packages
+$ npm install
+```
 
 ## Usage
 
 ### Run app in development mode
 
-1. Start the React app server.
+```bash
+# Start server in development mode
+$ npm start
+```
 
-    ```bash
-    npm start
-    ```
-
-2. Visit the React webpage via the URL printed in your terminal.
-
-    [http://localhost:3000/puzzle-solver](http://localhost:3000/puzzle-solver).
+Visit the React webpage via the URL printed in your terminal: [http://localhost:3000/puzzle-solver](http://localhost:3000/puzzle-solver).
 
 ### Build app for production
 
-1. Build the React app into the `/build` directory.
+```bash
+# Build react app
+$ npm run build
+```
 
-    ```bash
-    npm run build
-    ```
-
-2. Host the page statically via an HTTP server.
+Host the page statically via an HTTP server.
 
 ### Run Tests
 
-1. Run Jest unit tests using the NPM command.
+```bash
+# Run unit tests
+$ npm run test
 
-    ```bash
-    npm run test
-    ```
-
-2. Check test code coverage.
-
-    ```bash
-    npm run test:coverage
-    ```
+# Check test coverage
+$ npm run test:coverage
+```
 
 ## Contributing
+
+<br>
+<a href="https://github.com/TedAlden/puzzle-solver/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=TedAlden/puzzle-solver">
+</a>
+<br><br>
 
 Currently not open to external contributors.
 

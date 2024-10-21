@@ -3,14 +3,11 @@ import './Board.css';
 
 /**
  * An individual cell from the N-Queens chess board.
- *
- * @typedef {object} CellProps
- * @property {number} rowIndex The row index of the cell in the board
- * @property {number} colIndex The column index of the cell in the board
- * @property {number[][]} board The chess board
- * @property {*} toggleQueen Callback when cell is clicked
- * 
- * @param {CellProps} props Component props
+ * @param {object} props Component props
+ * @param {number} props.rowIndex The row index of the cell
+ * @param {number} props.colIndex The column index of the cell
+ * @param {number[][]} props.board The board array that this cell belongs to
+ * @param {function} props.toggleQueen Callback when cell is clicked
  * @returns {React.JSX.Element}
  */
 function Cell({ rowIndex, colIndex, board, toggleQueen}) {
@@ -38,12 +35,9 @@ function Cell({ rowIndex, colIndex, board, toggleQueen}) {
 
 /**
  * The N-Queens chess board.
- * 
- * @typedef {object} BoardProps
- * @property {number[][]} board The board array that is being display
- * @property {*} setBoard The callback to update the board array
- * 
- * @param {BoardProps} props Component props
+ * @param {object} props Component props
+ * @param {number[][]} props.board The board array that is being displayed
+ * @param {function} props.setBoard Callback to update the board array
  * @returns {React.JSX.Element}
  */
 function Board({ board, setBoard }) {

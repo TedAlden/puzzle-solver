@@ -1,9 +1,14 @@
 import './PolyspherePuzzle.css';
-import PolyBoard from '../PolyBoard/PolyBoard';
 import { useState } from 'react';
+import PolyBoard from '../PolyBoard/PolyBoard';
+import PieceSelector from '../PieceSelector/PieceSelector';
+import pieces from '../../lib/pieces';
+
 
 function PolyspherePuzzle() {
-  const [board, setBoard] = useState(Array(5).fill().map(() => Array(11).fill(0)));
+  const [board, setBoard] = useState(Array(5).fill().map(() => Array(11).fill("")));
+  const [shapes, setShapes] = useState(pieces);
+  const [selectedShape, setSelectedShape] = useState(shapes[0]);
 
   return (
     <div className="puzzleTwo">
@@ -12,7 +17,19 @@ function PolyspherePuzzle() {
         onto a 5x11 board. Your goal is to fit all 12 pieces perfectly into the grid.
         Each shape is made from a different configuration of spheres, and you can use the
         'Solve' button to find the best way to complete the board.</p>
-      <PolyBoard board={board} setBoard={setBoard} />
+      <PieceSelector
+        shapes={shapes}
+        selectedShape={selectedShape}
+        setSelectedShape={setSelectedShape}
+      />
+      <PolyBoard
+        board={board}
+        setBoard={setBoard}
+        selectedShape={selectedShape}
+        setSelectedShape={setSelectedShape}
+        shapes={shapes}
+        setShapes={setShapes}
+      />
     </div>
   )
 }

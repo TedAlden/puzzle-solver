@@ -1,39 +1,99 @@
 import './PolyBoard.css';
+import { useState } from 'react';
 
-/**
- * An individual cell of the polysphere board.
- * @param {object} props Component props
- * @param {number} props.rowIndex The row index of the cell
- * @param {number} props.colIndex The column index of the cell
- * @returns {React.JSX.Element}
- */
-function Cell({ rowIndex, colIndex }) {
+function Cell({
+  onMouseEnter,
+  onMouseLeave,
+  onMouseClick,
+  highlighted,
+  value
+}) {
   return (
     <div
-      className="polyboard-cell"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onClick={onMouseClick}
+      className={`polyboard-cell ${highlighted > 0 ? 'highlighted' : ''} ${value}`}
     >
     </div>
   );
 }
 
-/**
- * The 5x11 Polysphere board.
- * @param {object} props Component props
- * @param {number} props.board The 5x11 puzzle board
- * @returns {React.JSX.Element}
- */
-function PolyBoard({ board }) {
+function PolyBoard({
+  board,
+  setBoard,
+  selectedShape,
+  setSelectedShape,
+  shapes,
+  setShapes
+}) {
+  const [highlightedCells, setHighlightedCells] = useState([]);
+
+  const handleMouseEnterCell = (row, col) => {
+    // Highlight the current shape where the mouse is on the board
+    const highlightedCells = selectedShape.coords.map(
+      ([x, y]) => [x + col, y + row]
+    );
+    // Check if this highlighted shape is within the boards boundaries
+    const isInBounds = highlightedCells.every(
+      ([x, y]) => x < board[0].length && y < board.length
+    )
+    // Only highlight if within bounds
+    if (isInBounds) {
+      setHighlightedCells(highlightedCells);
+    }
+  }
+
+
+
+  // FIXME: add handler if all shapes are placed to prevent crash
+
+
+
+  const handleMouseLeaveCell = (row, col) => {
+    // Un-highlight all cells when no longer hovering over a cell
+    setHighlightedCells([]);
+  }
+
+  const handleMouseClickCell = (row, col) => {
+    // Check that there is space for placing this shape
+    const isEmpty = highlightedCells.every(
+      ([x, y]) => board[y][x] === ""
+    );
+    // Check the shape fits within the board
+    const isInBounds = highlightedCells.every(
+      ([x, y]) => x < board[0].length && y < board.length
+    ) && highlightedCells.length > 0;
+    // Then place
+    if (isEmpty && isInBounds) {
+      // Place this piece on the board
+      setBoard(board.map((row, rowIndex) =>
+        row.map((cell, colIndex) => 
+          highlightedCells.some(([x, y]) => x === colIndex && y === rowIndex) 
+            ? selectedShape.symbol 
+            : cell
+        )
+      ));
+      // Remove this piece from our 'inventory' so we can't place it again
+      const index = shapes.indexOf(selectedShape);
+      const newShapes = [...shapes];
+      newShapes.splice(index, 1);
+      setShapes(newShapes);
+      setSelectedShape(newShapes[0] || null);
+    }
+  }
+
   return (
-    <div
-      className="polyboard-grid"
-      style={{ gridTemplateColumns: `repeat(11, 40px)` }} // Fixed 11 columns
-    >
+    <div className="polyboard-grid">
       {board.map((row, rowIndex) =>
         row.map((cell, colIndex) => (
           <Cell
             key={`${rowIndex}-${colIndex}`}
-            rowIndex={rowIndex}
-            colIndex={colIndex}
+            highlighted={highlightedCells.some(([x, y]) => x === colIndex && y === rowIndex)}
+            value={board[rowIndex][colIndex]}
+            onMouseEnter={() => handleMouseEnterCell(rowIndex, colIndex)}
+            onMouseLeave={() => handleMouseLeaveCell(rowIndex, colIndex)}
+            onMouseClick={() => handleMouseClickCell(rowIndex, colIndex)}
           />
         ))
       )}

@@ -6,13 +6,17 @@ function PieceSelector({
   setSelectedShape
 }) {
   const selectPreviousShape = () => {
-    const currentIndex = shapes.indexOf(selectedShape);
+    const currentIndex = shapes.findIndex(
+      shape => shape.symbol === selectedShape.symbol
+    );
     const newIndex = (currentIndex - 1 + shapes.length) % shapes.length;
     setSelectedShape(shapes[newIndex]);
   }
 
   const selectNextShape = () => {
-    const currentIndex = shapes.indexOf(selectedShape);
+    const currentIndex = shapes.findIndex(
+      shape => shape.symbol === selectedShape.symbol
+    );
     const newIndex = (currentIndex + 1) % shapes.length;
     setSelectedShape(shapes[newIndex]);
   }

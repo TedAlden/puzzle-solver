@@ -19,4 +19,8 @@
 }
 .board-queen {
   color: #000000;
+  user-select: none;
+}
+.board-queen:hover {
+  cursor: default;
 }

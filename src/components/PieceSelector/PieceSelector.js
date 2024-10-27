@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import ShapePreview from '../ShapePreview/ShapePreview';
 
 function PieceSelector({

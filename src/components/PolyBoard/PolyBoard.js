@@ -75,11 +75,13 @@ function PolyBoard({
         )
       ));
       // Remove this piece from our 'inventory' so we can't place it again
-      const index = shapes.indexOf(selectedShape);
-      const newShapes = [...shapes];
-      newShapes.splice(index, 1);
-      setShapes(newShapes);
-      setSelectedShape(newShapes[0] || null);
+      setShapes(prevShapes => {
+        const newShapes = prevShapes.filter(
+          shape => shape.symbol !== selectedShape.symbol
+        );
+        setSelectedShape(newShapes[0] || null);
+        return newShapes;
+      });
     }
   }
 

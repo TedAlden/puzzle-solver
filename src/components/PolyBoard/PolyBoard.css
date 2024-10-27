@@ -1,5 +1,6 @@
 .polyboard-grid {
   display: grid;
+  grid-template-columns: repeat(11, 40px);
   gap: 5px;
   margin-top: 20px;
 }
@@ -11,4 +12,43 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.polyboard-cell.highlighted {
+  box-shadow: inset 0px 0px 30px 0px #000000;
+}
+.polyboard-cell.A {
+  background-color: #ff0000;
+}
+.polyboard-cell.B {
+  background-color: #dd4080;
+}
+.polyboard-cell.C {
+  background-color: #ee8fbf;
+}
+.polyboard-cell.D {
+  background-color: #1046bb;
+}
+.polyboard-cell.E {
+  background-color: #ffff00;
+}
+.polyboard-cell.F {
+  background-color: #a934cc;
+}
+.polyboard-cell.G {
+  background-color: #5c00a7;
+}
+.polyboard-cell.H {
+  background-color: #2ca350;
+}
+.polyboard-cell.I {
+  background-color: #b64816;
+}
+.polyboard-cell.J {
+  background-color: #005a1e;
+}
+.polyboard-cell.K {
+  background-color: #e78e3a;
+}
+.polyboard-cell.L {
+  background-color: #0091d4;
 }

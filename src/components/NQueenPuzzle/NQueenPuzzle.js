@@ -8,9 +8,11 @@ import './NQueenPuzzle.css';
  * @param {number} size The size (N) of the N x N chess board
  * @returns {number[][]} A 2-dimensional array filled with zeros
  */
-function createBoard (size) {
-  return Array(size).fill().map(() => Array(size).fill(0));
-}
+const createBoard = (size) => (
+  Array(size).fill().map(
+    () => Array(size).fill(0)
+  )
+);
 
 /**
  * Displays the N-Queens puzzle solver.
@@ -25,27 +27,23 @@ function NQueenPuzzle() {
    * Attempts to solve the N-Queens problem using the board.
    */
   const solveBoard = () => {
-    // Create a copy of the chess board
-    const copyBoard = Array.from(board);
-    // Attempt to solve NQueens
-    const isSolved = solveNQueens(copyBoard);
+    // Create a copy of the chess board and attempt to solve
+    const newBoard = [...board];
+    const isSolved = solveNQueens(newBoard);
     setSolved(isSolved);
     if (isSolved) {
       // Show completed board if successful
-      setBoard(copyBoard);
+      setBoard(newBoard);
     } else {
       alert("No possible Solutions found");
     }
   }
 
   /**
-   * Clears the board.
+   * Clears the board and resets the solved status to false.
    */
   const clearBoard = () => {
-    // Reset board
-    const newBoard = createBoard(boardSize);
-    setBoard(newBoard);
-    // Reset solved status
+    setBoard(createBoard(boardSize));
     setSolved(false);
   }
 
@@ -58,8 +56,7 @@ function NQueenPuzzle() {
     const newSize = Math.max(1, parseInt(e.target.value) || 0);
     setBoardSize(newSize);
     // Reset the board
-    const newBoard = createBoard(newSize);
-    setBoard(newBoard);
+    setBoard(createBoard(newSize));
     // Reset solved status
     setSolved(false);
   }
@@ -67,12 +64,19 @@ function NQueenPuzzle() {
   return (
     <div className="puzzleOne">
       <h2>The N-Queens Puzzle</h2>
-      <p><b>The N-Queens Problem </b> is a puzzle that involves placing <b>N</b> queens on an <b> N x N </b> 
-       chessboard in such a way that no two queens can attack each other - meaning no two queens share the same
-      row, column, or diagonal. In this app, you can place some of the queens manually, and the
-      algorithm will attempt to solve the rest of the puzzle for you.</p>
-      <p>Simply place your queens, click the <b>Solve</b> button, and the algorithm will find the 
-      remaining valid positions for the queens </p>
+      <p>
+        The <b> N-Queens Problem </b> is a puzzle that involves placing
+        <b> N </b> queens on an <b> N x N </b> chessboard in such a way
+        that no two queens can attack each other - meaning no two queens
+        share the same row, column, or diagonal. In this app, you can
+        place some of the queens manually, and the algorithm will
+        attempt to solve the rest of the puzzle for you.
+      </p>
+      <p>
+        Simply place your queens, click the <b> Solve </b> button, and
+        the algorithm will find the remaining valid positions for the
+        queens.
+      </p>
       <div className="input-section">
         <label htmlFor="board-size">Board Size:</label>
         <input

@@ -11,7 +11,7 @@ const createBoard = (width, height) => (
 );
 
 function PolyspherePuzzle() {
-  const [board, setBoard] = useState(createBoard(5, 11));
+  const [board, setBoard] = useState(createBoard(11, 5));
   const [shapes, setShapes] = useState(pieces);
   const [selectedShape, setSelectedShape] = useState(shapes[0]);
 

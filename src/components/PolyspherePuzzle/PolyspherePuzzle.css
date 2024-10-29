@@ -40,9 +40,11 @@
   background-color: #2563EB;
 }
 
+
 .clear-button {
   background-color: #ffffff;
   color: #000000;
+  flex-direction: row;
   border: 1px solid #d1d5db;
 }
 
@@ -59,5 +61,56 @@
   color: #dc2626;
   margin-top: 8px;
   font-size: 14px;
+  text-align: center;
+}
+
+.solver-message {
+  margin: 10px 0;
+  padding: 8px;
+  background-color: #e8f5e9;
+  border-radius: 4px;
+  text-align: center;
+  color: #2e7d32;
+}
+
+.solution-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  margin: 10px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #4CAF50;
+  transition: width 0.3s ease-in-out;
+}
+
+.progress-bar span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: #000;
+  font-size: 12px;
+}
+
+.error-message {
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 8px;
+  border-radius: 4px;
+  margin: 10px 0;
   text-align: center;
 }

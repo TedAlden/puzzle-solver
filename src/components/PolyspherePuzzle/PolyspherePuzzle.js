@@ -11,6 +11,10 @@ function PolyspherePuzzle() {
   const [isSolving, setIsSolving] = useState(false);
   const [worker, setWorker] = useState(null);
   const [error, setError] = useState(null);
+  const [solutions, setSolutions] = useState([]);
+  const [currentSolutionIndex, setCurrentSolutionIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [solverMessage, setSolverMessage] = useState('');
 
   useEffect(() => {
     try {
@@ -34,47 +38,35 @@ function PolyspherePuzzle() {
 
     setIsSolving(true);
     setError(null);
+    setProgress(0);
+    setSolutions([]);
+    setSolverMessage('Solving...');
     
     const messageHandler = (e) => {
-      const { success, solution, error } = e.data;
+      const { type, success, solutions: newSolutions, error: workerError, progress: workerProgress, message } = e.data;
       
-      if (success && solution) {
-        let currentStep = 0;
-        const totalSteps = solution.length;
-        
-        const animateSolution = () => {
-          if (currentStep < totalSteps) {
-            setBoard(prevBoard => {
-              return prevBoard.map((row, i) => 
-                row.map((cell, j) => 
-                  solution[i][j] !== "" ? solution[i][j] : cell
-                )
-              );
-            });
-            currentStep++;
-            setTimeout(animateSolution, 100);
-          }
-        };
-        
-        animateSolution();
+      if (type === 'progress') {
+        setProgress(workerProgress);
+        setSolverMessage("Solutions found so far...");
+        return;
+      }
+      
+      if (success && newSolutions?.length > 0) {
+        setSolutions(newSolutions);
+        setBoard(newSolutions[0]);
+        setCurrentSolutionIndex(0);
+        setProgress(100);
+        setSolverMessage(message || `Found ${newSolutions.length} solutions!`);
       } else {
-        setError(error || "No solution found! Try clearing the board and starting over.");
+        setError(workerError || "No solutions found!");
+        setSolverMessage('');
       }
       
       setIsSolving(false);
       worker.removeEventListener('message', messageHandler);
     };
 
-    const errorHandler = (error) => {
-      console.error("Worker error:", error);
-      setError("An error occurred while solving the puzzle.");
-      setIsSolving(false);
-      worker.removeEventListener('error', errorHandler);
-    };
-
     worker.addEventListener('message', messageHandler);
-    worker.addEventListener('error', errorHandler);
-    
     worker.postMessage({ board, pieces: shapes });
   }, [worker, board, shapes]);
 
@@ -83,7 +75,24 @@ function PolyspherePuzzle() {
     setShapes(pieces);
     setSelectedShape(pieces[0]);
     setError(null);
+    setSolutions([]);
+    setProgress(0);
+    setSolverMessage('');
   }, []);
+
+  const handleNextSolution = useCallback(() => {
+    if (currentSolutionIndex < solutions.length - 1) {
+      setCurrentSolutionIndex(prev => prev + 1);
+      setBoard(solutions[currentSolutionIndex + 1]);
+    }
+  }, [currentSolutionIndex, solutions]);
+
+  const handlePreviousSolution = useCallback(() => {
+    if (currentSolutionIndex > 0) {
+      setCurrentSolutionIndex(prev => prev - 1);
+      setBoard(solutions[currentSolutionIndex - 1]);
+    }
+  }, [currentSolutionIndex, solutions]);
 
   return (
     <div className="puzzleTwo">
@@ -96,29 +105,46 @@ function PolyspherePuzzle() {
       </p>
       
       <div className="controls-container">
-        <div className="button-group">
-          <button 
-            onClick={handleSolve} 
-            disabled={isSolving}
-            className={`puzzle-button solve-button ${isSolving ? 'disabled' : ''}`}
-          >
-            {isSolving ? "Solving..." : "Solve Puzzle"}
-          </button>
-          
-          <button 
-            onClick={handleClear}
-            disabled={isSolving}
-            className={`puzzle-button clear-button ${isSolving ? 'disabled' : ''}`}
-          >
-            Clear Board
-          </button>
-        </div>
-        
-        {error && (
-          <div className="error-message">
-            {error}
+        <button onClick={handleSolve} disabled={isSolving}>
+          {isSolving ? "Solving..." : "Solve Puzzle"}
+        </button>
+        <button onClick={handleClear} disabled={isSolving}>Clear Board</button>
+
+        {solverMessage && (
+          <div className="solver-message">
+            {solverMessage}
           </div>
         )}
+
+        {progress > 0 && progress < 100 && (
+          <div className="progress-bar">
+            <div 
+              className="progress-fill" 
+              style={{ width: `${progress}%` }}
+            />
+            <span>{Math.round(progress)}%</span>
+          </div>
+        )}
+
+        {solutions.length > 1 && (
+          <div className="solution-navigation">
+            <button 
+              onClick={handlePreviousSolution} 
+              disabled={currentSolutionIndex === 0}
+            >
+              Previous Solution
+            </button>
+            <span>Solution {currentSolutionIndex + 1} of {solutions.length}</span>
+            <button 
+              onClick={handleNextSolution} 
+              disabled={currentSolutionIndex === solutions.length - 1}
+            >
+              Next Solution
+            </button>
+          </div>
+        )}
+
+        {error && <div className="error-message">{error}</div>}
       </div>
 
       <PieceSelector

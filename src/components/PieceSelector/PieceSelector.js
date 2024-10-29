@@ -5,6 +5,13 @@ function PieceSelector({
   selectedShape,
   setSelectedShape
 }) {
+  // Normalise the shape so the top-left tile is aligned to (0, 0)
+  const normalise = (coords) => {
+    const minRow = Math.min(...coords.map(([r, _]) => r));
+    const minCol = Math.min(...coords.map(([_, c]) => c));
+    return coords.map(([r, c]) => [r - minRow, c - minCol]);
+  };
+
   const selectPreviousShape = () => {
     const currentIndex = shapes.findIndex(
       shape => shape.symbol === selectedShape.symbol
@@ -23,13 +30,13 @@ function PieceSelector({
 
   const rotateShape = () => {
     const newShape = {...selectedShape};
-    newShape.coords = newShape.coords.map(([x, y]) => [y, -x]);
+    newShape.coords = normalise(newShape.coords.map(([x, y]) => [y, -x]));
     setSelectedShape(newShape);
   }
 
   const flipShape = () => {
     const newShape = {...selectedShape};
-    newShape.coords = newShape.coords.map(([x, y]) => [-x, y]);
+    newShape.coords = normalise(newShape.coords.map(([x, y]) => [-x, y]));
     setSelectedShape(newShape);
   }
 

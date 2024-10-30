@@ -1,3 +1,5 @@
+import './ShapePreview.css';
+
 function ShapePreview ({selectedShape}) {
   const tileSize = 20; // Size of each square tile in shape preview (px)
   const previewCols = 5; // Width of preview viewport (# of tiles)

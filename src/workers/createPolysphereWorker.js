@@ -18,8 +18,6 @@ import solvePolyspheres from "../lib/polysphereSolver";
 
 export default function createPolysphereWorker() {
   const workerCode = `
-    ${solvePolyspheres.toString()}
-
     self.addEventListener('message', e => {
       // Receive the partial board configuration/placement (from the
       // front-end) to be solved
@@ -29,7 +27,7 @@ export default function createPolysphereWorker() {
         !board.some(row => row.includes(piece.symbol))
       );
       // Run the polysphere solving algorithm
-      solvePolyspheres(board, unusedPieces, (solution) => {
+      (${solvePolyspheres.toString()})(board, unusedPieces, (solution) => {
         console.table(solution);
         // Send each solution back to the React component (front end)
         self.postMessage({ type: 'solution', data: solution });

@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: repeat(11, 40px);
   gap: 5px;
-  margin-top: 20px;
+  margin: 20px 0;
 }
 .polyboard-cell {
   background-color: #ffffff;

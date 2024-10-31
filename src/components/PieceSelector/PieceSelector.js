@@ -1,3 +1,4 @@
+import './PieceSelector.css';
 import ShapePreview from '../ShapePreview/ShapePreview';
 
 function PieceSelector({
@@ -41,7 +42,7 @@ function PieceSelector({
   }
 
   return (
-    <div className="shapeSelector">
+    <div className="pieceSelector">
       <button onClick={flipShape}>Flip</button>
       <button onClick={selectPreviousShape}>Prev</button>
       <ShapePreview selectedShape={selectedShape}/>

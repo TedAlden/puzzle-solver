@@ -1,5 +1,5 @@
 import './PolyspherePuzzle.css';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import PolyBoard from '../PolyBoard/PolyBoard';
 import PieceSelector from '../PieceSelector/PieceSelector';
 import pieces from '../../lib/pieces';

@@ -112,6 +112,7 @@ function PolyspherePuzzle() {
         setSelectedShape={setSelectedShape}
         shapes={shapes}
         setShapes={setShapes}
+        isSolving={isSolving}
       />
       <div className="controlsContainer">
         <button onClick={handleSolve} disabled={isSolving}>

@@ -20,7 +20,7 @@ function ShapePreview ({selectedShape}) {
 
   const generateShapeRects = () => {
     const coords = centerCoords(selectedShape.coords);
-    const tiles = [];
+    const tiles = [];  
     coords.forEach(([x, y]) => {
       tiles.push(
         <rect
@@ -41,6 +41,11 @@ function ShapePreview ({selectedShape}) {
       className="shapePreview"
       width={previewCols * tileSize}
       height={previewRows * tileSize}
+      style={{
+        backgroundColor: "#374151",
+        borderRadius: "8px",
+        padding: "4px"
+      }}
     >
       {generateShapeRects()}
     </svg>

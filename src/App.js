@@ -1,22 +1,30 @@
-import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import Home from './components/Home/Home';
 import NQueenPuzzle from './components/NQueenPuzzle/NQueenPuzzle';
 import PolyspherePuzzle from './components/PolyspherePuzzle/PolyspherePuzzle';
+import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
+    <Router>
+      <div className="App">
+        <nav>
+          <Link to="/">Home</Link>
+          <Link to="/nqueen">The N-Queens Puzzle</Link>
+          <Link to="/polysphere">Polysphere Puzzle</Link>
+        </nav>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/nqueen" element={<NQueenPuzzle />} />
           <Route path="/polysphere" element={<PolyspherePuzzle />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </BrowserRouter>
-    </div>
+      </div>
+    </Router>
+   
   );
+
 }
 
 export default App;

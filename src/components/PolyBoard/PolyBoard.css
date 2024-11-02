@@ -1,21 +1,29 @@
 .polyboard-grid {
   display: grid;
   grid-template-columns: repeat(11, 40px);
-  gap: 5px;
-  margin: 20px 0;
+  gap: 2px;
+  background: #4b5563;
+  padding: 8px;
+  border-radius: 8px;
+  margin: 0 auto;
+  width: fit-content;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
+
 .polyboard-cell {
-  background-color: #ffffff;
   width: 40px;
   height: 40px;
-  border: 1px solid #000000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: #1f2937;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
+
 .polyboard-cell.highlighted {
-  box-shadow: inset 0px 0px 30px 0px #000000;
+  background: rgba(139, 92, 246, 0.5);
+  transform: scale(0.95);
 }
+
 .polyboard-cell.A {
   background-color: #ff0000;
 }

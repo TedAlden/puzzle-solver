@@ -40,7 +40,7 @@ function PolyspherePuzzle() {
   }, []);
 
   useEffect(() => {
-    if (solutions.length > 0) {
+    if (solutions[solutionIndex]) {
       setBoard(solutions[solutionIndex]);
     }
   }, [solutions, solutionIndex]);

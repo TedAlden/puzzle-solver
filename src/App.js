@@ -1,15 +1,20 @@
+import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import Home from './components/Home/Home';
 import NQueenPuzzle from './components/NQueenPuzzle/NQueenPuzzle';
 import PolyspherePuzzle from './components/PolyspherePuzzle/PolyspherePuzzle';
-import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">   
-        <h2>Welcome to the puzzle solver!</h2>
-      </header>
-      <NQueenPuzzle></NQueenPuzzle>
-      <PolyspherePuzzle></PolyspherePuzzle>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/nqueen" element={<NQueenPuzzle />} />
+          <Route path="/polysphere" element={<PolyspherePuzzle />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

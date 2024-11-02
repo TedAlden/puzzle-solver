@@ -41,6 +41,12 @@ function PolyspherePuzzle() {
     }
   }, []);
 
+  useEffect(() => {
+    if (solutions.length > 0) {
+      setBoard(solutions[solutionIndex]);
+    }
+  }, [solutions]);
+
   const handleSolve = () => {
     if (!worker) return;
     // Handler for when the worker sends a solution back here

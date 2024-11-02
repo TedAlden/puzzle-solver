@@ -23,8 +23,6 @@ function PolyspherePuzzle() {
   const [solutions, setSolutions] = useState([]);
   const [solutionIndex, setSolutionIndex] = useState(0);
 
-  // Make SolutionNavigator a separate component
-  
   useEffect(() => {
     // Start a background worker (much like a thread) with the
     // polysphere solver, since it takes a long time to run and will
@@ -45,7 +43,7 @@ function PolyspherePuzzle() {
     if (solutions.length > 0) {
       setBoard(solutions[solutionIndex]);
     }
-  }, [solutions]);
+  }, [solutions, solutionIndex]);
 
   const handleSolve = () => {
     if (!worker) return;

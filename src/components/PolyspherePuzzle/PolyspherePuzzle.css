@@ -23,6 +23,10 @@
   margin-left: auto;
   margin-right: auto;
 }
+.puzzleTwo b {
+  color: #b952c9;
+  font-weight: 600;
+}
 .controlsContainer {
   display: flex;
   gap: 1rem;

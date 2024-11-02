@@ -120,8 +120,11 @@ function PolyspherePuzzle() {
         {isSolving &&
           <span>Solving ⏳</span>
         }
-        {isSolved &&
-          <span>Solved ✅</span>
+        {isSolved && solutions.length > 0 &&
+          <span>Solutions found ✅</span>
+        }
+        {isSolved && solutions.length === 0 &&
+          <span>No solutions ⚠️</span>
         }
         {solutions.length >= 1 &&
           <div className="solutionNavigation">

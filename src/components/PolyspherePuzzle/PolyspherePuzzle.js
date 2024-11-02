@@ -71,6 +71,7 @@ function PolyspherePuzzle() {
     setShapes(pieces);
     setSelectedShape(pieces[0]);
     setSolutions([]);
+    setSolutionIndex(0);
     setIsSolved(false);
     setIsSolving(false);
   };

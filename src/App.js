@@ -23,7 +23,6 @@ function App() {
     </Router>
    
   );
-  <h1>Welcome to the puzzle solver!</h1>
 }
 
 export default App;

@@ -11,7 +11,7 @@ function App() {
       <div className="App">
         <nav>
           <Link to="/">Home</Link>
-          <Link to="/nqueen">N-Queen Puzzle</Link>
+          <Link to="/nqueen">The N-Queens Puzzle</Link>
           <Link to="/polysphere">Polysphere Puzzle</Link>
         </nav>
         <Routes>

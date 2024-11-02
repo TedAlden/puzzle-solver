@@ -1,9 +1,10 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import './App.css';
+
+import { MemoryRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+
 import Home from './components/Home/Home';
 import NQueenPuzzle from './components/NQueenPuzzle/NQueenPuzzle';
 import PolyspherePuzzle from './components/PolyspherePuzzle/PolyspherePuzzle';
-import './App.css';
 
 function App() {
   return (
@@ -22,9 +23,7 @@ function App() {
         </Routes>
       </div>
     </Router>
-   
   );
-
 }
 
 export default App;

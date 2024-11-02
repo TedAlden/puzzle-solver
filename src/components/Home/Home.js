@@ -1,6 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
 import './Home.css';
+import { Link } from 'react-router-dom';
 
 function Home() {
   return (
@@ -17,7 +16,7 @@ function Home() {
       <Link to="/polysphere" className="puzzle-option">
         <div className="icon">🧩</div>
         <div className="puzzle-info">
-          <div className="puzzle-title">Polysphere</div>
+          <div className="puzzle-title">Polyspheres</div>
           <p className="puzzle-description">Place unique shapes on a 5x11 board to solve the Polysphere puzzle.</p>
         </div>
       </Link>

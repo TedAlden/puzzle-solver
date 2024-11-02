@@ -25,11 +25,13 @@ function PolyBoard({
   selectedShape,
   setSelectedShape,
   shapes,
-  setShapes
+  setShapes,
+  isSolving
 }) {
   const [highlightedCells, setHighlightedCells] = useState([]);
 
   const handleMouseEnterCell = (row, col) => {
+    if(isSolving) return;
     // Highlight the current shape where the mouse is on the board
     const highlightedCells = selectedShape.coords.map(
       ([x, y]) => [x + col, y + row]
@@ -51,11 +53,13 @@ function PolyBoard({
 
 
   const handleMouseLeaveCell = (row, col) => {
+    if(isSolving) return;
     // Un-highlight all cells when no longer hovering over a cell
     setHighlightedCells([]);
   }
 
   const handleMouseClickCell = (row, col) => {
+    if (isSolving) return;
     // Check that there is space for placing this shape
     const isEmpty = highlightedCells.every(
       ([x, y]) => board[y][x] === ""

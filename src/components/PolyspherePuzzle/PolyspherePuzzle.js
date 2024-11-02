@@ -94,11 +94,12 @@ function PolyspherePuzzle() {
     <div className="puzzleTwo">
       <h2>The Polysphere Puzzle</h2>
       <p>
-        This puzzle involves placing unique shapes made of connected
-        spheres onto a 5x11 board. Your goal is to fit all 12 pieces
-        perfectly into the grid. Each shape is made from a different
-        configuration of spheres, and you can use the 'Solve' button to
-        find the best way to complete the board.
+        The <b> polysphere puzzle </b> involves placing <b> 12 </b>
+        unique shapes made of connected spheres onto a <b> 5x11 </b>
+        board. Your goal is to fit all pieces perfectly into the grid.
+        Each shape is made from a different configuration of spheres,
+        and you can use the <b> Solve </b> button to find the best way
+        to complete the board.
       </p>
       <PieceSelector
         shapes={shapes}
@@ -112,6 +113,7 @@ function PolyspherePuzzle() {
         setSelectedShape={setSelectedShape}
         shapes={shapes}
         setShapes={setShapes}
+        isSolving={isSolving}
       />
       <div className="controlsContainer">
         <button onClick={handleSolve} disabled={isSolving}>

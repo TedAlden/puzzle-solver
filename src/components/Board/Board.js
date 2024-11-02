@@ -1,11 +1,16 @@
 import './Board.css';
+import { useState } from 'react';
 
 function Cell({ isEven, isQueen, onMouseClick }) {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <div
       role="cell"
-      className={`board-cell ${isEven ? 'even' : 'odd'}`}
+      className={`board-cell ${isEven ? 'even' : 'odd'} ${isHovered ? 'hovered' : ''}`}
       onClick={onMouseClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {isQueen && <span className="board-queen">♛</span>}
     </div>
@@ -24,7 +29,7 @@ function Board({ board, setBoard }) {
     <div
       role="grid"
       className='board-grid'
-      style={{ gridTemplateColumns: `repeat(${board.length}, 40px)` }}
+      style={{ gridTemplateColumns: `repeat(${board.length}, 50px)` }}
     >
       {board.map((row, rowIndex) =>
         row.map((cell, colIndex) => (

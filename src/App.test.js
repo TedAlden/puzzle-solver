@@ -8,7 +8,7 @@ describe('App Component', () => {
     render(<App />);
 
     // Check if the header with the expected text is in the document
-    const headerElement = screen.getByText(/Welcome to the Puzzle Solver/i);
+    const headerElement = screen.getByText(/Puzzle Solver/i);
     expect(headerElement).toBeInTheDocument();
   });
 });

@@ -1,26 +1,65 @@
 .board-grid {
   display: grid;
-  gap: 5px;
-  margin-top: 20px;
+  gap: 1px;
+  padding: 8px;
+  background: #4b5563;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px #0000004d;
 }
 .board-cell {
-  width: 40px;
-  height: 40px;
-  border: 1px solid #000000;
+  width: 50px;
+  height: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.2s ease;
+  position: relative;
+  cursor: pointer;
+}
+.board-cell:hover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #60a5fa4d;
+  pointer-events: none;
 }
 .board-cell.odd {
-  background-color: #808080;
+  background-color: #374151;
 }
 .board-cell.even {
-  background-color: #ffffff;
+  background-color: #f3f4f6;
 }
 .board-queen {
-  color: #000000;
+  font-size: 2rem;
+  color: #2563eb;
+  text-shadow: 1px 1px 2px #00000033;
+  transform-origin: center;
+  animation: queenPlace 0.3s ease;
   user-select: none;
 }
-.board-queen:hover {
-  cursor: default;
+@keyframes queenPlace {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.board-cell.even .board-queen {
+  color: #1e40af;
+}
+.board-cell.odd .board-queen {
+  color: #3b82f6;
+}
+/* Responsive design */
+@media (max-width: 768px) {
+  .board-cell {
+    width: 40px;
+    height: 40px;
+  }
+  .board-queen {
+    font-size: 1.5rem;
+  }
 }

@@ -7,23 +7,20 @@
   border-radius: 8px;
   margin: 0 auto;
   width: fit-content;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px #0000004d;
 }
-
 .polyboard-cell {
   width: 40px;
   height: 40px;
   background: #1f2937;
   border-radius: 4px;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   cursor: pointer;
 }
-
 .polyboard-cell.highlighted {
-  background: rgba(139, 92, 246, 0.5);
+  background: #8b5cf680;
   transform: scale(0.95);
 }
-
 .polyboard-cell.A {
   background-color: #ff0000;
 }

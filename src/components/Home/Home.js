@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 function Home() {
   return (
     <div className="home-container">
-      <h1>Puzzle Solver</h1>
+      <h2>Puzzle Solver</h2>
       <Link to="/nqueen" className="puzzle-option">
         <div className="icon">👑</div>
         <div className="puzzle-info">

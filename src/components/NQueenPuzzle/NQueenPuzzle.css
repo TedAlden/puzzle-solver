@@ -4,17 +4,16 @@
   padding: 2rem;
   color: white;
 }
-
 .puzzleOne h2 {
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 2rem;
   background: linear-gradient(to right, #60a5fa, #a78bfa);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: bold;
 }
-
 .puzzleOne p {
   text-align: center;
   line-height: 1.8;
@@ -24,12 +23,10 @@
   margin-left: auto;
   margin-right: auto;
 }
-
 .puzzleOne b {
   color: #60a5fa;
   font-weight: 600;
 }
-
 .input-section {
   display: flex;
   gap: 1rem;
@@ -37,12 +34,10 @@
   justify-content: center;
   margin: 2rem 0;
 }
-
 .input-section label {
   font-size: 1.1rem;
   font-weight: 500;
 }
-
 .input-section input {
   width: 60px;
   padding: 0.5rem;
@@ -53,12 +48,10 @@
   font-size: 1rem;
   text-align: center;
 }
-
 .input-section input:focus {
   outline: none;
   border-color: #60a5fa;
 }
-
 .input-section button {
   padding: 0.5rem 1.5rem;
   border: none;
@@ -68,31 +61,25 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
-
 .input-section button:first-of-type {
   background: #3b82f6;
   color: white;
 }
-
 .input-section button:first-of-type:hover {
   background: #2563eb;
 }
-
 .input-section button:last-of-type {
   background: #4b5563;
   color: white;
 }
-
 .input-section button:last-of-type:hover {
   background: #374151;
 }
-
 .board-section {
   display: flex;
   justify-content: center;
   margin-top: 2rem;
 }
-
 /* Solution found message styling */
 .puzzleOne h2:not(:first-child) {
   font-size: 1.5rem;
@@ -102,7 +89,6 @@
   margin-top: 1rem;
   animation: fadeIn 0.5s ease;
 }
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -113,21 +99,17 @@
     transform: translateY(0);
   }
 }
-
 /* Responsive styling */
 @media (max-width: 768px) {
   .puzzleOne {
     padding: 1rem;
   }
-
   .puzzleOne h2 {
     font-size: 2rem;
   }
-
   .input-section {
     flex-wrap: wrap;
   }
-
   .input-section button {
     flex: 1;
     min-width: 120px;

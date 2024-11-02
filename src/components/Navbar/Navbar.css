@@ -1,0 +1,18 @@
+.navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  padding: 10px;
+}
+.navbar .navbarItem {
+  color: #ffffff;
+}
+.navbar .navbarItem a {
+  color: #ffffff;
+  text-decoration: none;
+}
+.navbar .navbarItem a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}

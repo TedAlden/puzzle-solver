@@ -23,6 +23,7 @@ const ProgressBar = ({ current, total }) => {
           aria-valuenow={progress}
           aria-valuemin="0"
           aria-valuemax="100"
+          data-testid="progress-fill"
         />
       </div>
     </div>

@@ -10,6 +10,8 @@ function Cell({
 }) {
   return (
     <div
+     role="cell"
+     data-testid="cell"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={onMouseClick}
@@ -31,7 +33,9 @@ function PolyBoard({
   const [highlightedCells, setHighlightedCells] = useState([]);
 
   const handleMouseEnterCell = (row, col) => {
-    if(isSolving) return;
+    if(isSolving || !selectedShape) 
+      return;
+    
     // Highlight the current shape where the mouse is on the board
     const highlightedCells = selectedShape.coords.map(
       ([x, y]) => [x + col, y + row]

@@ -10,8 +10,8 @@ function Cell({
 }) {
   return (
     <div
-     role="cell"
-     data-testid="cell"
+      role="cell"
+      data-testid="cell"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={onMouseClick}
@@ -33,9 +33,9 @@ function PolyBoard({
   const [highlightedCells, setHighlightedCells] = useState([]);
 
   const handleMouseEnterCell = (row, col) => {
-    if(isSolving || !selectedShape) 
+    if (isSolving || !selectedShape)
       return;
-    
+
     // Highlight the current shape where the mouse is on the board
     const highlightedCells = selectedShape.coords.map(
       ([x, y]) => [x + col, y + row]
@@ -57,7 +57,7 @@ function PolyBoard({
 
 
   const handleMouseLeaveCell = (row, col) => {
-    if(isSolving) return;
+    if (isSolving) return;
     // Un-highlight all cells when no longer hovering over a cell
     setHighlightedCells([]);
   }
@@ -76,9 +76,9 @@ function PolyBoard({
     if (isEmpty && isInBounds) {
       // Place this piece on the board
       setBoard(board.map((row, rowIndex) =>
-        row.map((cell, colIndex) => 
-          highlightedCells.some(([x, y]) => x === colIndex && y === rowIndex) 
-            ? selectedShape.symbol 
+        row.map((cell, colIndex) =>
+          highlightedCells.some(([x, y]) => x === colIndex && y === rowIndex)
+            ? selectedShape.symbol
             : cell
         )
       ));

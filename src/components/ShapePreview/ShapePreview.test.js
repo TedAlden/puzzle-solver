@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ShapePreview from './ShapePreview';
@@ -14,7 +13,6 @@ describe('ShapePreview Component', () => {
     ],
     colour: '#FF0000'
   };
-
   const mockLShape = {
     coords: [
       [0, 0],
@@ -33,7 +31,7 @@ describe('ShapePreview Component', () => {
   test('renders SVG element with correct dimensions', () => {
     const { container } = render(<ShapePreview selectedShape={mockShape} />);
     const svg = container.querySelector('svg');
-    
+
     expect(svg).toBeInTheDocument();
     expect(svg).toHaveAttribute('width', '100'); // 5 * 20 (previewcols * tilesize)
     expect(svg).toHaveAttribute('height', '100'); // 5 * 20 (previewrows * tilesize)
@@ -42,21 +40,21 @@ describe('ShapePreview Component', () => {
   test('renders correct number of rectangles for square shape', () => {
     const { container } = render(<ShapePreview selectedShape={mockShape} />);
     const rects = container.querySelectorAll('rect');
-    
+
     expect(rects).toHaveLength(4); // Square shape 4 tiles
   });
 
   test('renders correct number of rectangles for L shape', () => {
     const { container } = render(<ShapePreview selectedShape={mockLShape} />);
     const rects = container.querySelectorAll('rect');
-    
+
     expect(rects).toHaveLength(4); // L shape 4 tiles
   });
 
   test('applies correct color to rectangles', () => {
     const { container } = render(<ShapePreview selectedShape={mockShape} />);
     const rects = container.querySelectorAll('rect');
-    
+
     rects.forEach(rect => {
       expect(rect).toHaveAttribute('fill', '#FF0000');
     });
@@ -65,7 +63,7 @@ describe('ShapePreview Component', () => {
   test('centers shapes correctly', () => {
     const { container } = render(<ShapePreview selectedShape={mockShape} />);
     const rects = Array.from(container.querySelectorAll('rect'));
-    
+
     // Check if rectangles are centered by verifying their positions
     const positions = rects.map(rect => ({
       x: parseFloat(rect.getAttribute('x')),
@@ -90,7 +88,7 @@ describe('ShapePreview Component', () => {
   test('SVG has correct styling', () => {
     const { container } = render(<ShapePreview selectedShape={mockShape} />);
     const svg = container.querySelector('svg');
-    
+
     expect(svg).toHaveStyle({
       backgroundColor: '#374151',
       borderRadius: '8px',

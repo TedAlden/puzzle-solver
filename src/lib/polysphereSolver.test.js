@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, jest, test } from '@jest/globals';
 import solvePolyspheres from './polysphereSolver';
 
 describe('PolysphereSolver', () => {
@@ -14,11 +14,13 @@ describe('PolysphereSolver', () => {
       colour: '#00ff00'
     }
   ];
-  const createEmptyBoard = (rows, cols) => 
-    Array(rows).fill().map(() => Array(cols).fill(""));
+  const createEmptyBoard = (rows, cols) => (
+    Array(rows).fill().map(
+      () => Array(cols).fill("")
+    )
+  );
 
   describe('Board Check', () => {
-
     it('Check for empty board', () => {
       const board = createEmptyBoard(5, 11);
       const solutions = [];
@@ -31,7 +33,7 @@ describe('PolysphereSolver', () => {
 
   describe('to check the Piece placement', () => {
     let board;
-    
+
     beforeEach(() => {
       board = createEmptyBoard(5, 11);
     });
@@ -111,11 +113,8 @@ describe('PolysphereSolver', () => {
         expect(solution.flat().filter(cell => cell !== ""))
           .toEqual(expect.arrayContaining(['A', 'B']));
       };
-
       solvePolyspheres(board, testPieces, onSolution);
       expect(solutions.length).toBeGreaterThan(0);
     });
-    
-  }); 
-  
+  })
 });

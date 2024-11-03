@@ -1,11 +1,14 @@
-import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import PolyBoard from './PolyBoard';
 
 describe('PolyBoard Component test', () => {
-  const mockBoard = Array(10).fill().map(() => Array(10).fill(""));
-
+  const createEmptyBoard = (rows, cols) => (
+    Array(rows).fill().map(
+      () => Array(cols).fill("")
+    )
+  );
+  const mockBoard = createEmptyBoard(10, 10);
   const defaultProps = {
     shapes: [
       {
@@ -46,7 +49,7 @@ describe('PolyBoard Component test', () => {
       const modifiedBoard = [...mockBoard];
       modifiedBoard[0] = [...mockBoard[0]];
       modifiedBoard[0][0] = 'shape1'; // shape1 in first cell
-      
+
       const props = {
         ...defaultProps,
         board: modifiedBoard
@@ -62,7 +65,7 @@ describe('PolyBoard Component test', () => {
     it('should highlight cells on mouse enter with valid shape', () => {
       const { getAllByTestId } = render(<PolyBoard {...defaultProps} />);
       const cells = getAllByTestId('cell');
-      
+
       fireEvent.mouseEnter(cells[0]);
       expect(cells[0]).toHaveClass('highlighted');
     });
@@ -75,7 +78,7 @@ describe('PolyBoard Component test', () => {
 
       const { getAllByTestId } = render(<PolyBoard {...props} />);
       const cells = getAllByTestId('cell');
-    
+
       fireEvent.click(cells[0]);
       expect(props.setBoard).not.toHaveBeenCalled();
     });
@@ -89,9 +92,9 @@ describe('PolyBoard Component test', () => {
 
       const { getAllByTestId } = render(<PolyBoard {...props} />);
       const cells = getAllByTestId('cell');
-      
+
       fireEvent.mouseEnter(cells[0]);
-      
+
       // The cell should not be highlighted as no shape is selected
       expect(cells[0]).not.toHaveClass('highlighted');
     });
@@ -99,7 +102,7 @@ describe('PolyBoard Component test', () => {
     it('should remove highlights on mouse leave', () => {
       const { getAllByTestId } = render(<PolyBoard {...defaultProps} />);
       const cells = getAllByTestId('cell');
-      
+
       fireEvent.mouseEnter(cells[0]);
       expect(cells[0]).toHaveClass('highlighted');
 
@@ -108,23 +111,23 @@ describe('PolyBoard Component test', () => {
     });
 
     it('should not clear highlights if isSolving is true', () => {
-        const props = {
-          ...defaultProps,
-          isSolving: true // Set isSolving to true to test this condition
-        };
-      
-        const { getAllByTestId } = render(<PolyBoard {...props} />);
-        const cells = getAllByTestId('cell');
-        
-        // Simulate mouse enter to attempt highlighting
-        fireEvent.mouseEnter(cells[0]);
-        expect(cells[0]).not.toHaveClass('highlighted');
-      
-        // Simulate mouse leave to see if highlights are cleared or not
-        fireEvent.mouseLeave(cells[0]);
-        // Confirm that the highlighted state hasn't changed as isSolving is true
-        expect(cells[0]).not.toHaveClass('highlighted');
-      });
+      const props = {
+        ...defaultProps,
+        isSolving: true // Set isSolving to true to test this condition
+      };
+
+      const { getAllByTestId } = render(<PolyBoard {...props} />);
+      const cells = getAllByTestId('cell');
+
+      // Simulate mouse enter to attempt highlighting
+      fireEvent.mouseEnter(cells[0]);
+      expect(cells[0]).not.toHaveClass('highlighted');
+
+      // Simulate mouse leave to see if highlights are cleared or not
+      fireEvent.mouseLeave(cells[0]);
+      // Confirm that the highlighted state hasn't changed as isSolving is true
+      expect(cells[0]).not.toHaveClass('highlighted');
+    });
 
     it('should not highlight out-of-bounds positions', () => {
       const bigShape = {
@@ -137,7 +140,7 @@ describe('PolyBoard Component test', () => {
 
       const { getAllByTestId } = render(<PolyBoard {...bigShape} />);
       const cells = getAllByTestId('cell');
-      
+
       fireEvent.mouseEnter(cells[90]); // Bottom edge
       expect(cells[90]).not.toHaveClass('highlighted');
     });
@@ -147,10 +150,10 @@ describe('PolyBoard Component test', () => {
     it('should place shape in valid empty position', () => {
       const { getAllByTestId } = render(<PolyBoard {...defaultProps} />);
       const cells = getAllByTestId('cell');
-      
+
       fireEvent.mouseEnter(cells[0]);
       fireEvent.click(cells[0]);
-      
+
       expect(defaultProps.setBoard).toHaveBeenCalled();
       const newBoardCall = defaultProps.setBoard.mock.calls[0][0];
       expect(newBoardCall[0][0]).toBe('shape1');
@@ -167,17 +170,17 @@ describe('PolyBoard Component test', () => {
 
       const { getAllByTestId } = render(<PolyBoard {...outOfBoundsShape} />);
       const cells = getAllByTestId('cell');
-      
+
       fireEvent.mouseEnter(cells[0]);
       fireEvent.click(cells[0]);
-      
+
       expect(outOfBoundsShape.setBoard).not.toHaveBeenCalled();
     });
 
     it('should not place shape in occupied position', () => {
       const occupiedBoard = mockBoard.map(row => [...row]);
       occupiedBoard[0][0] = 'occupied';
-      
+
       const props = {
         ...defaultProps,
         board: occupiedBoard
@@ -185,10 +188,10 @@ describe('PolyBoard Component test', () => {
 
       const { getAllByTestId } = render(<PolyBoard {...props} />);
       const cells = getAllByTestId('cell');
-      
+
       fireEvent.mouseEnter(cells[0]);
       fireEvent.click(cells[0]);
-      
+
       expect(props.setBoard).not.toHaveBeenCalled();
     });
   });
@@ -212,10 +215,10 @@ describe('PolyBoard Component test', () => {
 
       const { getAllByTestId } = render(<PolyBoard {...props} />);
       const cells = getAllByTestId('cell');
-      
+
       fireEvent.mouseEnter(cells[0]);
       fireEvent.click(cells[0]);
-      
+
       expect(props.setShapes).toHaveBeenCalled();
       expect(props.setSelectedShape).toHaveBeenCalledWith(
         expect.objectContaining({ symbol: 'second' })
@@ -224,7 +227,7 @@ describe('PolyBoard Component test', () => {
 
     it('should set selected shape to null when placing a last shape', () => {
       const lastShape = [{ symbol: 'last', coords: [[0, 0]] }];
-      
+
       const props = {
         ...defaultProps,
         shapes: lastShape,
@@ -237,10 +240,10 @@ describe('PolyBoard Component test', () => {
 
       const { getAllByTestId } = render(<PolyBoard {...props} />);
       const cells = getAllByTestId('cell');
-      
+
       fireEvent.mouseEnter(cells[0]);
       fireEvent.click(cells[0]);
-      
+
       const setShapesCallback = props.setShapes.mock.calls[0][0];
       const emptyShapes = setShapesCallback(lastShape);
       expect(emptyShapes).toHaveLength(0);

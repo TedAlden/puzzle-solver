@@ -1,8 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import PieceSelector from './PieceSelector';
 
-describe('PieceSelector test here', () => {
-
+describe('PieceSelector test', () => {
   const samples = [
     {
       symbol: "A",
@@ -15,14 +14,13 @@ describe('PieceSelector test here', () => {
       colour: "#00ff00"
     }
   ];
-
   const sampleSelectedShape = jest.fn();
 
   beforeEach(() => {
     sampleSelectedShape.mockClear();
   });
 
-  it('render button check', () => {
+  it('Renders button', () => {
     render(
       <PieceSelector
         shapes={samples}
@@ -30,14 +28,13 @@ describe('PieceSelector test here', () => {
         setSelectedShape={sampleSelectedShape}
       />
     );
-
     expect(screen.getByText('Flip')).toBeInTheDocument();
     expect(screen.getByText('Prev')).toBeInTheDocument();
     expect(screen.getByText('Next')).toBeInTheDocument();
     expect(screen.getByText('Rotate')).toBeInTheDocument();
   });
 
-  it('next button check', () => {
+  it('Changes to next shape piece when pressing the next button', () => {
     render(
       <PieceSelector
         shapes={samples}
@@ -45,12 +42,11 @@ describe('PieceSelector test here', () => {
         setSelectedShape={sampleSelectedShape}
       />
     );
-
     fireEvent.click(screen.getByText('Next'));
     expect(sampleSelectedShape).toHaveBeenCalledWith(samples[1]);
   });
 
-  it('Prev button check', () => {
+  it('Changes to previous shape piece when pressing the prev button', () => {
     render(
       <PieceSelector
         shapes={samples}
@@ -58,19 +54,16 @@ describe('PieceSelector test here', () => {
         setSelectedShape={sampleSelectedShape}
       />
     );
-
     fireEvent.click(screen.getByText('Prev'));
     expect(sampleSelectedShape).toHaveBeenCalledWith(samples[0]);
   });
 
-  
-  it('rotate button check', () => {
+  it('Rotates the shape piece 90 deg when pressing the rotate button', () => {
     const initialShape = {
       symbol: "A",
       coords: [[0, 0], [0, 1], [1, 1], [2, 1], [2, 0]],
       colour: "#ff0000"
     };
-
     render(
       <PieceSelector
         shapes={samples}
@@ -78,25 +71,21 @@ describe('PieceSelector test here', () => {
         setSelectedShape={sampleSelectedShape}
       />
     );
-
     fireEvent.click(screen.getByText('Rotate'));
-
     const expectedRotatedShape = {
       symbol: "A",
       coords: [[0, 2], [1, 2], [1, 1], [1, 0], [0, 0]],
       colour: "#ff0000"
     };
-    
     expect(sampleSelectedShape).toHaveBeenCalledWith(expectedRotatedShape);
   });
 
-  it('flip button check', () => {
+  it('Flips the shape horizontally when pressing the flip button', () => {
     const initialShape = {
       symbol: "A",
       coords: [[0, 0], [0, 1], [1, 1], [2, 1], [2, 0]],
       colour: "#ff0000"
     };
-
     render(
       <PieceSelector
         shapes={samples}
@@ -104,15 +93,12 @@ describe('PieceSelector test here', () => {
         setSelectedShape={sampleSelectedShape}
       />
     );
-
     fireEvent.click(screen.getByText('Flip'));
-    
     const expectedFlippedShape = {
       symbol: "A",
       coords: [[2, 0], [2, 1], [1, 1], [0, 1], [0, 0]],
       colour: "#ff0000"
     };
-    
     expect(sampleSelectedShape).toHaveBeenCalledWith(expectedFlippedShape);
   });
 });

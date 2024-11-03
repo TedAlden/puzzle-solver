@@ -36,25 +36,19 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
 }
-
 /* Add icons to buttons */
 .pieceSelector button::before {
   font-size: 1rem;
 }
-
 .pieceSelector button:first-child::before {
   content: "↔️";
 }
-
 .pieceSelector button:nth-child(2)::before {
   content: "⬅️";
 }
-
 .pieceSelector button:nth-child(4)::before {
   content: "➡️";
 }
-
 .pieceSelector button:last-child::before {
   content: "🔄";
 }
-

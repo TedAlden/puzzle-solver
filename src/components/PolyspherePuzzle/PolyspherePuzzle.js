@@ -2,15 +2,21 @@ import './PolyspherePuzzle.css';
 import { useState, useEffect } from 'react';
 import PolyBoard from '../PolyBoard/PolyBoard';
 import PieceSelector from '../PieceSelector/PieceSelector';
+import ProgressBar from '../ProgressBar/ProgressBar';
 import pieces from '../../lib/pieces';
 import createPolysphereWorker from '../../workers/createPolysphereWorker';
-import normalise from '../PieceSelector/PieceSelector';
 
 const createBoard = (width, height) => (
   Array(height).fill().map(
     () => Array(width).fill("")
   )
 );
+
+const normalise = (coords) => {
+  const minRow = Math.min(...coords.map(([r, _]) => r));
+  const minCol = Math.min(...coords.map(([_, c]) => c));
+  return coords.map(([r, c]) => [r - minRow, c - minCol]);
+};
 
 function PolyspherePuzzle() {
   const [board, setBoard] = useState(createBoard(11, 5));
@@ -26,10 +32,10 @@ function PolyspherePuzzle() {
 
   const [moveStack, setMoveStack] = useState([]);
 
+  // Start a background worker (much like a thread) with the polysphere
+  // solver, since it takes a long time to run and will otherwise freeze
+  // the React app.
   useEffect(() => {
-    // Start a background worker (much like a thread) with the
-    // polysphere solver, since it takes a long time to run and will
-    // otherwise freeze the React app.
     try {
       const newWorker = createPolysphereWorker();
       setWorker(newWorker);
@@ -42,11 +48,82 @@ function PolyspherePuzzle() {
     }
   }, []);
 
+  // Update board when solution changes
   useEffect(() => {
     if (solutions[solutionIndex]) {
       setBoard(solutions[solutionIndex]);
     }
   }, [solutions, solutionIndex]);
+
+  // Register keyboard input
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (['r', 'f', 's', 'u', 'ArrowLeft', 'ArrowRight', 'Escape'].includes(e.key)) {
+        e.preventDefault();
+      }
+      if (isSolving) return;
+      switch (e.key.toLowerCase()) {
+        // Rotate piece
+        case 'r':
+          if (selectedShape) {
+            const newShape = { ...selectedShape };
+            newShape.coords = normalise(newShape.coords.map(([x, y]) => [y, -x]));
+            console.log(selectedShape, newShape);
+            setSelectedShape(newShape);
+          }
+          break;
+        // Solve puzzle
+        case 's':
+          handleSolve();
+          break;
+        // undo
+        case 'u':
+          handleUndo();
+          break;
+        // Flip piece
+        case 'f':
+          if (selectedShape) {
+            const newShape = { ...selectedShape };
+            newShape.coords = normalise(newShape.coords.map(([x, y]) => [-x, y]));
+            setSelectedShape(newShape);
+          }
+          break;
+        // Previous piece
+        case 'arrowleft':
+          if (shapes.length > 0) {
+            const currentIndex = shapes.findIndex(
+              shape => shape.symbol === selectedShape.symbol
+            );
+            const newIndex = (currentIndex - 1 + shapes.length) % shapes.length;
+            setSelectedShape(shapes[newIndex]);
+          }
+          break;
+        // Next piece
+        case 'arrowright':
+          if (shapes.length > 0) {
+            const currentIndex = shapes.findIndex(
+              shape => shape.symbol === selectedShape.symbol
+            );
+            const newIndex = (currentIndex + 1) % shapes.length;
+            setSelectedShape(shapes[newIndex]);
+          }
+          break;
+        // Clear board
+        case 'escape':
+          handleClear();
+          break;
+        // Default
+        default:
+          break;
+      }
+    };
+    // Attach event listener
+    window.addEventListener('keydown', handleKeyDown);
+    // Cleanup and remove event listener
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedShape, shapes, isSolving, moveStack]);
 
   const handleSolve = () => {
     if (!worker) return;
@@ -99,130 +176,21 @@ function PolyspherePuzzle() {
   };
 
   const handleUndo = () => {
-      if (moveStack.length > 0) {
-    setMoveStack(prev => {
-      const newStack = [...prev];
-      const lastMove = newStack.pop();
-      
-      // Restore the board to the previous state
-      setBoard(lastMove.board);
-      
-      // Restore the piece to availabe pieces
-      if (lastMove.piece) {
-        setShapes(prev => [...prev, lastMove.piece]);
-        setSelectedShape(lastMove.piece);
-      }
-      
-      return newStack;
-    });
-  }
-};
-
-
-  const ProgressTracker = ({ totalPieces, placedPieces }) => {
-    const progress = (placedPieces / totalPieces) * 100;
-    
-    return (
-      <div className="progress-tracker">
-        <div className="progress-stats">
-          <div className="progress-text">
-            <span className="progress-label">Progress:</span>
-            <span className="progress-count">
-              {placedPieces} of {totalPieces} pieces placed
-            </span>
-          </div>
-          <span className="progress-percentage">{Math.round(progress)}%</span>
-        </div>
-        <div className="progress-bar">
-          <div 
-            className="progress-fill" 
-            style={{ width: `${progress}%` }}
-            aria-valuenow={progress}
-            aria-valuemin="0"
-            aria-valuemax="100"
-          />
-        </div>
-      </div>
-    );
-  };
-  
-
-//Keyboard input
-useEffect(() => {
-  const handleKeyDown = (e) => {
-    if (['r', 'f', 's', 'u', 'ArrowLeft', 'ArrowRight', 'Escape'].includes(e.key)) {
-      e.preventDefault();
-    }
-
-    if (isSolving) return;
-
-    switch (e.key.toLowerCase()) {
-      case 'r':
-        // Rotate piece
-        if (selectedShape) {
-          const newShape = {...selectedShape};
-          newShape.coords = normalise(newShape.coords.map(([x, y]) => [y, -x]));
-          setSelectedShape(newShape);
+    if (moveStack.length > 0) {
+      setMoveStack(prev => {
+        const newStack = [...prev];
+        const lastMove = newStack.pop();
+        // Restore the board to the previous state
+        setBoard(lastMove.board);
+        // Restore the piece to availabe pieces
+        if (lastMove.piece) {
+          setShapes(prev => [...prev, lastMove.piece]);
+          setSelectedShape(lastMove.piece);
         }
-        break;
-
-        case's':
-        // Solve puzzle
-        handleSolve();
-        break;
-
-        case 'u':
-          // undo
-          handleUndo();
-          break;
-      
-      case 'f':
-        // Flip piece
-        if (selectedShape) {
-          const newShape = {...selectedShape};
-          newShape.coords = normalise(newShape.coords.map(([x, y]) => [-x, y]));
-          setSelectedShape(newShape);
-        }
-        break;
-      
-      case 'arrowleft':
-        // Previous piece
-        if (shapes.length > 0) {
-          const currentIndex = shapes.findIndex(
-            shape => shape.symbol === selectedShape.symbol
-          );
-          const newIndex = (currentIndex - 1 + shapes.length) % shapes.length;
-          setSelectedShape(shapes[newIndex]);
-        }
-        break;
-
-      case 'arrowright':
-        // Next piece
-        if (shapes.length > 0) {
-          const currentIndex = shapes.findIndex(
-            shape => shape.symbol === selectedShape.symbol
-          );
-          const newIndex = (currentIndex + 1) % shapes.length;
-          setSelectedShape(shapes[newIndex]);
-        }
-        break;
-
-      case 'escape':
-        handleClear();
-        break;
-
-      default:
-        break;
+        return newStack;
+      });
     }
   };
-
-  window.addEventListener('keydown', handleKeyDown);
-  return () => {
-    window.removeEventListener('keydown', handleKeyDown);
-  };
-}, [selectedShape, shapes, isSolving, moveStack]);
-
-
 
   return (
     <div className="puzzleTwo">
@@ -235,9 +203,9 @@ useEffect(() => {
         and you can use the <b> Solve </b> button to find the best way
         to complete the board.
       </p>
-      <ProgressTracker
-      totalPieces ={12}
-      placedPieces={12 - shapes.length}
+      <ProgressBar
+        current={12 - shapes.length}
+        total={12}
       />
       <PieceSelector
         shapes={shapes}
@@ -254,7 +222,7 @@ useEffect(() => {
         isSolving={isSolving}
         addMove={addMove}
       />
-     <div className="controlsContainer">
+      <div className="controlsContainer">
         <button onClick={handleSolve} disabled={isSolving}>
           {isSolving ? "Solving..." : "Solve Puzzle"}
         </button>
@@ -263,8 +231,7 @@ useEffect(() => {
         </button>
         <button onClick={handleUndo} disabled={moveStack.length === 0 || isSolving}>
           Undo
-          </button>
-
+        </button>
       </div>
       <div>
         {isSolving &&
@@ -293,24 +260,21 @@ useEffect(() => {
             </button>
           </div>
         }
-
-  <div className="keyboard-controls">
-    <p>Keyboard Controls</p>
-    <ul>
-      <li>R : Rotate piece</li>
-      <li>F : Flip piece</li>
-      <li>← : Previous piece</li>
-      <li>→ : Next piece</li>
-      <li>U : Undo</li>
-      <li>S : Solve puzzle</li>
-      <li>ESC : Clear board</li>
-    </ul>
-  </div>
+        <div className="keyboardControls">
+          <p>Keyboard Controls</p>
+          <ul>
+            <li>R : Rotate piece</li>
+            <li>F : Flip piece</li>
+            <li>← : Previous piece</li>
+            <li>→ : Next piece</li>
+            <li>U : Undo</li>
+            <li>S : Solve puzzle</li>
+            <li>Esc : Clear board</li>
+          </ul>
+        </div>
       </div>
     </div>
-
   );
-  
 }
 
 export default PolyspherePuzzle;

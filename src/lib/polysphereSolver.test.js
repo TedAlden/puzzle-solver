@@ -29,6 +29,19 @@ describe('PolysphereSolver', () => {
       solvePolyspheres(board, [], onSolution);
       expect(solutions).toHaveLength(1);
     });
+
+    it('Check for full board', () => {
+      // Create fully occupied 5x5 board...
+      const board = Array(5).fill().map(() => Array(5).fill("X"));
+      // ... But with pieces still left over
+      const unusedPieces = testPieces;
+      const solutions = [];
+      const onSolution = (solution) => solutions.push(solution);
+      solvePolyspheres(board, unusedPieces, onSolution);
+      // There should be no solutions as the solver will have pieces
+      // left but nowhere to put them as the board is full.
+      expect(solutions).toHaveLength(0);
+    });
   });
 
   describe('to check the Piece placement', () => {

@@ -30,6 +30,7 @@ describe('PolyBoard Component test', () => {
     setSelectedShape: jest.fn(),
     board: mockBoard,
     setBoard: jest.fn(),
+    addMove: jest.fn(),
     isSolving: false
   };
 

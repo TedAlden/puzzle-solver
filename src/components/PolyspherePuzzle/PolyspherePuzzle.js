@@ -2,6 +2,7 @@ import './PolyspherePuzzle.css';
 import { useState, useEffect } from 'react';
 import PolyBoard from '../PolyBoard/PolyBoard';
 import PieceSelector from '../PieceSelector/PieceSelector';
+import ProgressBar from '../ProgressBar/ProgressBar';
 import pieces from '../../lib/pieces';
 import createPolysphereWorker from '../../workers/createPolysphereWorker';
 
@@ -10,6 +11,12 @@ const createBoard = (width, height) => (
     () => Array(width).fill("")
   )
 );
+
+const normalise = (coords) => {
+  const minRow = Math.min(...coords.map(([r, _]) => r));
+  const minCol = Math.min(...coords.map(([_, c]) => c));
+  return coords.map(([r, c]) => [r - minRow, c - minCol]);
+};
 
 function PolyspherePuzzle() {
   const [board, setBoard] = useState(createBoard(11, 5));
@@ -23,10 +30,12 @@ function PolyspherePuzzle() {
   const [solutions, setSolutions] = useState([]);
   const [solutionIndex, setSolutionIndex] = useState(0);
 
+  const [moveStack, setMoveStack] = useState([]);
+
+  // Start a background worker (much like a thread) with the polysphere
+  // solver, since it takes a long time to run and will otherwise freeze
+  // the React app.
   useEffect(() => {
-    // Start a background worker (much like a thread) with the
-    // polysphere solver, since it takes a long time to run and will
-    // otherwise freeze the React app.
     try {
       const newWorker = createPolysphereWorker();
       setWorker(newWorker);
@@ -39,11 +48,82 @@ function PolyspherePuzzle() {
     }
   }, []);
 
+  // Update board when solution changes
   useEffect(() => {
     if (solutions[solutionIndex]) {
       setBoard(solutions[solutionIndex]);
     }
   }, [solutions, solutionIndex]);
+
+  // Register keyboard input
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (['r', 'f', 's', 'u', 'ArrowLeft', 'ArrowRight', 'Escape'].includes(e.key)) {
+        e.preventDefault();
+      }
+      if (isSolving) return;
+      switch (e.key.toLowerCase()) {
+        // Rotate piece
+        case 'r':
+          if (selectedShape) {
+            const newShape = { ...selectedShape };
+            newShape.coords = normalise(newShape.coords.map(([x, y]) => [y, -x]));
+            console.log(selectedShape, newShape);
+            setSelectedShape(newShape);
+          }
+          break;
+        // Solve puzzle
+        case 's':
+          handleSolve();
+          break;
+        // undo
+        case 'u':
+          handleUndo();
+          break;
+        // Flip piece
+        case 'f':
+          if (selectedShape) {
+            const newShape = { ...selectedShape };
+            newShape.coords = normalise(newShape.coords.map(([x, y]) => [-x, y]));
+            setSelectedShape(newShape);
+          }
+          break;
+        // Previous piece
+        case 'arrowleft':
+          if (shapes.length > 0) {
+            const currentIndex = shapes.findIndex(
+              shape => shape.symbol === selectedShape.symbol
+            );
+            const newIndex = (currentIndex - 1 + shapes.length) % shapes.length;
+            setSelectedShape(shapes[newIndex]);
+          }
+          break;
+        // Next piece
+        case 'arrowright':
+          if (shapes.length > 0) {
+            const currentIndex = shapes.findIndex(
+              shape => shape.symbol === selectedShape.symbol
+            );
+            const newIndex = (currentIndex + 1) % shapes.length;
+            setSelectedShape(shapes[newIndex]);
+          }
+          break;
+        // Clear board
+        case 'escape':
+          handleClear();
+          break;
+        // Default
+        default:
+          break;
+      }
+    };
+    // Attach event listener
+    window.addEventListener('keydown', handleKeyDown);
+    // Cleanup and remove event listener
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedShape, shapes, isSolving, moveStack]);
 
   const handleSolve = () => {
     if (!worker) return;
@@ -74,6 +154,7 @@ function PolyspherePuzzle() {
     setSolutionIndex(0);
     setIsSolved(false);
     setIsSolving(false);
+    setMoveStack([]);
   };
 
   const handleNextSolution = () => {
@@ -90,6 +171,27 @@ function PolyspherePuzzle() {
     }
   };
 
+  const addMove = (board, piece) => {
+    setMoveStack(prev => [...prev, { board, piece }]);
+  };
+
+  const handleUndo = () => {
+    if (moveStack.length > 0) {
+      setMoveStack(prev => {
+        const newStack = [...prev];
+        const lastMove = newStack.pop();
+        // Restore the board to the previous state
+        setBoard(lastMove.board);
+        // Restore the piece to availabe pieces
+        if (lastMove.piece) {
+          setShapes(prev => [...prev, lastMove.piece]);
+          setSelectedShape(lastMove.piece);
+        }
+        return newStack;
+      });
+    }
+  };
+
   return (
     <div className="puzzleTwo">
       <h2>The Polysphere Puzzle</h2>
@@ -101,6 +203,10 @@ function PolyspherePuzzle() {
         and you can use the <b> Solve </b> button to find the best way
         to complete the board.
       </p>
+      <ProgressBar
+        current={12 - shapes.length}
+        total={12}
+      />
       <PieceSelector
         shapes={shapes}
         selectedShape={selectedShape}
@@ -114,6 +220,7 @@ function PolyspherePuzzle() {
         shapes={shapes}
         setShapes={setShapes}
         isSolving={isSolving}
+        addMove={addMove}
       />
       <div className="controlsContainer">
         <button onClick={handleSolve} disabled={isSolving}>
@@ -121,6 +228,9 @@ function PolyspherePuzzle() {
         </button>
         <button onClick={handleClear} disabled={isSolving}>
           Clear Board
+        </button>
+        <button onClick={handleUndo} disabled={moveStack.length === 0 || isSolving}>
+          Undo
         </button>
       </div>
       <div>
@@ -150,6 +260,18 @@ function PolyspherePuzzle() {
             </button>
           </div>
         }
+        <div className="keyboardControls">
+          <p>Keyboard Controls</p>
+          <ul>
+            <li>R : Rotate piece</li>
+            <li>F : Flip piece</li>
+            <li>← : Previous piece</li>
+            <li>→ : Next piece</li>
+            <li>U : Undo</li>
+            <li>S : Solve puzzle</li>
+            <li>Esc : Clear board</li>
+          </ul>
+        </div>
       </div>
     </div>
   );

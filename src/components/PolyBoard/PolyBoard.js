@@ -26,7 +26,8 @@ function PolyBoard({
   setSelectedShape,
   shapes,
   setShapes,
-  isSolving
+  isSolving,
+  addMove
 }) {
   const [highlightedCells, setHighlightedCells] = useState([]);
 
@@ -71,6 +72,7 @@ function PolyBoard({
     // Then place
     if (isEmpty && isInBounds) {
       // Place this piece on the board
+      addMove([...board.map(row => [...row])], selectedShape);
       setBoard(board.map((row, rowIndex) =>
         row.map((cell, colIndex) => 
           highlightedCells.some(([x, y]) => x === colIndex && y === rowIndex) 

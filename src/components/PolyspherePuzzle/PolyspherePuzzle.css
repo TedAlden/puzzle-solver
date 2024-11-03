@@ -1,11 +1,11 @@
 .puzzleTwo {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: .5rem;
   color: white;
 }
 .puzzleTwo h2 {
-  font-size: 2.5rem;
+  font-size: 3rem;
   text-align: center;
   margin-bottom: 2rem;
   background: linear-gradient(to right, #ec4899, #8b5cf6);
@@ -18,7 +18,7 @@
   text-align: center;
   line-height: 1.8;
   margin-bottom: 2rem;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
@@ -36,7 +36,7 @@
 .controlsContainer button {
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -46,7 +46,8 @@
 }
 .controlsContainer button:hover:not(:disabled) {
   background: #5b21b6;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
 }
 .controlsContainer button:disabled {
   opacity: 0.6;
@@ -62,10 +63,10 @@
 .solutionNavigation button {
   padding: 0.5rem 1rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   background: #4c1d95;
   color: white;
-  font-size: 0.9rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -75,5 +76,96 @@
 }
 .solutionNavigation span {
   color: #a78bfa;
-  font-weight: 500;
+  font-weight: 600;
 }
+
+/* Controls */
+.keyboard-controls {
+  background: rgba(55, 65, 81, 0.5);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem auto;
+  max-width: 300px;
+  color: white;
+}
+.keyboard-controls p {
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+  color: #b952c9;;
+  
+}
+
+.keyboard-controls ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.keyboard-controls li {
+  margin: 0.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.keyboard-controls li::before {
+  content: '⌨️';
+  font-size: 1rem;
+}
+
+/* Progress Tracker */
+.progress-tracker {
+  background: rgba(55, 65, 81, 0.5);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.5rem auto;
+  max-width: 600px;
+}
+
+.progress-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.progress-text {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.progress-label {
+  color: #8b5cf6;
+  font-weight: 600;
+}
+
+.progress-count {
+  color: #e5e7eb;
+}
+
+.progress-percentage {
+  background: rgba(139, 92, 246, 0.2);
+  color: #8b5cf6;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.progress-bar {
+  height: 6px;
+  background: rgba(55, 65, 81, 0.5);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #ec4899, #8b5cf6);
+  transition: width 0.3s ease;
+  border-radius: 8px;
+}
+
+
+

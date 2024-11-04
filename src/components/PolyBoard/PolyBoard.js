@@ -1,25 +1,6 @@
 import './PolyBoard.css';
 import { useState } from 'react';
-
-function Cell({
-  onMouseEnter,
-  onMouseLeave,
-  onMouseClick,
-  highlighted,
-  value
-}) {
-  return (
-    <div
-      role="cell"
-      data-testid="cell"
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      onClick={onMouseClick}
-      className={`polyboard-cell ${highlighted > 0 ? 'highlighted' : ''} ${value}`}
-    >
-    </div>
-  );
-}
+import PolyCell from '../PolyCell/PolyCell';
 
 function PolyBoard({
   board,
@@ -100,10 +81,10 @@ function PolyBoard({
     <div className="polyboard-grid">
       {board.map((row, rowIndex) =>
         row.map((cell, colIndex) => (
-          <Cell
+          <PolyCell
             key={`${rowIndex}-${colIndex}`}
             highlighted={highlightedCells.some(([x, y]) => x === colIndex && y === rowIndex)}
-            value={board[rowIndex][colIndex]}
+            value={cell}
             onMouseEnter={() => handleMouseEnterCell(rowIndex, colIndex)}
             onMouseLeave={() => handleMouseLeaveCell(rowIndex, colIndex)}
             onMouseClick={() => handleMouseClickCell(rowIndex, colIndex)}

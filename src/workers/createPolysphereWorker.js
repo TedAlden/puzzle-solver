@@ -16,6 +16,14 @@ import solvePolyspheres from "../lib/polysphereSolver";
 //
 // It's not pretty but it finally works...
 
+/**
+ * Creates a polysphere solver web-worker. To initialise the worker, a message
+ * must be sent containing the polysphere board to be solved. The worker will
+ * post a message containing each solution as it finds it, until it has
+ * exhausted all possibilities. This could potentially take minutes to finish.
+ * 
+ * @returns {Worker} The Polysphere solver worker.
+ */
 export default function createPolysphereWorker() {
   const workerCode = `
     self.addEventListener('message', e => {

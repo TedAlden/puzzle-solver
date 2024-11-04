@@ -2,6 +2,26 @@ import './PolyBoard.css';
 import { useState } from 'react';
 import PolyCell from '../PolyCell/PolyCell';
 
+/**
+ * A component that displays a grid board for placing polysphere shapes. Allows
+ * users to place shapes on the board by clicking on a cell. Potential
+ * placements are highlighted on the board as the user hovers on different
+ * cells.
+ *
+ * @param {Object} props Component properties.
+ * @param {Array<Array<string>>} props.board A 2D array representing the board.
+ * @param {function} props.setBoard Callback to update the board state.
+ * @param {Object} props.selectedShape The currently selected shape object.
+ * @param {function} props.setSelectedShape Callback to update the selected
+ *  shape.
+ * @param {Array<Object>} props.shapes Array of available shape objects.
+ * @param {function} props.setShapes Callback to update the shapes array.
+ * @param {boolean} props.isSolving Indicates if solver is currently working.
+ *  If true, disables interaction with the board.
+ * @param {function} props.addMove Callback to add the current move to the undo
+ *  stack.
+ * @returns {JSX.Element}
+ */
 function PolyBoard({
   board,
   setBoard,
@@ -38,13 +58,22 @@ function PolyBoard({
 
 
 
+  /**
+   * Handles the mouse leaving a cell. The array of highlighted cells is
+   * cleared.
+   */
   const handleMouseLeaveCell = (row, col) => {
     if (isSolving) return;
     // Un-highlight all cells when no longer hovering over a cell
     setHighlightedCells([]);
   }
 
+  /**
+   * Handles the mouse clicking a cell. Will attempt to place the current
+   * shape.
+   */
   const handleMouseClickCell = (row, col) => {
+    // Don't place cell if solving in progress
     if (isSolving) return;
     // Check that there is space for placing this shape
     const isEmpty = highlightedCells.every(

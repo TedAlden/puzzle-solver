@@ -1,7 +1,8 @@
 /**
  * Checks if all queens on the board are safe.
- * @param {number[][]} board The chess board
- * @returns {boolean} Is the board valid
+ * 
+ * @param {number[][]} board The chess board.
+ * @returns {boolean} Is the board valid.
  */
 function isValid(board) {
   for (let i = 0; i < board.length; i++) {
@@ -23,10 +24,11 @@ function isValid(board) {
 /**
  * Checks if a given queen is safe from attack from all other queens on the
  * board.
- * @param {number[][]} board The chess board
- * @param {number} row The row of the queen to be checked
- * @param {number} col The column of the queen to be checked
- * @returns {boolean} Is the queen safe from attack
+ * 
+ * @param {number[][]} board The chess board.
+ * @param {number} row The row of the queen to be checked.
+ * @param {number} col The column of the queen to be checked.
+ * @returns {boolean} Is the queen safe from attack.
  */
 function isSafe(board, row, col) {
   let n = board.length;
@@ -76,8 +78,9 @@ function isSafe(board, row, col) {
 
 /**
  * Attempt to solve the N-Queens problem on a given chess board.
- * @param {number[][]} board The chess board to solve
- * @returns {boolean} Is the board N-Queens solvable
+ * 
+ * @param {number[][]} board The chess board to solve.
+ * @returns {boolean} Is the board N-Queens solvable.
  */
 function solveNQueens(board) {
   // Solve board recursively column by column

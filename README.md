@@ -32,6 +32,10 @@
   <img src="screenshot.png" width="80%">
 </div>
 <br>
+<div align="center">
+  <img src="screenshot_1.png" width="80%">
+</div>
+<br>
 
 ### Built with
 

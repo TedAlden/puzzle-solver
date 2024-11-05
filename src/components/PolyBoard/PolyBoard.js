@@ -34,10 +34,15 @@ function PolyBoard({
 }) {
   const [highlightedCells, setHighlightedCells] = useState([]);
 
+  /**
+   * Handles mouse entering a cell. Highlights potential placement of current
+   * selected shape.
+   *
+   * @param {number} row The row index of the cell.
+   * @param {number} col The column index of the cell.
+   */
   const handleMouseEnterCell = (row, col) => {
-    if (isSolving || !selectedShape)
-      return;
-
+    if (isSolving || !selectedShape) return;
     // Highlight the current shape where the mouse is on the board
     const highlightedCells = selectedShape.coords.map(
       ([x, y]) => [x + col, y + row]
@@ -55,6 +60,9 @@ function PolyBoard({
   /**
    * Handles the mouse leaving a cell. The array of highlighted cells is
    * cleared.
+   * 
+   * @param {number} row The row index of the cell.
+   * @param {number} col The column index of the cell.
    */
   const handleMouseLeaveCell = (row, col) => {
     if (isSolving) return;
@@ -65,10 +73,11 @@ function PolyBoard({
   /**
    * Handles the mouse clicking a cell. Will attempt to place the current
    * shape.
+   * 
+   * @param {number} row The row index of the cell.
+   * @param {number} col The column index of the cell.
    */
   const handleMouseClickCell = (row, col) => {
-    // Don't place cell if solving in progress
-    if (isSolving) return;
     // Check that there is space for placing this shape
     const isEmpty = highlightedCells.every(
       ([x, y]) => board[y][x] === ""
@@ -77,27 +86,29 @@ function PolyBoard({
     const isInBounds = highlightedCells.every(
       ([x, y]) => x < board[0].length && y < board.length
     ) && highlightedCells.length > 0;
+    // Don't place cell if there is no space, or the space is not within the 
+    // screen bounds, or if the solver is already working
+    if (!isEmpty || !isInBounds || isSolving) return;
+
     // Then place the piece...
-    if (isEmpty && isInBounds) {
-      // Add this move to the 'undo' stack
-      addMove([...board.map(row => [...row])], selectedShape);
-      // Place this piece on the board
-      setBoard(board.map((row, rowIndex) =>
-        row.map((cell, colIndex) =>
-          highlightedCells.some(([x, y]) => x === colIndex && y === rowIndex)
-            ? selectedShape.symbol
-            : cell
-        )
-      ));
-      // Remove this piece from our 'inventory' so we can't place it again
-      setShapes(prevShapes => {
-        const newShapes = prevShapes.filter(
-          shape => shape.symbol !== selectedShape.symbol
-        );
-        setSelectedShape(newShapes[0] || null);
-        return newShapes;
-      });
-    }
+    // 1. Add this move to the 'undo' stack
+    addMove([...board.map(row => [...row])], selectedShape);
+    // 2. Place this piece on the board
+    setBoard(board.map((row, rowIndex) =>
+      row.map((cell, colIndex) =>
+        highlightedCells.some(([x, y]) => x === colIndex && y === rowIndex)
+          ? selectedShape.symbol
+          : cell
+      )
+    ));
+    // 3. Remove this piece from our 'inventory' so we can't place it again
+    setShapes(prevShapes => {
+      const newShapes = prevShapes.filter(
+        shape => shape.symbol !== selectedShape.symbol
+      );
+      setSelectedShape(newShapes[0] || null);
+      return newShapes;
+    });
   }
 
   return (
@@ -106,7 +117,9 @@ function PolyBoard({
         row.map((cell, colIndex) => (
           <PolyCell
             key={`${rowIndex}-${colIndex}`}
-            highlighted={highlightedCells.some(([x, y]) => x === colIndex && y === rowIndex)}
+            highlighted={highlightedCells.some(
+              ([x, y]) => x === colIndex && y === rowIndex
+            )}
             value={cell}
             onMouseEnter={() => handleMouseEnterCell(rowIndex, colIndex)}
             onMouseLeave={() => handleMouseLeaveCell(rowIndex, colIndex)}

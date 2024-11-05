@@ -132,9 +132,6 @@ function PolyspherePuzzle() {
         case 'escape':
           handleClear();
           break;
-        // Default
-        default:
-          break;
       }
     };
     // Attach event listener

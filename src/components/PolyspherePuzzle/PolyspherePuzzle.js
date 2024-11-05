@@ -254,11 +254,13 @@ function PolyspherePuzzle() {
         current={12 - shapes.length}
         total={12}
       />
-      <PieceSelector
-        shapes={shapes}
-        selectedShape={selectedShape}
-        setSelectedShape={setSelectedShape}
-      />
+      {shapes.length > 0 &&
+        <PieceSelector
+          shapes={shapes}
+          selectedShape={selectedShape}
+          setSelectedShape={setSelectedShape}
+        />
+      }
       <PolyBoard
         board={board}
         setBoard={setBoard}

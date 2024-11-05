@@ -52,12 +52,6 @@ function PolyBoard({
     }
   }
 
-
-
-  // FIXME: add handler if all shapes are placed to prevent crash
-
-
-
   /**
    * Handles the mouse leaving a cell. The array of highlighted cells is
    * cleared.

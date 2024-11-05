@@ -1,5 +1,5 @@
 import './PolyBoard.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PolyCell from '../PolyCell/PolyCell';
 
 /**
@@ -33,16 +33,42 @@ function PolyBoard({
   addMove
 }) {
   const [highlightedCells, setHighlightedCells] = useState([]);
+  const [mouseHoverCell, setMouseHoverCell] = useState([]);
 
   /**
-   * Handles mouse entering a cell. Highlights potential placement of current
-   * selected shape.
+   * Handles mouse entering a cell. Stores the row and col in the components
+   * state, so that change in the row/col can update the piece highlighting.
    *
    * @param {number} row The row index of the cell.
    * @param {number} col The column index of the cell.
    */
   const handleMouseEnterCell = (row, col) => {
-    if (isSolving || !selectedShape) return;
+    setMouseHoverCell([row, col]);
+  }
+
+  /**
+   * Handles the mouse leaving a cell. The array of highlighted cells is
+   * cleared.
+   * 
+   * @param {number} row The row index of the cell.
+   * @param {number} col The column index of the cell.
+   */
+  const handleMouseLeaveCell = (row, col) => {
+    // Un-highlight all cells when no longer hovering over a cell
+    setMouseHoverCell([]);
+    setHighlightedCells([]);
+  }
+
+  /**
+   * Update the highlighted shape on the board. This happens when the mouse
+   * hovers over a new cell, or if the selected shape changes.
+   * 
+   * Since keyboard controls were added, the selected shape may change without
+   * the mouseHoverCell changing.
+   */
+  useEffect(() => {
+    const [row, col] = mouseHoverCell;
+    if (isSolving || !selectedShape || !(row && col)) return;
     // Highlight the current shape where the mouse is on the board
     const highlightedCells = selectedShape.coords.map(
       ([x, y]) => [x + col, y + row]
@@ -55,20 +81,7 @@ function PolyBoard({
     if (isInBounds) {
       setHighlightedCells(highlightedCells);
     }
-  }
-
-  /**
-   * Handles the mouse leaving a cell. The array of highlighted cells is
-   * cleared.
-   * 
-   * @param {number} row The row index of the cell.
-   * @param {number} col The column index of the cell.
-   */
-  const handleMouseLeaveCell = (row, col) => {
-    if (isSolving) return;
-    // Un-highlight all cells when no longer hovering over a cell
-    setHighlightedCells([]);
-  }
+  }, [mouseHoverCell, selectedShape])
 
   /**
    * Handles the mouse clicking a cell. Will attempt to place the current

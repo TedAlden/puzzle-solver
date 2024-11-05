@@ -21,6 +21,7 @@
     - [Run app in development mode](#run-app-in-development-mode)
     - [Build app for production](#build-app-for-production)
     - [Run Tests](#run-tests)
+- [Docker Deployment](#docker-deployment)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -83,6 +84,24 @@ $ npm run test
 
 # Check test coverage
 $ npm run test:coverage
+```
+
+## Docker Deployment
+
+For deployment with Docker, you can ignore the [Installation](#installation) and [Usage](#usage) steps.
+
+You can create a docker container running the dev server, which is just the basic node React app. Use:
+
+```bash
+# Create dev container
+$ docker compose -f docker-compose.dev.yml up -d
+```
+
+For deployment, it is recommended to use the production container, which builds the React app to a static site and then hosts it via an [nginx](https://nginx.org/) server. Use:
+
+```bash
+# Create production container
+$ docker compose -f docker-compose.prod.yml up -d
 ```
 
 ## Contributing

@@ -1,10 +1,25 @@
 import './ShapePreview.css';
 
-function ShapePreview ({selectedShape}) {
+/**
+ * Displays a preview of the currently selected shape. It generates an SVG
+ * image, with coloured Rects representing the shape's tiles.
+ *
+ * @param {Object} props Component properties.
+ * @param {Object} props.selectedShape The shape piece.
+ * @returns {JSX.Element}
+ */
+function ShapePreview({ selectedShape }) {
   const tileSize = 20; // Size of each square tile in shape preview (px)
   const previewCols = 5; // Width of preview viewport (# of tiles)
   const previewRows = 5; // Height of preview viewport (# of tiles)
 
+  /**
+   * Centers the shape's coordinates around the midpoint of the preview grid.
+   *
+   * @param {Array<Array<number>>} shape The shape's coordinates as an array of
+   *  [x, y] pairs.
+   * @returns {Array<Array<number>>} The centered coordinates.
+   */
   function centerCoords(shape) {
     // Find the minimum and maximum x and y values
     const minX = Math.min(...shape.map(([x, _]) => x * 2)) / 2;
@@ -18,9 +33,14 @@ function ShapePreview ({selectedShape}) {
     return shape.map(([x, y]) => [x - midX, y - midY]);
   }
 
+  /**
+   * Generates an array of SVG Rects representing each tile in the shape.
+   *
+   * @returns {Array<JSX.Element>}
+   */
   const generateShapeRects = () => {
     const coords = centerCoords(selectedShape.coords);
-    const tiles = [];  
+    const tiles = [];
     coords.forEach(([x, y]) => {
       tiles.push(
         <rect

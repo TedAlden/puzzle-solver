@@ -1,0 +1,20 @@
+# Use Node 20.10 LTS for this project, had issues with latest releases
+FROM node:20.10
+
+# Set working directory to /app
+WORKDIR /app
+
+# Copy package.json and package-log.json
+COPY package*.json ./
+
+# Install npm packages
+RUN npm install
+
+# Copy over rest of project files
+COPY . .
+
+# Expose port 3000 for the React server
+EXPOSE 3000
+
+# Start the React server
+CMD ["npm", "start" ]

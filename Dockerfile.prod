@@ -1,0 +1,40 @@
+# 1 -- Build stage
+
+# Use Node 20.10 LTS for this project, had issues with latest releases
+FROM node:20.10 AS build
+
+# Set working directory to /app
+WORKDIR /app
+
+# Copy package.json and package-log.json
+COPY package*.json ./
+
+# Install npm packages
+RUN npm install
+
+# Copy over rest of project files
+COPY . .
+
+# Update package.json entry: homepage is set to
+# https://tedalden.github.io/puzzle-solver by default so that the repo
+# can be pushed directly to GitHub pages. However, if deploying from a
+# Docker container, it will be hosted at a different URL, so this
+# homepage entry needs to be updated and set to "."
+RUN npm pkg set homepage=.
+
+# Build the React app into a static site to be hosted via Nginx
+RUN npm run build
+
+# 2 -- Serving stage
+
+# Host web server using Nginx (alpine Linux version)
+FROM nginx:alpine
+
+# Copy built static site from the previous state to the nginx directory
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Export port 80 for the nginx server
+EXPOSE 80
+
+# Run the nginx server
+CMD ["nginx", "-g", "daemon off;"]

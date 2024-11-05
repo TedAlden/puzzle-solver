@@ -6,18 +6,39 @@ import ProgressBar from '../ProgressBar/ProgressBar';
 import pieces from '../../lib/pieces';
 import createPolysphereWorker from '../../workers/createPolysphereWorker';
 
-export const createBoard = (width, height) => (
+/**
+ * Creates a 2D array representing a polysphere board. Each cell is initialized
+ * with an empty string.
+ *
+ * @param {number} width The number of columns in the board.
+ * @param {number} height The number of rows in the board.
+ * @returns {Array<Array<string>>} A 2D array representing the board.
+ */
+const createBoard = (width, height) => (
   Array(height).fill().map(
     () => Array(width).fill("")
   )
 );
 
-export const normalise = (coords) => {
+/**
+ * Normalizes an array of shape coordinates by shifting them so that the
+ * top-left corner is at (0, 0).
+ *
+ * @param {Array<Array<number>>} coords An array of [row, col] coordinates.
+ * @returns {Array<Array<number>>} The adjusted array of coordinates.
+ */
+const normalise = (coords) => {
   const minRow = Math.min(...coords.map(([r, _]) => r));
   const minCol = Math.min(...coords.map(([_, c]) => c));
   return coords.map(([r, c]) => [r - minRow, c - minCol]);
 };
 
+/**
+ * A component displaying the polysphere puzzle solver, including the board,
+ * shape selector, and input controls.
+ * 
+ * @returns {React.JSX.Element}
+ */
 function PolyspherePuzzle() {
   const [board, setBoard] = useState(createBoard(11, 5));
   const [shapes, setShapes] = useState(pieces);
@@ -32,24 +53,20 @@ function PolyspherePuzzle() {
 
   const [moveStack, setMoveStack] = useState([]);
 
-  // Start a background worker (much like a thread) with the polysphere
-  // solver, since it takes a long time to run and will otherwise freeze
-  // the React app.
+  // Start a background worker (much like a thread) with the polysphere solver,
+  // since it takes a long time to run and will otherwise freeze the React app.
   useEffect(() => {
     try {
       const newWorker = createPolysphereWorker();
       setWorker(newWorker);
       // Cleanup worker
       return () => {
-        if(newWorker);
         newWorker.terminate();
       };
     } catch (err) {
       console.error('Failed to create Web Worker:', err);
     }
   }, []);
-
-  
 
   // Update board when solution changes
   useEffect(() => {
@@ -129,6 +146,11 @@ function PolyspherePuzzle() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedShape, shapes, isSolving, moveStack]);
 
+  /**
+   * Handle clicking the solve button. Starts the puzzle solver using a
+   * background worker. Updates the solutions array as the worker finds new
+   * solutions.
+   */
   const handleSolve = () => {
     if (!worker) return;
     // Handler for when the worker sends a solution back here
@@ -150,6 +172,9 @@ function PolyspherePuzzle() {
     worker.postMessage({ board, pieces });
   }
 
+  /**
+   * Handle clicking the clear button. Resets the board and game state.
+   */
   const handleClear = () => {
     setBoard(createBoard(11, 5));
     setShapes(pieces);
@@ -161,6 +186,10 @@ function PolyspherePuzzle() {
     setMoveStack([]);
   };
 
+  /**
+   * Handle clicking the next solution button. Skips to the next solution in
+   * the solution set.
+   */
   const handleNextSolution = () => {
     if (solutionIndex < solutions.length - 1) {
       setSolutionIndex(prev => prev + 1);
@@ -168,6 +197,10 @@ function PolyspherePuzzle() {
     }
   };
 
+  /**
+   * Handle clicking the previous solution button. Returns to the previous
+   * solution in the solution set.
+   */
   const handlePreviousSolution = () => {
     if (solutionIndex > 0) {
       setSolutionIndex(prev => prev - 1);
@@ -175,10 +208,10 @@ function PolyspherePuzzle() {
     }
   };
 
-  const addMove = (board, piece) => {
-    setMoveStack(prev => [...prev, { board, piece }]);
-  };
-
+  /**
+   * Handle clicking the undo button. Reverts the board to the previous move
+   * and restores the piece.
+   */
   const handleUndo = () => {
     if (moveStack.length > 0) {
       setMoveStack(prev => {
@@ -196,6 +229,16 @@ function PolyspherePuzzle() {
     }
   };
 
+  /**
+   * Adds a move to the move stack, enabling undo functionality.
+   *
+   * @param {Array<Array<string>>} board The current board state.
+   * @param {Object} piece The current piece being placed.
+   */
+  const addMove = (board, piece) => {
+    setMoveStack(prev => [...prev, { board, piece }]);
+  };
+
   return (
     <div className="puzzleTwo">
       <h2>The Polysphere Puzzle</h2>
@@ -211,13 +254,13 @@ function PolyspherePuzzle() {
         current={12 - shapes.length}
         total={12}
       />
-      <div className="piece-selector" data-testid="piece-selector">
-      <PieceSelector
-        shapes={shapes}
-        selectedShape={selectedShape}
-        setSelectedShape={setSelectedShape}
-      /></div>
-      <div className="poly-board" data-testid="poly-board">
+      {shapes.length > 0 &&
+        <PieceSelector
+          shapes={shapes}
+          selectedShape={selectedShape}
+          setSelectedShape={setSelectedShape}
+        />
+      }
       <PolyBoard
         board={board}
         setBoard={setBoard}
@@ -227,7 +270,7 @@ function PolyspherePuzzle() {
         setShapes={setShapes}
         isSolving={isSolving}
         addMove={addMove}
-      /></div>
+      />
       <div className="controlsContainer">
         <button onClick={handleSolve} disabled={isSolving}>
           {isSolving ? "Solving..." : "Solve Puzzle"}
@@ -282,9 +325,5 @@ function PolyspherePuzzle() {
     </div>
   );
 }
-PolyspherePuzzle.__testing__ = {
-  createBoard,
-  normalise
-};
 
 export default PolyspherePuzzle;

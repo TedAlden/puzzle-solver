@@ -1,0 +1,10 @@
+services:
+  nginx-server:
+    container_name: puzzle-solver-prod
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - 80:80
+
+# docker compose -f docker-compose.prod.yml up -d

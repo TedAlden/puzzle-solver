@@ -1,23 +1,19 @@
 import './Board.css';
-import { useState } from 'react';
+import Cell from '../Cell/Cell';
 
-function Cell({ isEven, isQueen, onMouseClick }) {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <div
-      role="cell"
-      className={`board-cell ${isEven ? 'even' : 'odd'} ${isHovered ? 'hovered' : ''}`}
-      onClick={onMouseClick}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {isQueen && <span className="board-queen">♛</span>}
-    </div>
-  )
-}
-
+/**
+ * A grid board containing toggleable cells for placing/removing queens. Each
+ * cell can hold a queen.
+ * 
+ * @param {Object} props Component properties.
+ * @param {number[][]} props.board A 2D array representing the board state.
+ * @param {function} props.setBoard A function to update the board state.
+ * @returns {React.JSX.Element}
+ */
 function Board({ board, setBoard }) {
+  /**
+   * Toggle the placement of a queen at a given cell (row, col).
+   */
   const toggleQueen = (row, col) => {
     const newValue = board[row][col] === 1 ? 0 : 1;
     setBoard(board.map((r, i) =>

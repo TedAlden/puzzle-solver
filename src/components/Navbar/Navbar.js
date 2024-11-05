@@ -1,6 +1,12 @@
 import './Navbar.css';
 import { Link } from 'react-router-dom';
 
+/**
+ * A component for the navbar, displayed at the top of the screen, to navigate
+ * between the home page and different puzzle pages.
+ * 
+ * @returns {React.JSX.Element}
+ */
 function Navbar() {
   return (
     <div className="navbar">

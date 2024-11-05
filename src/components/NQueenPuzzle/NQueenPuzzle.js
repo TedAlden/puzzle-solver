@@ -5,8 +5,9 @@ import './NQueenPuzzle.css';
 
 /**
  * Creates an empty chess board.
- * @param {number} size The size (N) of the N x N chess board
- * @returns {number[][]} A 2-dimensional array filled with zeros
+ * 
+ * @param {number} size The size (N) of the N x N chess board.
+ * @returns {number[][]} A 2-dimensional array filled with zeros.
  */
 const createBoard = (size) => (
   Array(size).fill().map(
@@ -15,7 +16,9 @@ const createBoard = (size) => (
 );
 
 /**
- * Displays the N-Queens puzzle solver.
+ * A component displaying the N-Queens puzzle solver, including the board and
+ * all of the input controls.
+ * 
  * @returns {React.JSX.Element}
  */
 function NQueenPuzzle() {

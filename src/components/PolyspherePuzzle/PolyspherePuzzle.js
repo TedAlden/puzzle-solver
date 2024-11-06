@@ -88,7 +88,6 @@ function PolyspherePuzzle() {
           if (selectedShape) {
             const newShape = { ...selectedShape };
             newShape.coords = normalise(newShape.coords.map(([x, y]) => [y, -x]));
-            console.log(selectedShape, newShape);
             setSelectedShape(newShape);
           }
           break;

@@ -150,8 +150,25 @@ describe('PolyspherePuzzle Component', () => {
       // Verify we're back at solution 1
       expect(screen.getByText('Solution 1 of 2')).toBeInTheDocument();
     });
-  });
 
+    test('With 2 solutions, next btn goes from index 1 to 2', async () => {
+      const mockBoard1 = Array(5).fill().map(() => Array(11).fill("A"));
+      const mockBoard2 = Array(5).fill().map(() => Array(11).fill("B"));
+      render(<PolyspherePuzzle />);
+      fireEvent.click(screen.getByText('Solve Puzzle'));
+      const messageHandler = worker.addEventListener.mock.calls[0][1];
+      act(() => {
+        messageHandler({ data: { type: 'solution', data: mockBoard1 } });
+        messageHandler({ data: { type: 'solution', data: mockBoard2 } });
+        messageHandler({ data: { type: 'complete' } });
+      });
+      await waitFor(() => {
+        expect(screen.getByText('Solution 1 of 2')).toBeInTheDocument();
+      });
+      fireEvent.click(screen.getByText('Next Solution'));
+      expect(screen.getByText('Solution 2 of 2')).toBeInTheDocument();
+    });
+  });
 
   test('renders without crashing', () => {
     render(<PolyspherePuzzle />);
@@ -183,10 +200,14 @@ describe('PolyspherePuzzle Component', () => {
   //   expect(screen.queryByText('Solving ⏳')).not.toBeInTheDocument();
   // });
 
-  // Keyboard Controls Tests
-
-    describe('Keyboard Controls', () => {
-
+  describe('Keyboard Controls', () => {   
+    test('handles unrecognised keyboard input using default clause', () => {
+      render(<PolyspherePuzzle />);
+      act(() => {
+        fireEvent.keyDown(window, { key: 'n' });
+      });
+      expect(screen.getByText('The Polysphere Puzzle')).toBeInTheDocument();
+    });
 
     test('handles flip piece (F key)', () => {
       render(<PolyspherePuzzle />);
@@ -205,7 +226,9 @@ describe('PolyspherePuzzle Component', () => {
       expect(screen.getByText('The Polysphere Puzzle')).toBeInTheDocument();
     });
 
+    // Test R key
 
+    // Test S key
 
     test('handles undo (U key)', async () => {
       render(<PolyspherePuzzle />);
@@ -420,12 +443,11 @@ describe('PolyspherePuzzle Component', () => {
     });
   });
 
-
   describe('Move Stack Management', () => {
     beforeEach(() => {
       // Reset the mocks
       jest.clearAllMocks();
-      
+
       // Reset mock board and worker
       mockBoard = Array(5).fill().map(() => Array(11).fill(""));
       worker = {
@@ -436,84 +458,81 @@ describe('PolyspherePuzzle Component', () => {
       };
       createPolysphereWorker.mockReturnValue(worker);
     });
-  
+
     test('adds move to stack when piece is placed on board', () => {
       render(<PolyspherePuzzle />);
-  
+
       // Initial state - Undo should be disabled
       const undoButton = screen.getByText('Undo');
       expect(undoButton).toBeDisabled();
-  
+
       // Find a cell and simulate piece placement
       const firstCell = screen.getAllByTestId('cell')[0];
-      
+
       // Simulate hovering to trigger highlighting
       fireEvent.mouseEnter(firstCell);
-      
+
       // Simulate clicking to place the piece
       fireEvent.click(firstCell);
-  
+
       // After placement, Undo should be enabled
       expect(undoButton).not.toBeDisabled();
     });
-  
+
     test('move stack updates when pieces are placed and undone', () => {
       render(<PolyspherePuzzle />);
-  
+
       // Initial state
       const undoButton = screen.getByText('Undo');
       expect(undoButton).toBeDisabled();
-  
+
       // Place piece
       const firstCell = screen.getAllByTestId('cell')[0];
       fireEvent.mouseEnter(firstCell);
       fireEvent.click(firstCell);
-  
+
       // Verify move was added to stack (Undo enabled)
       expect(undoButton).not.toBeDisabled();
-  
+
       // Undo the move
       fireEvent.click(undoButton);
-  
+
       // Verify move was removed from stack (Undo disabled)
       expect(undoButton).toBeDisabled();
     });
-  
+
     test('multiple moves can be undone', () => {
       render(<PolyspherePuzzle />);
       const firstCell = screen.getAllByTestId('cell')[0];
       const secondCell = screen.getAllByTestId('cell')[1];
-  
+
       // Initial state
       const undoButton = screen.getByText('Undo');
       expect(undoButton).toBeDisabled();
-  
+
       // Place first piece
       fireEvent.mouseEnter(firstCell);
       fireEvent.click(firstCell);
       expect(undoButton).not.toBeDisabled();
-  
+
       // Place second piece
       fireEvent.mouseEnter(secondCell);
       fireEvent.click(secondCell);
       expect(undoButton).not.toBeDisabled();
-  
+
       // Undo both moves
       fireEvent.click(undoButton);
       expect(undoButton).not.toBeDisabled(); // Still enabled after first undo
-      
+
       fireEvent.click(undoButton);
       expect(undoButton).toBeDisabled(); // Disabled after undoing all moves
     });
   });
 
-
-
-
   // Error Handling Tests
   describe('Error Handling', () => {
     test('handles worker creation failure', () => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
       createPolysphereWorker.mockImplementation(() => {
         throw new Error('Worker creation failed');
       });

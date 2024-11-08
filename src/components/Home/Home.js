@@ -1,10 +1,10 @@
-import './Home.css';
-import { Link } from 'react-router-dom';
+import "./Home.css";
+import { Link } from "react-router-dom";
 
 /**
  * A component for the homepage, displaying links to pages with each individual
  * puzzle.
- * 
+ *
  * @returns {React.JSX.Element}
  */
 function Home() {
@@ -16,8 +16,8 @@ function Home() {
         <div className="puzzle-info">
           <div className="puzzle-title">N-Queens</div>
           <p className="puzzle-description">
-            Solve the N-Queens problem by placing queens on a chessboard
-            so that no two queens can attack each other.
+            Solve the N-Queens problem by placing queens on a chessboard so that
+            no two queens can attack each other.
           </p>
         </div>
       </Link>
@@ -26,8 +26,7 @@ function Home() {
         <div className="puzzle-info">
           <div className="puzzle-title">Polyspheres</div>
           <p className="puzzle-description">
-            Place unique shapes on a 5x11 board to solve the Polysphere
-            puzzle.
+            Place unique shapes on a 5x11 board to solve the Polysphere puzzle.
           </p>
         </div>
       </Link>

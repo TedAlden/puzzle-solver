@@ -1,5 +1,5 @@
-import './PieceSelector.css';
-import ShapePreview from '../ShapePreview/ShapePreview';
+import "./PieceSelector.css";
+import ShapePreview from "../ShapePreview/ShapePreview";
 
 /**
  * A component for selecting and transforming polysphere shape pieces. Allows
@@ -13,11 +13,7 @@ import ShapePreview from '../ShapePreview/ShapePreview';
  *  shape.
  * @returns {JSX.Element}
  */
-function PieceSelector({
-  shapes,
-  selectedShape,
-  setSelectedShape
-}) {
+function PieceSelector({ shapes, selectedShape, setSelectedShape }) {
   /**
    * Normalise the shape so the top-left tile is aligned to (0, 0).
    * @param {Array<Array<number>>} coords The shape as an array of [x, y]
@@ -36,11 +32,11 @@ function PieceSelector({
    */
   const selectPreviousShape = () => {
     const currentIndex = shapes.findIndex(
-      shape => shape.symbol === selectedShape.symbol
+      (shape) => shape.symbol === selectedShape.symbol
     );
     const newIndex = (currentIndex - 1 + shapes.length) % shapes.length;
     setSelectedShape(shapes[newIndex]);
-  }
+  };
 
   /**
    * Selects the next shape in the shapes array. Wraps to the start of the list
@@ -48,11 +44,11 @@ function PieceSelector({
    */
   const selectNextShape = () => {
     const currentIndex = shapes.findIndex(
-      shape => shape.symbol === selectedShape.symbol
+      (shape) => shape.symbol === selectedShape.symbol
     );
     const newIndex = (currentIndex + 1) % shapes.length;
     setSelectedShape(shapes[newIndex]);
-  }
+  };
 
   /**
    * Rotates the selected shape 90 degrees clockwise and updates the selected
@@ -62,7 +58,7 @@ function PieceSelector({
     const newShape = { ...selectedShape };
     newShape.coords = normalise(newShape.coords.map(([x, y]) => [y, -x]));
     setSelectedShape(newShape);
-  }
+  };
 
   /**
    * Flips the selected shape horizontally and updates the selected shape's
@@ -72,7 +68,7 @@ function PieceSelector({
     const newShape = { ...selectedShape };
     newShape.coords = normalise(newShape.coords.map(([x, y]) => [-x, y]));
     setSelectedShape(newShape);
-  }
+  };
 
   return (
     <div className="pieceSelector">

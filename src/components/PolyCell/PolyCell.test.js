@@ -1,5 +1,5 @@
-import { render, fireEvent } from '@testing-library/react';
-import PolyCell from './PolyCell';
+import { render, fireEvent } from "@testing-library/react";
+import PolyCell from "./PolyCell";
 
 describe("PolyCell", () => {
   it("Becomes highlighted when hovered over", () => {
@@ -8,7 +8,7 @@ describe("PolyCell", () => {
     const { getByTestId } = render(
       <PolyCell
         onMouseEnter={handleMouseEnter}
-        highlighted={1}  // Set highlighted
+        highlighted={1} // Set highlighted
         value="A"
       />
     );

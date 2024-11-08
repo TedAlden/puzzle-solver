@@ -10,7 +10,7 @@ import solvePolyspheres from "../lib/polysphereSolver";
 //
 // This was the only solution I could get working - to manually encode
 // the worker into a `Blob`.
-// 
+//
 // I also had to manually embed the polysphereSolver code, as
 // importing it created WEBPACK import errors.
 //
@@ -21,7 +21,7 @@ import solvePolyspheres from "../lib/polysphereSolver";
  * must be sent containing the polysphere board to be solved. The worker will
  * post a message containing each solution as it finds it, until it has
  * exhausted all possibilities. This could potentially take minutes to finish.
- * 
+ *
  * @returns {Worker} The Polysphere solver worker.
  */
 export default function createPolysphereWorker() {
@@ -43,8 +43,8 @@ export default function createPolysphereWorker() {
       // Tell the front-end when the solver is complete
       self.postMessage({ type: 'complete' });
     });
-  `
-  const blob = new Blob([workerCode], { type: 'application/javascript' });
+  `;
+  const blob = new Blob([workerCode], { type: "application/javascript" });
   const url = URL.createObjectURL(blob);
   const worker = new Worker(url);
   return worker;

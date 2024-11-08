@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
-import ProgressBar from './ProgressBar';
+import { render, screen } from "@testing-library/react";
+import ProgressBar from "./ProgressBar";
 
 describe("ProgressBar Component testing", () => {
   test("Renders the correct progress percentage and count", () => {

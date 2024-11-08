@@ -14,13 +14,13 @@
 ## Table of Contents
 
 - [About the Project](#about-the-project)
-    - [Built with](#built-with)
+  - [Built with](#built-with)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Usage](#usage)
-    - [Run app in development mode](#run-app-in-development-mode)
-    - [Build app for production](#build-app-for-production)
-    - [Run Tests](#run-tests)
+  - [Run app in development mode](#run-app-in-development-mode)
+  - [Build app for production](#build-app-for-production)
+  - [Run Tests](#run-tests)
 - [Docker Deployment](#docker-deployment)
 - [Contributing](#contributing)
 - [License](#license)

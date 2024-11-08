@@ -1,4 +1,4 @@
-import createPolysphereWorker from './createPolysphereWorker';
+import createPolysphereWorker from "./createPolysphereWorker";
 
 // This test does not go deep into the workers code itself, since this
 // is tricky due to some of the workarounds used. See the comment in the
@@ -7,7 +7,7 @@ import createPolysphereWorker from './createPolysphereWorker';
 
 describe("Polysphere Worker", () => {
   let worker;
-  
+
   beforeEach(() => {
     // Mock global URL since Jest doesn't support this
     global.URL.createObjectURL = jest.fn();

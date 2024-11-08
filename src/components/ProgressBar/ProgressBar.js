@@ -1,4 +1,4 @@
-import './ProgressBar.css';
+import "./ProgressBar.css";
 
 /**
  * A progress bar with textual feedback. It shows the current progress as a
@@ -20,9 +20,7 @@ function ProgressBar({ current, total }) {
             {current} of {total} pieces placed
           </span>
         </div>
-        <span className="progress-percentage">
-          {Math.round(progress)}%
-        </span>
+        <span className="progress-percentage">{Math.round(progress)}%</span>
       </div>
       <div className="progress-bar">
         <div
@@ -36,6 +34,6 @@ function ProgressBar({ current, total }) {
       </div>
     </div>
   );
-};
+}
 
 export default ProgressBar;

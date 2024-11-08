@@ -1,25 +1,47 @@
-import React from 'react';
-import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import PolyspherePuzzle from './PolyspherePuzzle';
-import createPolysphereWorker from '../../workers/createPolysphereWorker';
-import pieces from '../../lib/pieces';
+import React from "react";
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  waitFor,
+} from "@testing-library/react";
+import "@testing-library/jest-dom";
+import PolyspherePuzzle from "./PolyspherePuzzle";
+import createPolysphereWorker from "../../workers/createPolysphereWorker";
+import pieces from "../../lib/pieces";
 
 // Mock the worker
-jest.mock('../../workers/createPolysphereWorker');
+jest.mock("../../workers/createPolysphereWorker");
 
 // Mock pieces
-jest.mock('../../lib/pieces', () => [
-  { symbol: 'A', coords: [[0, 0], [0, 1]], name: 'Piece A' },
-  { symbol: 'B', coords: [[0, 0], [1, 0]], name: 'Piece B' }
+jest.mock("../../lib/pieces", () => [
+  {
+    symbol: "A",
+    coords: [
+      [0, 0],
+      [0, 1],
+    ],
+    name: "Piece A",
+  },
+  {
+    symbol: "B",
+    coords: [
+      [0, 0],
+      [1, 0],
+    ],
+    name: "Piece B",
+  },
 ]);
 
-describe('PolyspherePuzzle Component', () => {
+describe("PolyspherePuzzle Component", () => {
   let worker;
   let mockBoard;
 
   beforeEach(() => {
-    mockBoard = Array(5).fill().map(() => Array(11).fill(""));
+    mockBoard = Array(5)
+      .fill()
+      .map(() => Array(11).fill(""));
     worker = {
       postMessage: jest.fn(),
       terminate: jest.fn(),
@@ -33,526 +55,343 @@ describe('PolyspherePuzzle Component', () => {
     jest.clearAllMocks();
   });
 
-  describe('Worker and Solution Handling Edge Cases', () => {
-    // test('prevents solve operation when worker is explicitly null', () => {
-    //   // Mock worker as null initially
-    //   createPolysphereWorker.mockReturnValue(null);
-
-    //   const { rerender } = render(<PolyspherePuzzle />);
-
-    //   // Attempt to solve
-    //   fireEvent.click(screen.getByText('Solve Puzzle'));
-
-    //   // Verify no solving state was triggered
-    //   expect(screen.queryByText('Solving...')).not.toBeInTheDocument();
-
-    //   // Clean up
-    //   createPolysphereWorker.mockReturnValue(worker);
-    //   rerender(<PolyspherePuzzle />);
-    // });
-
-    // test('solution navigation with exact handling', async () => {
-    //   render(<PolyspherePuzzle />);
-
-    //   // Click solve button
-    //   fireEvent.click(screen.getByText('Solve Puzzle'));
-
-    //   const messageHandler = worker.addEventListener.mock.calls[0][1];
-
-    //   // Simulate receiving multiple solutions
-    //   act(() => {
-    //     // Add three solutions to test navigation thoroughly
-    //     messageHandler({ data: { type: 'solution', data: mockBoard } });
-    //     messageHandler({ data: { type: 'solution', data: {...mockBoard, modified: true} } });
-    //     messageHandler({ data: { type: 'solution', data: {...mockBoard, modified: false} } });
-    //     messageHandler({ data: { type: 'complete' } });
-    //   });
-
-    //   await waitFor(() => {
-    //     expect(screen.getByText('Solution 1 of 3')).toBeInTheDocument();
-    //   });
-
-    //   // Test next solution at different positions
-    //   fireEvent.click(screen.getByText('Next Solution'));
-    //   expect(screen.getByText('Solution 2 of 3')).toBeInTheDocument();
-
-    //   fireEvent.click(screen.getByText('Next Solution'));
-    //   expect(screen.getByText('Solution 3 of 3')).toBeInTheDocument();
-
-    //   // Try to go past the last solution (should stay on 3)
-    //   fireEvent.click(screen.getByText('Next Solution'));
-    //   expect(screen.getByText('Solution 3 of 3')).toBeInTheDocument();
-
-    //   // Test previous solution at different positions
-    //   fireEvent.click(screen.getByText('Previous Solution'));
-    //   expect(screen.getByText('Solution 2 of 3')).toBeInTheDocument();
-
-    //   fireEvent.click(screen.getByText('Previous Solution'));
-    //   expect(screen.getByText('Solution 1 of 3')).toBeInTheDocument();
-
-    //   // Try to go before first solution (should stay on 1)
-    //   fireEvent.click(screen.getByText('Previous Solution'));
-    //   expect(screen.getByText('Solution 1 of 3')).toBeInTheDocument();
-    // });
-
-    test('solution index bounds handling', async () => {
+  describe("Worker and Solution Handling Edge Cases", () => {
+    test("solution index bounds handling", async () => {
       render(<PolyspherePuzzle />);
-      fireEvent.click(screen.getByText('Solve Puzzle'));
+      fireEvent.click(screen.getByText("Solve Puzzle"));
 
       const messageHandler = worker.addEventListener.mock.calls[0][1];
 
       act(() => {
-        messageHandler({ data: { type: 'solution', data: mockBoard } });
-        messageHandler({ data: { type: 'complete' } });
+        messageHandler({ data: { type: "solution", data: mockBoard } });
+        messageHandler({ data: { type: "complete" } });
       });
 
       await waitFor(() => {
-        expect(screen.getByText('Solution 1 of 1')).toBeInTheDocument();
+        expect(screen.getByText("Solution 1 of 1")).toBeInTheDocument();
       });
 
       // Force navigation to test bounds
-      const prevButton = screen.getByText('Previous Solution');
-      const nextButton = screen.getByText('Next Solution');
+      const prevButton = screen.getByText("Previous Solution");
+      const nextButton = screen.getByText("Next Solution");
 
       // Test bounds
       fireEvent.click(prevButton);
       fireEvent.click(nextButton);
 
       // Should still be on solution 1
-      expect(screen.getByText('Solution 1 of 1')).toBeInTheDocument();
+      expect(screen.getByText("Solution 1 of 1")).toBeInTheDocument();
     });
   });
 
-  describe('Board State and Solutions', () => {
-    test('updates board when solution index changes', async () => {
-      const mockBoard1 = Array(5).fill().map(() => Array(11).fill("A"));
-      const mockBoard2 = Array(5).fill().map(() => Array(11).fill("B"));
+  describe("Board State and Solutions", () => {
+    test("updates board when solution index changes", async () => {
+      const mockBoard1 = Array(5)
+        .fill()
+        .map(() => Array(11).fill("A"));
+      const mockBoard2 = Array(5)
+        .fill()
+        .map(() => Array(11).fill("B"));
 
       render(<PolyspherePuzzle />);
-      fireEvent.click(screen.getByText('Solve Puzzle'));
+      fireEvent.click(screen.getByText("Solve Puzzle"));
 
       const messageHandler = worker.addEventListener.mock.calls[0][1];
 
       act(() => {
-        messageHandler({ data: { type: 'solution', data: mockBoard1 } });
-        messageHandler({ data: { type: 'solution', data: mockBoard2 } });
-        messageHandler({ data: { type: 'complete' } });
+        messageHandler({ data: { type: "solution", data: mockBoard1 } });
+        messageHandler({ data: { type: "solution", data: mockBoard2 } });
+        messageHandler({ data: { type: "complete" } });
       });
 
       await waitFor(() => {
-        expect(screen.getByText('Solution 1 of 2')).toBeInTheDocument();
+        expect(screen.getByText("Solution 1 of 2")).toBeInTheDocument();
       });
 
       // Navigate through solutions and verify board updates
-      fireEvent.click(screen.getByText('Next Solution'));
-      fireEvent.click(screen.getByText('Previous Solution'));
+      fireEvent.click(screen.getByText("Next Solution"));
+      fireEvent.click(screen.getByText("Previous Solution"));
 
       // Verify we're back at solution 1
-      expect(screen.getByText('Solution 1 of 2')).toBeInTheDocument();
-    });
-
-    test('With 2 solutions, next btn goes from index 1 to 2', async () => {
-      const mockBoard1 = Array(5).fill().map(() => Array(11).fill("A"));
-      const mockBoard2 = Array(5).fill().map(() => Array(11).fill("B"));
-      render(<PolyspherePuzzle />);
-      fireEvent.click(screen.getByText('Solve Puzzle'));
-      const messageHandler = worker.addEventListener.mock.calls[0][1];
-      act(() => {
-        messageHandler({ data: { type: 'solution', data: mockBoard1 } });
-        messageHandler({ data: { type: 'solution', data: mockBoard2 } });
-        messageHandler({ data: { type: 'complete' } });
-      });
-      await waitFor(() => {
-        expect(screen.getByText('Solution 1 of 2')).toBeInTheDocument();
-      });
-      fireEvent.click(screen.getByText('Next Solution'));
-      expect(screen.getByText('Solution 2 of 2')).toBeInTheDocument();
+      expect(screen.getByText("Solution 1 of 2")).toBeInTheDocument();
     });
   });
 
-  test('renders without crashing', () => {
+  test("renders without crashing", () => {
     render(<PolyspherePuzzle />);
-    expect(screen.getByText('The Polysphere Puzzle')).toBeInTheDocument();
+    expect(screen.getByText("The Polysphere Puzzle")).toBeInTheDocument();
   });
 
-  test('renders keyboard controls section', () => {
+  test("renders keyboard controls section", () => {
     render(<PolyspherePuzzle />);
-    expect(screen.getByText('Keyboard Controls')).toBeInTheDocument();
-    expect(screen.getByText('R : Rotate piece')).toBeInTheDocument();
-    expect(screen.getByText('F : Flip piece')).toBeInTheDocument();
+    expect(screen.getByText("Keyboard Controls")).toBeInTheDocument();
+    expect(screen.getByText("R : Rotate piece")).toBeInTheDocument();
+    expect(screen.getByText("F : Flip piece")).toBeInTheDocument();
   });
 
-  test('initializes worker and handles cleanup', () => {
+  test("initializes worker and handles cleanup", () => {
     const { unmount } = render(<PolyspherePuzzle />);
     expect(createPolysphereWorker).toHaveBeenCalled();
     unmount();
     expect(worker.terminate).toHaveBeenCalled();
   });
 
-  // test('handleSolve does nothing when worker is null', () => {
-  //   // Force worker to be null by mocking createPolysphereWorker
-  //   createPolysphereWorker.mockReturnValue(null);
-
-  //   render(<PolyspherePuzzle />);
-  //   fireEvent.click(screen.getByText('Solve Puzzle'));
-
-  //   // Verify solve attempt had no effect
-  //   expect(screen.queryByText('Solving ⏳')).not.toBeInTheDocument();
-  // });
-
-  describe('Keyboard Controls', () => {   
-    test('handles unrecognised keyboard input using default clause', () => {
+  // Keyboard Controls Tests
+  describe("Keyboard Controls", () => {
+    test("handles rotate piece (R key)", () => {
       render(<PolyspherePuzzle />);
       act(() => {
-        fireEvent.keyDown(window, { key: 'n' });
+        fireEvent.keyDown(window, { key: "r" });
       });
-      expect(screen.getByText('The Polysphere Puzzle')).toBeInTheDocument();
+      // Verify component didn't crash after rotation
+      expect(screen.getByText("The Polysphere Puzzle")).toBeInTheDocument();
     });
 
-    test('handles flip piece (F key)', () => {
+    test("handles flip piece (F key)", () => {
       render(<PolyspherePuzzle />);
       act(() => {
-        fireEvent.keyDown(window, { key: 'f' });
+        fireEvent.keyDown(window, { key: "f" });
       });
-      expect(screen.getByText('The Polysphere Puzzle')).toBeInTheDocument();
+      expect(screen.getByText("The Polysphere Puzzle")).toBeInTheDocument();
     });
 
-    test('handles arrow keys for piece navigation', () => {
+    test("handles arrow keys for piece navigation", () => {
       render(<PolyspherePuzzle />);
       act(() => {
-        fireEvent.keyDown(window, { key: 'ArrowLeft' });
-        fireEvent.keyDown(window, { key: 'ArrowRight' });
+        fireEvent.keyDown(window, { key: "ArrowLeft" });
+        fireEvent.keyDown(window, { key: "ArrowRight" });
       });
-      expect(screen.getByText('The Polysphere Puzzle')).toBeInTheDocument();
+      expect(screen.getByText("The Polysphere Puzzle")).toBeInTheDocument();
     });
 
-    // Test R key
-
-    // Test S key
-
-    test('handles undo (U key)', async () => {
+    test("handles undo (U key)", async () => {
       render(<PolyspherePuzzle />);
       // First make a move by solving
-      fireEvent.click(screen.getByText('Solve Puzzle'));
+      fireEvent.click(screen.getByText("Solve Puzzle"));
 
       const messageHandler = worker.addEventListener.mock.calls[0][1];
       act(() => {
-        messageHandler({ data: { type: 'solution', data: mockBoard } });
-        messageHandler({ data: { type: 'complete' } });
+        messageHandler({ data: { type: "solution", data: mockBoard } });
+        messageHandler({ data: { type: "complete" } });
       });
 
       await waitFor(() => {
-        fireEvent.keyDown(window, { key: 'u' });
+        fireEvent.keyDown(window, { key: "u" });
       });
     });
 
-    test('handles clear board (Escape key)', () => {
+    test("handles clear board (Escape key)", () => {
       render(<PolyspherePuzzle />);
       act(() => {
-        fireEvent.keyDown(window, { key: 'Escape' });
+        fireEvent.keyDown(window, { key: "Escape" });
       });
-      expect(screen.getByText('Clear Board')).toBeInTheDocument();
+      expect(screen.getByText("Clear Board")).toBeInTheDocument();
     });
 
-    test('keyboard controls do nothing when solving', () => {
+    test("keyboard controls do nothing when solving", () => {
       render(<PolyspherePuzzle />);
 
       // Start solving
-      fireEvent.click(screen.getByText('Solve Puzzle'));
+      fireEvent.click(screen.getByText("Solve Puzzle"));
 
       // Try keyboard controls while solving
       act(() => {
-        fireEvent.keyDown(window, { key: 'r' });
-        fireEvent.keyDown(window, { key: 'f' });
-        fireEvent.keyDown(window, { key: 'ArrowLeft' });
-        fireEvent.keyDown(window, { key: 'ArrowRight' });
-        fireEvent.keyDown(window, { key: 'u' });
-        fireEvent.keyDown(window, { key: 'Escape' });
-        fireEvent.keyDown(window, { key: 's' });
+        fireEvent.keyDown(window, { key: "r" });
+        fireEvent.keyDown(window, { key: "f" });
+        fireEvent.keyDown(window, { key: "ArrowLeft" });
+        fireEvent.keyDown(window, { key: "ArrowRight" });
+        fireEvent.keyDown(window, { key: "u" });
+        fireEvent.keyDown(window, { key: "Escape" });
       });
 
       // Verify solving state wasn't interrupted
-      expect(screen.getByText('Solving...')).toBeInTheDocument();
+      expect(screen.getByText("Solving...")).toBeInTheDocument();
     });
   });
 
   // Solution and Worker Tests
-  describe('Solution Handling', () => {
-    test('handles solution messages from worker', async () => {
+  describe("Solution Handling", () => {
+    test("handles solution messages from worker", async () => {
       render(<PolyspherePuzzle />);
-      fireEvent.click(screen.getByText('Solve Puzzle'));
+      fireEvent.click(screen.getByText("Solve Puzzle"));
 
       const messageHandler = worker.addEventListener.mock.calls[0][1];
       act(() => {
-        messageHandler({ data: { type: 'solution', data: mockBoard } });
-        messageHandler({ data: { type: 'complete' } });
+        messageHandler({ data: { type: "solution", data: mockBoard } });
+        messageHandler({ data: { type: "complete" } });
       });
 
       await waitFor(() => {
-        expect(screen.getByText('Solutions found ✅')).toBeInTheDocument();
+        expect(screen.getByText("Solutions found ✅")).toBeInTheDocument();
       });
     });
 
-    test('handles multiple solutions and navigation', async () => {
+    test("handles multiple solutions and navigation", async () => {
       render(<PolyspherePuzzle />);
-      fireEvent.click(screen.getByText('Solve Puzzle'));
+      fireEvent.click(screen.getByText("Solve Puzzle"));
 
       const messageHandler = worker.addEventListener.mock.calls[0][1];
       act(() => {
-        messageHandler({ data: { type: 'solution', data: mockBoard } });
-        messageHandler({ data: { type: 'solution', data: mockBoard } });
-        messageHandler({ data: { type: 'complete' } });
+        messageHandler({ data: { type: "solution", data: mockBoard } });
+        messageHandler({ data: { type: "solution", data: mockBoard } });
+        messageHandler({ data: { type: "complete" } });
       });
 
       await waitFor(() => {
-        expect(screen.getByText('Solution 1 of 2')).toBeInTheDocument();
+        expect(screen.getByText("Solution 1 of 2")).toBeInTheDocument();
       });
 
       // Test navigation
-      fireEvent.click(screen.getByText('Next Solution'));
-      expect(screen.getByText('Solution 2 of 2')).toBeInTheDocument();
+      fireEvent.click(screen.getByText("Next Solution"));
+      expect(screen.getByText("Solution 2 of 2")).toBeInTheDocument();
 
-      fireEvent.click(screen.getByText('Previous Solution'));
-      expect(screen.getByText('Solution 1 of 2')).toBeInTheDocument();
+      fireEvent.click(screen.getByText("Previous Solution"));
+      expect(screen.getByText("Solution 1 of 2")).toBeInTheDocument();
     });
 
-    test('handles no solutions case', async () => {
+    test("handles no solutions case", async () => {
       render(<PolyspherePuzzle />);
-      fireEvent.click(screen.getByText('Solve Puzzle'));
+      fireEvent.click(screen.getByText("Solve Puzzle"));
 
       const messageHandler = worker.addEventListener.mock.calls[0][1];
       act(() => {
-        messageHandler({ data: { type: 'complete' } });
+        messageHandler({ data: { type: "complete" } });
       });
 
       await waitFor(() => {
-        expect(screen.getByText('No solutions ⚠️')).toBeInTheDocument();
+        expect(screen.getByText("No solutions ⚠️")).toBeInTheDocument();
       });
     });
   });
 
-  describe('Solution Navigation Edge Cases', () => {
-    test('handleNextSolution when at last solution', async () => {
+  describe("Solution Navigation Edge Cases", () => {
+    test("handleNextSolution when at last solution", async () => {
       render(<PolyspherePuzzle />);
-      fireEvent.click(screen.getByText('Solve Puzzle'));
+      fireEvent.click(screen.getByText("Solve Puzzle"));
 
       const messageHandler = worker.addEventListener.mock.calls[0][1];
 
       // Create exactly two solutions
       act(() => {
-        messageHandler({ data: { type: 'solution', data: mockBoard } });
-        messageHandler({ data: { type: 'solution', data: mockBoard } });
-        messageHandler({ data: { type: 'complete' } });
+        messageHandler({ data: { type: "solution", data: mockBoard } });
+        messageHandler({ data: { type: "solution", data: mockBoard } });
+        messageHandler({ data: { type: "complete" } });
       });
 
       await waitFor(() => {
-        expect(screen.getByText('Solution 1 of 2')).toBeInTheDocument();
+        expect(screen.getByText("Solution 1 of 2")).toBeInTheDocument();
       });
 
       // Navigate to last solution
-      fireEvent.click(screen.getByText('Next Solution'));
-      expect(screen.getByText('Solution 2 of 2')).toBeInTheDocument();
+      fireEvent.click(screen.getByText("Next Solution"));
+      expect(screen.getByText("Solution 2 of 2")).toBeInTheDocument();
 
       // Try to go beyond last solution
-      fireEvent.click(screen.getByText('Next Solution'));
+      fireEvent.click(screen.getByText("Next Solution"));
       // Should still be on solution 2
-      expect(screen.getByText('Solution 2 of 2')).toBeInTheDocument();
+      expect(screen.getByText("Solution 2 of 2")).toBeInTheDocument();
     });
 
-    test('handlePreviousSolution when at first solution', async () => {
+    test("handlePreviousSolution when at first solution", async () => {
       render(<PolyspherePuzzle />);
-      fireEvent.click(screen.getByText('Solve Puzzle'));
+      fireEvent.click(screen.getByText("Solve Puzzle"));
 
       const messageHandler = worker.addEventListener.mock.calls[0][1];
 
       act(() => {
-        messageHandler({ data: { type: 'solution', data: mockBoard } });
-        messageHandler({ data: { type: 'solution', data: mockBoard } });
-        messageHandler({ data: { type: 'complete' } });
+        messageHandler({ data: { type: "solution", data: mockBoard } });
+        messageHandler({ data: { type: "solution", data: mockBoard } });
+        messageHandler({ data: { type: "complete" } });
       });
 
       await waitFor(() => {
-        expect(screen.getByText('Solution 1 of 2')).toBeInTheDocument();
+        expect(screen.getByText("Solution 1 of 2")).toBeInTheDocument();
       });
 
       // Try to go before first solution
-      fireEvent.click(screen.getByText('Previous Solution'));
+      fireEvent.click(screen.getByText("Previous Solution"));
       // Should still be on solution 1
-      expect(screen.getByText('Solution 1 of 2')).toBeInTheDocument();
+      expect(screen.getByText("Solution 1 of 2")).toBeInTheDocument();
     });
   });
 
   // Move Stack and Board State Tests
-  describe('Move Stack and Board State', () => {
-    test('handleUndo with moves in stack', async () => {
+  describe("Move Stack and Board State", () => {
+    test("handleUndo with moves in stack", async () => {
       render(<PolyspherePuzzle />);
 
       // Make a move by solving
-      fireEvent.click(screen.getByText('Solve Puzzle'));
+      fireEvent.click(screen.getByText("Solve Puzzle"));
 
       const messageHandler = worker.addEventListener.mock.calls[0][1];
       act(() => {
-        messageHandler({ data: { type: 'solution', data: mockBoard } });
-        messageHandler({ data: { type: 'complete' } });
+        messageHandler({ data: { type: "solution", data: mockBoard } });
+        messageHandler({ data: { type: "complete" } });
       });
 
       // Try to undo
       await waitFor(() => {
-        const undoButton = screen.getByText('Undo');
+        const undoButton = screen.getByText("Undo");
         fireEvent.click(undoButton);
       });
     });
 
-    test('clear board resets all state', async () => {
+    test("clear board resets all state", async () => {
       render(<PolyspherePuzzle />);
 
       // First add some solutions
-      fireEvent.click(screen.getByText('Solve Puzzle'));
+      fireEvent.click(screen.getByText("Solve Puzzle"));
 
       const messageHandler = worker.addEventListener.mock.calls[0][1];
       act(() => {
-        messageHandler({ data: { type: 'solution', data: mockBoard } });
-        messageHandler({ data: { type: 'complete' } });
+        messageHandler({ data: { type: "solution", data: mockBoard } });
+        messageHandler({ data: { type: "complete" } });
       });
 
       // Clear the board
       await waitFor(() => {
-        fireEvent.click(screen.getByText('Clear Board'));
+        fireEvent.click(screen.getByText("Clear Board"));
       });
 
       // Verify reset state
-      expect(screen.queryByText('Solutions found ✅')).not.toBeInTheDocument();
+      expect(screen.queryByText("Solutions found ✅")).not.toBeInTheDocument();
     });
 
-    test('handleNextSolution and handlePreviousSolution bounds checking', async () => {
+    test("handleNextSolution and handlePreviousSolution bounds checking", async () => {
       render(<PolyspherePuzzle />);
-      fireEvent.click(screen.getByText('Solve Puzzle'));
+      fireEvent.click(screen.getByText("Solve Puzzle"));
 
       const messageHandler = worker.addEventListener.mock.calls[0][1];
       act(() => {
-        messageHandler({ data: { type: 'solution', data: mockBoard } });
-        messageHandler({ data: { type: 'complete' } });
+        messageHandler({ data: { type: "solution", data: mockBoard } });
+        messageHandler({ data: { type: "complete" } });
       });
 
       await waitFor(() => {
-        const prevButton = screen.getByText('Previous Solution');
-        const nextButton = screen.getByText('Next Solution');
+        const prevButton = screen.getByText("Previous Solution");
+        const nextButton = screen.getByText("Next Solution");
         expect(prevButton).toBeDisabled();
         expect(nextButton).toBeDisabled();
       });
     });
   });
 
-  describe('Move Stack Management', () => {
-    beforeEach(() => {
-      // Reset the mocks
-      jest.clearAllMocks();
-
-      // Reset mock board and worker
-      mockBoard = Array(5).fill().map(() => Array(11).fill(""));
-      worker = {
-        postMessage: jest.fn(),
-        terminate: jest.fn(),
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-      };
-      createPolysphereWorker.mockReturnValue(worker);
-    });
-
-    test('adds move to stack when piece is placed on board', () => {
-      render(<PolyspherePuzzle />);
-
-      // Initial state - Undo should be disabled
-      const undoButton = screen.getByText('Undo');
-      expect(undoButton).toBeDisabled();
-
-      // Find a cell and simulate piece placement
-      const firstCell = screen.getAllByTestId('cell')[0];
-
-      // Simulate hovering to trigger highlighting
-      fireEvent.mouseEnter(firstCell);
-
-      // Simulate clicking to place the piece
-      fireEvent.click(firstCell);
-
-      // After placement, Undo should be enabled
-      expect(undoButton).not.toBeDisabled();
-    });
-
-    test('move stack updates when pieces are placed and undone', () => {
-      render(<PolyspherePuzzle />);
-
-      // Initial state
-      const undoButton = screen.getByText('Undo');
-      expect(undoButton).toBeDisabled();
-
-      // Place piece
-      const firstCell = screen.getAllByTestId('cell')[0];
-      fireEvent.mouseEnter(firstCell);
-      fireEvent.click(firstCell);
-
-      // Verify move was added to stack (Undo enabled)
-      expect(undoButton).not.toBeDisabled();
-
-      // Undo the move
-      fireEvent.click(undoButton);
-
-      // Verify move was removed from stack (Undo disabled)
-      expect(undoButton).toBeDisabled();
-    });
-
-    test('multiple moves can be undone', () => {
-      render(<PolyspherePuzzle />);
-      const firstCell = screen.getAllByTestId('cell')[0];
-      const secondCell = screen.getAllByTestId('cell')[1];
-
-      // Initial state
-      const undoButton = screen.getByText('Undo');
-      expect(undoButton).toBeDisabled();
-
-      // Place first piece
-      fireEvent.mouseEnter(firstCell);
-      fireEvent.click(firstCell);
-      expect(undoButton).not.toBeDisabled();
-
-      // Place second piece
-      fireEvent.mouseEnter(secondCell);
-      fireEvent.click(secondCell);
-      expect(undoButton).not.toBeDisabled();
-
-      // Undo both moves
-      fireEvent.click(undoButton);
-      expect(undoButton).not.toBeDisabled(); // Still enabled after first undo
-
-      fireEvent.click(undoButton);
-      expect(undoButton).toBeDisabled(); // Disabled after undoing all moves
-    });
-  });
-
   // Error Handling Tests
-  describe('Error Handling', () => {
-    test('handles worker creation failure', () => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => { });
+  describe("Error Handling", () => {
+    test("handles worker creation failure", () => {
+      const consoleSpy = jest
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
       createPolysphereWorker.mockImplementation(() => {
-        throw new Error('Worker creation failed');
+        throw new Error("Worker creation failed");
       });
 
       render(<PolyspherePuzzle />);
-      expect(consoleSpy).toHaveBeenCalledWith('Failed to create Web Worker:', expect.any(Error));
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Failed to create Web Worker:",
+        expect.any(Error)
+      );
       consoleSpy.mockRestore();
     });
-
-    // test('handles worker error messages', async () => {
-    //   render(<PolyspherePuzzle />);
-    //   fireEvent.click(screen.getByText('Solve Puzzle'));
-
-    //   const messageHandler = worker.addEventListener.mock.calls[0][1];
-    //   act(() => {
-    //     messageHandler({ data: { type: 'error', message: 'Worker error' } });
-    //   });
-
-    //   // Verify error handling (component should still be functional)
-    //   expect(screen.getByText('Solve Puzzle')).toBeInTheDocument();
-    // });
   });
 });

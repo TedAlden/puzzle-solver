@@ -21,7 +21,7 @@
 export default function solvePolyspheres(board, unusedPieces, onSolution) {
   /**
    * Normalise coords to be aligned to top left (0, 0).
-   * 
+   *
    * @param {Array<Array<number>>} coords The coordinates of the piece's cells.
    * @returns {Array<Array<number>>} The normalized coordinates.
    */
@@ -35,18 +35,17 @@ export default function solvePolyspheres(board, unusedPieces, onSolution) {
    * Turn a list of coordinates into a string x,y|x,y|x,y|.., after normalising
    * and sorting them in order. Any combination of the same coordinates should
    * always return the same string.
-   * 
+   *
    * @param {Array<Array<number>>} coords The coordinates of the piece's
    *  cells.
    * @returns {string} The string representation of the normalized
    *  coordinates.
    */
-  const coordsToString = (coords) => (
+  const coordsToString = (coords) =>
     normalize(coords)
       .sort(([r1, c1], [r2, c2]) => r1 - r2 || c1 - c2)
-      .map(coord => coord.join(','))
-      .join('|')
-  );
+      .map((coord) => coord.join(","))
+      .join("|");
 
   // Cache for piece orientations - saves the algorithm needing to re-compute
   // these every time it can't place a piece and has to try placing the same
@@ -56,7 +55,7 @@ export default function solvePolyspheres(board, unusedPieces, onSolution) {
   /**
    * Compute all the unique orientations for a shape piece, including rotations
    * (90, 180, 270 degrees) and horizontal flips.
-   * 
+   *
    * @param {Array<Array<number>>} coords The coordinates of the piece's cells.
    * @returns {Array<Array<Array<number>>>} An array of unique orientations,
    *  each represented as an array of [row, col] coordinate pairs.
@@ -64,7 +63,7 @@ export default function solvePolyspheres(board, unusedPieces, onSolution) {
   const getAllOrientations = (coords) => {
     // Check if orientations for this shape have alread been computed and
     // stored in the cache
-    const cacheKey = coords.map(coord => coord.join(',')).join('|');
+    const cacheKey = coords.map((coord) => coord.join(",")).join("|");
     if (orientationsCache.has(cacheKey)) {
       return orientationsCache.get(cacheKey);
     }
@@ -80,8 +79,8 @@ export default function solvePolyspheres(board, unusedPieces, onSolution) {
     }
     // Turn the orientations, stored as a list coordinate strings, back into a
     // list of coordinates [[x, y], [x, y], ...]
-    const result = Array.from(orientations).map(str =>
-      str.split('|').map(coord => coord.split(',').map(Number))
+    const result = Array.from(orientations).map((str) =>
+      str.split("|").map((coord) => coord.split(",").map(Number))
     );
     // Add to cache to prevent computing this all again
     orientationsCache.set(cacheKey, result);
@@ -98,15 +97,15 @@ export default function solvePolyspheres(board, unusedPieces, onSolution) {
    * @param {number} startCol The starting column for placement.
    * @returns {boolean} Can the piece can be placed.
    */
-  const canPlacePiece = (board, coords, startRow, startCol) => (
-    coords.every(([row, col]) => (
-      startRow + row >= 0 &&
-      startRow + row < board.length &&
-      startCol + col >= 0 &&
-      startCol + col < board[0].length &&
-      board[startRow + row][startCol + col] === ""
-    ))
-  );
+  const canPlacePiece = (board, coords, startRow, startCol) =>
+    coords.every(
+      ([row, col]) =>
+        startRow + row >= 0 &&
+        startRow + row < board.length &&
+        startCol + col >= 0 &&
+        startCol + col < board[0].length &&
+        board[startRow + row][startCol + col] === ""
+    );
 
   /**
    * Places a piece on the board and returns the new updated board.
@@ -119,7 +118,7 @@ export default function solvePolyspheres(board, unusedPieces, onSolution) {
    * @returns {string[][]} The new board with the piece placed.
    */
   const placePiece = (board, piece, coords, startRow, startCol) => {
-    const newBoard = board.map(row => [...row]);
+    const newBoard = board.map((row) => [...row]);
     coords.forEach(([row, col]) => {
       newBoard[startRow + row][startCol + col] = piece.symbol;
     });
@@ -154,10 +153,10 @@ export default function solvePolyspheres(board, unusedPieces, onSolution) {
   const solveRecursive = (board, unusedPieces, solutions) => {
     // Recursive base case: no unused pieces means board is complete
     if (unusedPieces.length === 0) {
-      solutions.push(board.map(row => [...row]));
+      solutions.push(board.map((row) => [...row]));
       // Callback with the solution - used in the front end to display each
       // solution as it is found, as this algorithm takes minutes to complete
-      onSolution(board.map(row => [...row]));
+      onSolution(board.map((row) => [...row]));
       return;
     }
 
@@ -175,11 +174,15 @@ export default function solvePolyspheres(board, unusedPieces, onSolution) {
         if (canPlacePiece(board, orientation, startRow, startCol)) {
           // ...Place the piece
           const newBoard = placePiece(
-            board, piece, orientation, startRow, startCol
+            board,
+            piece,
+            orientation,
+            startRow,
+            startCol
           );
           const remainingPieces = [
             ...unusedPieces.slice(0, i),
-            ...unusedPieces.slice(i + 1)
+            ...unusedPieces.slice(i + 1),
           ];
           // ...Attempt to solve the board with this piece placed
           solveRecursive(newBoard, remainingPieces, solutions);
@@ -188,4 +191,4 @@ export default function solvePolyspheres(board, unusedPieces, onSolution) {
     }
   };
   solveRecursive(board, unusedPieces, []);
-};
+}

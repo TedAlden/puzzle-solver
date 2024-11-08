@@ -1,4 +1,4 @@
-import './ShapePreview.css';
+import "./ShapePreview.css";
 
 /**
  * Displays a preview of the currently selected shape. It generates an SVG
@@ -45,16 +45,16 @@ function ShapePreview({ selectedShape }) {
       tiles.push(
         <rect
           key={`${x}-${y}`}
-          x={(x * tileSize) + (previewCols * tileSize * 0.5) - (tileSize * 0.5)}
-          y={(y * tileSize) + (previewRows * tileSize * 0.5) - (tileSize * 0.5)}
+          x={x * tileSize + previewCols * tileSize * 0.5 - tileSize * 0.5}
+          y={y * tileSize + previewRows * tileSize * 0.5 - tileSize * 0.5}
           width={tileSize}
           height={tileSize}
           fill={selectedShape.colour}
         />
-      )
+      );
     });
     return tiles;
-  }
+  };
 
   return (
     <svg
@@ -64,7 +64,7 @@ function ShapePreview({ selectedShape }) {
       style={{
         backgroundColor: "#374151",
         borderRadius: "8px",
-        padding: "4px"
+        padding: "4px",
       }}
     >
       {generateShapeRects()}

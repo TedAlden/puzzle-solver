@@ -1,9 +1,9 @@
-import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import App from './App';
+import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import App from "./App";
 
-describe('App Component', () => {
-  test('renders the app header', () => {
+describe("App Component", () => {
+  test("renders the app header", () => {
     // Render the App component
     render(<App />);
 

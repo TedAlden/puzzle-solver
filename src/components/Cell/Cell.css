@@ -9,7 +9,7 @@
   cursor: pointer;
 }
 .board-cell:hover::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: #60a5fa4d;

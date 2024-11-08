@@ -1,4 +1,4 @@
-import './PolyCell.css';
+import "./PolyCell.css";
 
 /**
  * A cell in the polysphere puzzle grid. The cell can respond to hover and
@@ -19,7 +19,7 @@ function PolyCell({
   onMouseLeave,
   onMouseClick,
   highlighted,
-  value
+  value,
 }) {
   return (
     <div
@@ -28,11 +28,10 @@ function PolyCell({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onClick={onMouseClick}
-      className={
-        `polyboard-cell ${highlighted > 0 ? 'highlighted' : ''} ${value}`
-      }
-    >
-    </div>
+      className={`polyboard-cell ${
+        highlighted > 0 ? "highlighted" : ""
+      } ${value}`}
+    ></div>
   );
 }
 

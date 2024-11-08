@@ -6,5 +6,4 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - 3000:3000
-
 # docker compose -f docker-compose.dev.yml up -d

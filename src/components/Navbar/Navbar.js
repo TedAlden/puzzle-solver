@@ -1,10 +1,10 @@
-import './Navbar.css';
-import { Link } from 'react-router-dom';
+import "./Navbar.css";
+import { Link } from "react-router-dom";
 
 /**
  * A component for the navbar, displayed at the top of the screen, to navigate
  * between the home page and different puzzle pages.
- * 
+ *
  * @returns {React.JSX.Element}
  */
 function Navbar() {
@@ -20,7 +20,7 @@ function Navbar() {
         <Link to="/polysphere">Polyspheres</Link>
       </div>
     </div>
-  )
+  );
 }
 
 export default Navbar;

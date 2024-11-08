@@ -1,22 +1,22 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import Cell from './Cell';
+import { render, screen, fireEvent } from "@testing-library/react";
+import Cell from "./Cell";
 
-describe('Board component', () => {
+describe("Board component", () => {
   it('should apply the "hovered" class when hovered over', () => {
     const onMouseClick = jest.fn();
     render(<Cell isEven={true} isQueen={false} onMouseClick={onMouseClick} />);
 
-    const cell = screen.getByRole('cell');
+    const cell = screen.getByRole("cell");
 
     // Initially, the cell should not have the "hovered" class
-    expect(cell.classList.contains('hovered')).toBe(false);
+    expect(cell.classList.contains("hovered")).toBe(false);
 
     // Trigger mouse enter to simulate hover
     fireEvent.mouseEnter(cell);
-    expect(cell.classList.contains('hovered')).toBe(true);
+    expect(cell.classList.contains("hovered")).toBe(true);
 
     // Trigger mouse leave to end hover
     fireEvent.mouseLeave(cell);
-    expect(cell.classList.contains('hovered')).toBe(false);
+    expect(cell.classList.contains("hovered")).toBe(false);
   });
 });

@@ -1,6 +1,6 @@
 /**
  * Checks if all queens on the board are safe.
- * 
+ *
  * @param {number[][]} board The chess board.
  * @returns {boolean} Is the board valid.
  */
@@ -24,7 +24,7 @@ function isValid(board) {
 /**
  * Checks if a given queen is safe from attack from all other queens on the
  * board.
- * 
+ *
  * @param {number[][]} board The chess board.
  * @param {number} row The row of the queen to be checked.
  * @param {number} col The column of the queen to be checked.
@@ -46,31 +46,31 @@ function isSafe(board, row, col) {
   }
   let steps;
   // Top left diagonal
-  steps = Math.min(row, col)
+  steps = Math.min(row, col);
   for (let i = 1; i <= steps; i++) {
     if (board[row - i][col - i] === 1) {
-      return false
+      return false;
     }
   }
   // Bottom left diagonal
-  steps = Math.min(n - row - 1, col)
+  steps = Math.min(n - row - 1, col);
   for (let i = 1; i <= steps; i++) {
     if (board[row + i][col - i] === 1) {
-      return false
+      return false;
     }
   }
   // Bottom right diagonal
-  steps = Math.min(n - row - 1, n - col - 1)
+  steps = Math.min(n - row - 1, n - col - 1);
   for (let i = 1; i <= steps; i++) {
     if (board[row + i][col + i] === 1) {
-      return false
+      return false;
     }
   }
   // Top right diagonal
-  steps = Math.min(row, n - col - 1)
+  steps = Math.min(row, n - col - 1);
   for (let i = 1; i <= steps; i++) {
     if (board[row - i][col + i] === 1) {
-      return false
+      return false;
     }
   }
   return true;
@@ -78,7 +78,7 @@ function isSafe(board, row, col) {
 
 /**
  * Attempt to solve the N-Queens problem on a given chess board.
- * 
+ *
  * @param {number[][]} board The chess board to solve.
  * @returns {boolean} Is the board N-Queens solvable.
  */
@@ -118,5 +118,5 @@ function solveNQueens(board) {
 module.exports = {
   isValid,
   isSafe,
-  solveNQueens
-}
+  solveNQueens,
+};

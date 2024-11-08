@@ -1,10 +1,10 @@
-import './PolyspherePuzzle.css';
-import { useState, useEffect } from 'react';
-import PolyBoard from '../PolyBoard/PolyBoard';
-import PieceSelector from '../PieceSelector/PieceSelector';
-import ProgressBar from '../ProgressBar/ProgressBar';
-import pieces from '../../lib/pieces';
-import createPolysphereWorker from '../../workers/createPolysphereWorker';
+import "./PolyspherePuzzle.css";
+import { useState, useEffect } from "react";
+import PolyBoard from "../PolyBoard/PolyBoard";
+import PieceSelector from "../PieceSelector/PieceSelector";
+import ProgressBar from "../ProgressBar/ProgressBar";
+import pieces from "../../lib/pieces";
+import createPolysphereWorker from "../../workers/createPolysphereWorker";
 
 /**
  * Creates a 2D array representing a polysphere board. Each cell is initialized
@@ -14,11 +14,10 @@ import createPolysphereWorker from '../../workers/createPolysphereWorker';
  * @param {number} height The number of rows in the board.
  * @returns {Array<Array<string>>} A 2D array representing the board.
  */
-const createBoard = (width, height) => (
-  Array(height).fill().map(
-    () => Array(width).fill("")
-  )
-);
+const createBoard = (width, height) =>
+  Array(height)
+    .fill()
+    .map(() => Array(width).fill(""));
 
 /**
  * Normalizes an array of shape coordinates by shifting them so that the
@@ -36,7 +35,7 @@ const normalise = (coords) => {
 /**
  * A component displaying the polysphere puzzle solver, including the board,
  * shape selector, and input controls.
- * 
+ *
  * @returns {React.JSX.Element}
  */
 function PolyspherePuzzle() {
@@ -64,7 +63,7 @@ function PolyspherePuzzle() {
         newWorker.terminate();
       };
     } catch (err) {
-      console.error('Failed to create Web Worker:', err);
+      console.error("Failed to create Web Worker:", err);
     }
   }, []);
 
@@ -78,57 +77,65 @@ function PolyspherePuzzle() {
   // Register keyboard input
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (['r', 'f', 's', 'u', 'ArrowLeft', 'ArrowRight', 'Escape'].includes(e.key)) {
+      if (
+        ["r", "f", "s", "u", "ArrowLeft", "ArrowRight", "Escape"].includes(
+          e.key
+        )
+      ) {
         e.preventDefault();
       }
       if (isSolving) return;
       switch (e.key.toLowerCase()) {
         // Rotate piece
-        case 'r':
+        case "r":
           if (selectedShape) {
             const newShape = { ...selectedShape };
-            newShape.coords = normalise(newShape.coords.map(([x, y]) => [y, -x]));
+            newShape.coords = normalise(
+              newShape.coords.map(([x, y]) => [y, -x])
+            );
             setSelectedShape(newShape);
           }
           break;
         // Solve puzzle
-        case 's':
+        case "s":
           handleSolve();
           break;
         // undo
-        case 'u':
+        case "u":
           handleUndo();
           break;
         // Flip piece
-        case 'f':
+        case "f":
           if (selectedShape) {
             const newShape = { ...selectedShape };
-            newShape.coords = normalise(newShape.coords.map(([x, y]) => [-x, y]));
+            newShape.coords = normalise(
+              newShape.coords.map(([x, y]) => [-x, y])
+            );
             setSelectedShape(newShape);
           }
           break;
         // Previous piece
-        case 'arrowleft':
+        case "arrowleft":
           if (shapes.length > 0) {
             const currentIndex = shapes.findIndex(
-              shape => shape.symbol === selectedShape.symbol
+              (shape) => shape.symbol === selectedShape.symbol
             );
             const newIndex = (currentIndex - 1 + shapes.length) % shapes.length;
             setSelectedShape(shapes[newIndex]);
           }
           break;
         // Next piece
-        case 'arrowright':
+        case "arrowright":
           if (shapes.length > 0) {
             const currentIndex = shapes.findIndex(
-              shape => shape.symbol === selectedShape.symbol
+              (shape) => shape.symbol === selectedShape.symbol
             );
             const newIndex = (currentIndex + 1) % shapes.length;
             setSelectedShape(shapes[newIndex]);
           }
           break;
         // Clear board
-        case 'escape':
+        case "escape":
           handleClear();
           break;
         // Default
@@ -137,10 +144,10 @@ function PolyspherePuzzle() {
       }
     };
     // Attach event listener
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
     // Cleanup and remove event listener
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedShape, shapes, isSolving, moveStack]);
@@ -153,23 +160,23 @@ function PolyspherePuzzle() {
   const handleSolve = () => {
     if (!worker) return;
     // Handler for when the worker sends a solution back here
-    const messageHandler = e => {
-      if (e.data.type === 'solution') {
-        setSolutions(prev => [...prev, e.data.data]);
+    const messageHandler = (e) => {
+      if (e.data.type === "solution") {
+        setSolutions((prev) => [...prev, e.data.data]);
       }
-      if (e.data.type === 'complete') {
+      if (e.data.type === "complete") {
         setIsSolved(true);
         setIsSolving(false);
         // Remove 'onMessage' handler when worker is complete
-        worker.removeEventListener('message', messageHandler);
+        worker.removeEventListener("message", messageHandler);
       }
-    }
+    };
     setIsSolving(true);
     // Attach 'onMessage' event listener
-    worker.addEventListener('message', messageHandler);
+    worker.addEventListener("message", messageHandler);
     // Send the current board configuration and pieces to the solver
     worker.postMessage({ board, pieces });
-  }
+  };
 
   /**
    * Handle clicking the clear button. Resets the board and game state.
@@ -191,7 +198,7 @@ function PolyspherePuzzle() {
    */
   const handleNextSolution = () => {
     if (solutionIndex < solutions.length - 1) {
-      setSolutionIndex(prev => prev + 1);
+      setSolutionIndex((prev) => prev + 1);
       setBoard(solutions[solutionIndex + 1]);
     }
   };
@@ -202,7 +209,7 @@ function PolyspherePuzzle() {
    */
   const handlePreviousSolution = () => {
     if (solutionIndex > 0) {
-      setSolutionIndex(prev => prev - 1);
+      setSolutionIndex((prev) => prev - 1);
       setBoard(solutions[solutionIndex - 1]);
     }
   };
@@ -213,14 +220,14 @@ function PolyspherePuzzle() {
    */
   const handleUndo = () => {
     if (moveStack.length > 0) {
-      setMoveStack(prev => {
+      setMoveStack((prev) => {
         const newStack = [...prev];
         const lastMove = newStack.pop();
         // Restore the board to the previous state
         setBoard(lastMove.board);
         // Restore the piece to availabe pieces
         if (lastMove.piece) {
-          setShapes(prev => [...prev, lastMove.piece]);
+          setShapes((prev) => [...prev, lastMove.piece]);
           setSelectedShape(lastMove.piece);
         }
         return newStack;
@@ -235,31 +242,27 @@ function PolyspherePuzzle() {
    * @param {Object} piece The current piece being placed.
    */
   const addMove = (board, piece) => {
-    setMoveStack(prev => [...prev, { board, piece }]);
+    setMoveStack((prev) => [...prev, { board, piece }]);
   };
 
   return (
     <div className="puzzleTwo">
       <h2>The Polysphere Puzzle</h2>
       <p>
-        The <b> polysphere puzzle </b> involves placing <b> 12 </b>
-        unique shapes made of connected spheres onto a <b> 5x11 </b>
-        board. Your goal is to fit all pieces perfectly into the grid.
-        Each shape is made from a different configuration of spheres,
-        and you can use the <b> Solve </b> button to find the best way
-        to complete the board.
+        The <b> polysphere puzzle </b> involves placing <b> 12 </b> unique
+        shapes made of connected spheres onto a <b> 5x11 </b> board. Your goal
+        is to fit all pieces perfectly into the grid. Each shape is made from a
+        different configuration of spheres, and you can use the <b> Solve </b>
+        button to find the best way to complete the board.
       </p>
-      <ProgressBar
-        current={12 - shapes.length}
-        total={12}
-      />
-      {shapes.length > 0 &&
+      <ProgressBar current={12 - shapes.length} total={12} />
+      {shapes.length > 0 && (
         <PieceSelector
           shapes={shapes}
           selectedShape={selectedShape}
           setSelectedShape={setSelectedShape}
         />
-      }
+      )}
       <PolyBoard
         board={board}
         setBoard={setBoard}
@@ -277,21 +280,18 @@ function PolyspherePuzzle() {
         <button onClick={handleClear} disabled={isSolving}>
           Clear Board
         </button>
-        <button onClick={handleUndo} disabled={moveStack.length === 0 || isSolving}>
+        <button
+          onClick={handleUndo}
+          disabled={moveStack.length === 0 || isSolving}
+        >
           Undo
         </button>
       </div>
       <div>
-        {isSolving &&
-          <span>Solving ⏳</span>
-        }
-        {isSolved && solutions.length > 0 &&
-          <span>Solutions found ✅</span>
-        }
-        {isSolved && solutions.length === 0 &&
-          <span>No solutions ⚠️</span>
-        }
-        {solutions.length >= 1 &&
+        {isSolving && <span>Solving ⏳</span>}
+        {isSolved && solutions.length > 0 && <span>Solutions found ✅</span>}
+        {isSolved && solutions.length === 0 && <span>No solutions ⚠️</span>}
+        {solutions.length >= 1 && (
           <div className="solutionNavigation">
             <button
               onClick={handlePreviousSolution}
@@ -299,7 +299,9 @@ function PolyspherePuzzle() {
             >
               Previous Solution
             </button>
-            <span>Solution {solutionIndex + 1} of {solutions.length}</span>
+            <span>
+              Solution {solutionIndex + 1} of {solutions.length}
+            </span>
             <button
               onClick={handleNextSolution}
               disabled={solutionIndex === solutions.length - 1}
@@ -307,7 +309,7 @@ function PolyspherePuzzle() {
               Next Solution
             </button>
           </div>
-        }
+        )}
         <div className="keyboardControls">
           <p>Keyboard Controls</p>
           <ul>

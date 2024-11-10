@@ -8,9 +8,9 @@ import {
 } from "react-router-dom";
 
 import Navbar from "../components/Navbar/Navbar";
-import Home from "../components/Home/Home";
-import NQueenPuzzle from "../components/NQueenPuzzle/NQueenPuzzle";
-import PolyspherePuzzle from "../components/PolyspherePuzzle/PolyspherePuzzle";
+import Home from "../pages/Home/Home";
+import NQueenPuzzle from "../pages/NQueenPuzzle/NQueenPuzzle";
+import PolyspherePuzzle from "../pages/PolyspherePuzzle/PolyspherePuzzle";
 
 /**
  * Main app component.

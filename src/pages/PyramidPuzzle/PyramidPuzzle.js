@@ -21,7 +21,12 @@ function Piece(props) {
 function PyramidPuzzle() {
   return (
     <div className="puzzleThree">
-      <Canvas>
+      <Canvas
+        camera={{
+          position: [25, 25, 25],
+          fov: 50,
+        }}
+      >
         <ambientLight intensity={Math.PI / 2} />
         <pointLight position={[0, 20, 0]} decay={0} intensity={Math.PI} />
         <OrbitControls

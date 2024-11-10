@@ -1,8 +1,8 @@
 import "./PolyspherePuzzle.css";
 import { useState, useEffect } from "react";
-import PolyBoard from "../PolyBoard/PolyBoard";
-import PieceSelector from "../PieceSelector/PieceSelector";
-import ProgressBar from "../ProgressBar/ProgressBar";
+import PolyBoard from "../../components/PolyBoard/PolyBoard";
+import PieceSelector from "../../components/PieceSelector/PieceSelector";
+import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import pieces from "../../lib/pieces";
 import createPolysphereWorker from "../../workers/createPolysphereWorker";
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Board from "../Board/Board";
+import Board from "../../components/Board/Board";
 import { solveNQueens } from "../../lib/nqueens";
 import "./NQueenPuzzle.css";
 

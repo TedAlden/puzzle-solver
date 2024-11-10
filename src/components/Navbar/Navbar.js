@@ -19,6 +19,9 @@ function Navbar() {
       <div className="navbarItem">
         <Link to="/polysphere">Polyspheres</Link>
       </div>
+      <div className="navbarItem">
+        <Link to="/pyramid">Pyramid</Link>
+      </div>
     </div>
   );
 }

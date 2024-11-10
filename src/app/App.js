@@ -11,6 +11,7 @@ import Navbar from "../components/Navbar/Navbar";
 import Home from "../pages/Home/Home";
 import NQueenPuzzle from "../pages/NQueenPuzzle/NQueenPuzzle";
 import PolyspherePuzzle from "../pages/PolyspherePuzzle/PolyspherePuzzle";
+import PyramidPuzzle from "../pages/PyramidPuzzle/PyramidPuzzle";
 
 /**
  * Main app component.
@@ -28,6 +29,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/nqueen" element={<NQueenPuzzle />} />
           <Route path="/polysphere" element={<PolyspherePuzzle />} />
+          <Route path="/pyramid" element={<PyramidPuzzle />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>

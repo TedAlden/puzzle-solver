@@ -30,6 +30,15 @@ function Home() {
           </p>
         </div>
       </Link>
+      <Link to="/pyramid" className="puzzle-option">
+        <div className="icon">📐</div>
+        <div className="puzzle-info">
+          <div className="puzzle-title">Polysphere Pyramid</div>
+          <p className="puzzle-description">
+            Place shapes on a 3D pyramid to solve the Polysphere Pyramid puzzle.
+          </p>
+        </div>
+      </Link>
     </div>
   );
 }

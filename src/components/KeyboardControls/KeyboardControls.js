@@ -11,15 +11,14 @@ function KeyboardControls({
   handleUndo,
   handleClear,
   normalise,
-
-  
-}) 
-
-
-{
+}) {
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (["r", "f", "s", "u", "ArrowLeft", "ArrowRight", "Escape"].includes(e.key)) {
+      if (
+        ["r", "f", "s", "u", "ArrowLeft", "ArrowRight", "Escape"].includes(
+          e.key
+        )
+      ) {
         e.preventDefault();
       }
       if (isSolving) return;
@@ -28,7 +27,9 @@ function KeyboardControls({
         case "r": // Rotate piece
           if (selectedShape) {
             const newShape = { ...selectedShape };
-            newShape.coords = normalise(newShape.coords.map(([x, y]) => [y, -x]));
+            newShape.coords = normalise(
+              newShape.coords.map(([x, y]) => [y, -x])
+            );
             setSelectedShape(newShape);
           }
           break;
@@ -41,20 +42,26 @@ function KeyboardControls({
         case "f": // Flip piece
           if (selectedShape) {
             const newShape = { ...selectedShape };
-            newShape.coords = normalise(newShape.coords.map(([x, y]) => [-x, y]));
+            newShape.coords = normalise(
+              newShape.coords.map(([x, y]) => [-x, y])
+            );
             setSelectedShape(newShape);
           }
           break;
         case "arrowleft": // Previous piece
           if (shapes.length > 0) {
-            const currentIndex = shapes.findIndex(shape => shape.symbol === selectedShape.symbol);
+            const currentIndex = shapes.findIndex(
+              (shape) => shape.symbol === selectedShape.symbol
+            );
             const newIndex = (currentIndex - 1 + shapes.length) % shapes.length;
             setSelectedShape(shapes[newIndex]);
           }
           break;
         case "arrowright": // Next piece
           if (shapes.length > 0) {
-            const currentIndex = shapes.findIndex(shape => shape.symbol === selectedShape.symbol);
+            const currentIndex = shapes.findIndex(
+              (shape) => shape.symbol === selectedShape.symbol
+            );
             const newIndex = (currentIndex + 1) % shapes.length;
             setSelectedShape(shapes[newIndex]);
           }
@@ -74,7 +81,16 @@ function KeyboardControls({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [selectedShape, shapes, isSolving, setSelectedShape, handleSolve, handleUndo, handleClear, normalise]);
+  }, [
+    selectedShape,
+    shapes,
+    isSolving,
+    setSelectedShape,
+    handleSolve,
+    handleUndo,
+    handleClear,
+    normalise,
+  ]);
   // Render the controls description
   return (
     <div className="keyboardControls">
@@ -102,7 +118,5 @@ KeyboardControls.propTypes = {
   handleClear: PropTypes.func.isRequired,
   normalise: PropTypes.func.isRequired,
 };
-
-
 
 export default KeyboardControls;

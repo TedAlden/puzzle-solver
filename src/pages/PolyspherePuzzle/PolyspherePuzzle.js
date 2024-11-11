@@ -230,7 +230,7 @@ function PolyspherePuzzle() {
               disabled={solutionIndex === solutions.length - 1}
             >
               Next Solution
-              </button>
+            </button>
           </div>
         )}
       </div>

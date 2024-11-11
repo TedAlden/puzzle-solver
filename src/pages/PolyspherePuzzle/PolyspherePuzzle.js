@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import PolyBoard from "../../components/PolyBoard/PolyBoard";
 import PieceSelector from "../../components/PieceSelector/PieceSelector";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
+import KeyboardControls from "../../components/KeyboardControls/KeyboardControls";
 import pieces from "../../lib/pieces";
 import createPolysphereWorker from "../../workers/createPolysphereWorker";
 
@@ -74,83 +75,7 @@ function PolyspherePuzzle() {
     }
   }, [solutions, solutionIndex]);
 
-  // Register keyboard input
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (
-        ["r", "f", "s", "u", "ArrowLeft", "ArrowRight", "Escape"].includes(
-          e.key
-        )
-      ) {
-        e.preventDefault();
-      }
-      if (isSolving) return;
-      switch (e.key.toLowerCase()) {
-        // Rotate piece
-        case "r":
-          if (selectedShape) {
-            const newShape = { ...selectedShape };
-            newShape.coords = normalise(
-              newShape.coords.map(([x, y]) => [y, -x])
-            );
-            setSelectedShape(newShape);
-          }
-          break;
-        // Solve puzzle
-        case "s":
-          handleSolve();
-          break;
-        // undo
-        case "u":
-          handleUndo();
-          break;
-        // Flip piece
-        case "f":
-          if (selectedShape) {
-            const newShape = { ...selectedShape };
-            newShape.coords = normalise(
-              newShape.coords.map(([x, y]) => [-x, y])
-            );
-            setSelectedShape(newShape);
-          }
-          break;
-        // Previous piece
-        case "arrowleft":
-          if (shapes.length > 0) {
-            const currentIndex = shapes.findIndex(
-              (shape) => shape.symbol === selectedShape.symbol
-            );
-            const newIndex = (currentIndex - 1 + shapes.length) % shapes.length;
-            setSelectedShape(shapes[newIndex]);
-          }
-          break;
-        // Next piece
-        case "arrowright":
-          if (shapes.length > 0) {
-            const currentIndex = shapes.findIndex(
-              (shape) => shape.symbol === selectedShape.symbol
-            );
-            const newIndex = (currentIndex + 1) % shapes.length;
-            setSelectedShape(shapes[newIndex]);
-          }
-          break;
-        // Clear board
-        case "escape":
-          handleClear();
-          break;
-        // Default
-        default:
-          break;
-      }
-    };
-    // Attach event listener
-    window.addEventListener("keydown", handleKeyDown);
-    // Cleanup and remove event listener
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedShape, shapes, isSolving, moveStack]);
+  
 
   /**
    * Handle clicking the solve button. Starts the puzzle solver using a
@@ -307,22 +232,20 @@ function PolyspherePuzzle() {
               disabled={solutionIndex === solutions.length - 1}
             >
               Next Solution
-            </button>
+              </button>
           </div>
         )}
-        <div className="keyboardControls">
-          <p>Keyboard Controls</p>
-          <ul>
-            <li>R : Rotate piece</li>
-            <li>F : Flip piece</li>
-            <li>← : Previous piece</li>
-            <li>→ : Next piece</li>
-            <li>U : Undo</li>
-            <li>S : Solve puzzle</li>
-            <li>Esc : Clear board</li>
-          </ul>
-        </div>
       </div>
+      <KeyboardControls
+        selectedShape={selectedShape}
+        setSelectedShape={setSelectedShape}
+        shapes={shapes}
+        isSolving={isSolving}
+        handleSolve={handleSolve}
+        handleUndo={handleUndo}
+        handleClear={handleClear}
+        normalise={normalise}
+      />
     </div>
   );
 }

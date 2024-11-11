@@ -21,6 +21,7 @@ function Piece(props) {
 function PyramidPuzzle() {
   return (
     <div className="puzzleThree">
+      <h2>The Pyramid Puzzle</h2>
       <Canvas
         camera={{
           position: [25, 25, 25],

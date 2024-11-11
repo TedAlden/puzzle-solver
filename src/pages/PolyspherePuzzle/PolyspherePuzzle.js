@@ -75,8 +75,6 @@ function PolyspherePuzzle() {
     }
   }, [solutions, solutionIndex]);
 
-  
-
   /**
    * Handle clicking the solve button. Starts the puzzle solver using a
    * background worker. Updates the solutions array as the worker finds new

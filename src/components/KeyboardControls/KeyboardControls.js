@@ -11,7 +11,12 @@ function KeyboardControls({
   handleUndo,
   handleClear,
   normalise,
-}) {
+
+  
+}) 
+
+
+{
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (["r", "f", "s", "u", "ArrowLeft", "ArrowRight", "Escape"].includes(e.key)) {
@@ -70,8 +75,21 @@ function KeyboardControls({
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [selectedShape, shapes, isSolving, setSelectedShape, handleSolve, handleUndo, handleClear, normalise]);
-
-  return null; 
+  // Render the controls description
+  return (
+    <div className="keyboardControls">
+      <p>Keyboard Controls</p>
+      <ul>
+        <li>R : Rotate piece</li>
+        <li>F : Flip piece</li>
+        <li>← : Previous piece</li>
+        <li>→ : Next piece</li>
+        <li>U : Undo</li>
+        <li>S : Solve puzzle</li>
+        <li>Esc : Clear board</li>
+      </ul>
+    </div>
+  );
 }
 
 KeyboardControls.propTypes = {
@@ -85,17 +103,6 @@ KeyboardControls.propTypes = {
   normalise: PropTypes.func.isRequired,
 };
 
-<div className="keyboardControls">
-<p>Keyboard Controls</p>
-<ul>
-  <li>R : Rotate piece</li>
-  <li>F : Flip piece</li>
-  <li>← : Previous piece</li>
-  <li>→ : Next piece</li>
-  <li>U : Undo</li>
-  <li>S : Solve puzzle</li>
-  <li>Esc : Clear board</li>
-</ul>
-</div>
+
 
 export default KeyboardControls;

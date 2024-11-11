@@ -1,4 +1,6 @@
 import "./PyramidPuzzle.css";
+//import ProgressBar from "../../components/ProgressBar/ProgressBar";
+//import KeyboardControls from "../../components/KeyboardControls/KeyboardControls";
 import { useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
@@ -22,6 +24,14 @@ function PyramidPuzzle() {
   return (
     <div className="puzzleThree">
       <h2>The Pyramid Puzzle</h2>
+      <p>
+        The <b> pyramid puzzle </b> involves placing <b> 12 </b> unique shapes
+        made of connected spheres onto a <b> pyramid </b> board. Your goal is to
+        fit all pieces perfectly into the grid. Each shape is made from a
+        different configuration of spheres, and you can use the <b> Solve </b>
+        button to find the best way to complete the board.
+      </p>
+
       <Canvas
         camera={{
           position: [25, 25, 25],

@@ -1,5 +1,10 @@
 import "./PieceSelector.css";
 import ShapePreview from "../ShapePreview/ShapePreview";
+import {
+  flipShapeHorizontal,
+  normaliseShape,
+  rotateShapeCCW,
+} from "../../lib/utils";
 
 /**
  * A component for selecting and transforming polysphere shape pieces. Allows
@@ -15,22 +20,10 @@ import ShapePreview from "../ShapePreview/ShapePreview";
  */
 function PieceSelector({ shapes, selectedShape, setSelectedShape }) {
   /**
-   * Normalise the shape so the top-left tile is aligned to (0, 0).
-   * @param {Array<Array<number>>} coords The shape as an array of [x, y]
-   *  coordinate pairs.
-   * @returns {Array<Array<number>>} The normalized shape coordinates.
-   */
-  const normalise = (coords) => {
-    const minRow = Math.min(...coords.map(([r, _]) => r));
-    const minCol = Math.min(...coords.map(([_, c]) => c));
-    return coords.map(([r, c]) => [r - minRow, c - minCol]);
-  };
-
-  /**
    * Selects the previous shape in the shapes array. Wraps to the end of the
    * list if the current shape is the first element.
    */
-  const selectPreviousShape = () => {
+  const handlePreviousShape = () => {
     const currentIndex = shapes.findIndex(
       (shape) => shape.symbol === selectedShape.symbol
     );
@@ -42,7 +35,7 @@ function PieceSelector({ shapes, selectedShape, setSelectedShape }) {
    * Selects the next shape in the shapes array. Wraps to the start of the list
    * if the current shape is the last element.
    */
-  const selectNextShape = () => {
+  const handleNextShape = () => {
     const currentIndex = shapes.findIndex(
       (shape) => shape.symbol === selectedShape.symbol
     );
@@ -54,9 +47,9 @@ function PieceSelector({ shapes, selectedShape, setSelectedShape }) {
    * Rotates the selected shape 90 degrees clockwise and updates the selected
    * shape's coordinates with the normalized rotated version.
    */
-  const rotateShape = () => {
+  const handleRotateShape = () => {
     const newShape = { ...selectedShape };
-    newShape.coords = normalise(newShape.coords.map(([x, y]) => [y, -x]));
+    newShape.coords = normaliseShape(rotateShapeCCW(newShape.coords));
     setSelectedShape(newShape);
   };
 
@@ -64,19 +57,19 @@ function PieceSelector({ shapes, selectedShape, setSelectedShape }) {
    * Flips the selected shape horizontally and updates the selected shape's
    * coordinates with the normalized flipped version.
    */
-  const flipShape = () => {
+  const handleFlipShape = () => {
     const newShape = { ...selectedShape };
-    newShape.coords = normalise(newShape.coords.map(([x, y]) => [-x, y]));
+    newShape.coords = normaliseShape(flipShapeHorizontal(newShape.coords));
     setSelectedShape(newShape);
   };
 
   return (
     <div className="pieceSelector">
-      <button onClick={flipShape}>Flip</button>
-      <button onClick={selectPreviousShape}>Prev</button>
+      <button onClick={handleFlipShape}>Flip</button>
+      <button onClick={handlePreviousShape}>Prev</button>
       <ShapePreview selectedShape={selectedShape} />
-      <button onClick={selectNextShape}>Next</button>
-      <button onClick={rotateShape}>Rotate</button>
+      <button onClick={handleNextShape}>Next</button>
+      <button onClick={handleRotateShape}>Rotate</button>
     </div>
   );
 }

@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import "./KeyboardControls.css";
+import useKeyboardInput from "../../hooks/useKeyboardInput";
 
 function KeyboardControls({
   selectedShape,
@@ -12,85 +12,60 @@ function KeyboardControls({
   handleClear,
   normalise,
 }) {
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (
-        ["r", "f", "s", "u", "ArrowLeft", "ArrowRight", "Escape"].includes(
-          e.key
-        )
-      ) {
-        e.preventDefault();
-      }
-      if (isSolving) return;
+  useKeyboardInput("r", () => {
+    if (!isSolving && selectedShape) {
+      const newShape = { ...selectedShape };
+      newShape.coords = normalise(newShape.coords.map(([x, y]) => [y, -x]));
+      setSelectedShape(newShape);
+    }
+  });
 
-      switch (e.key.toLowerCase()) {
-        case "r": // Rotate piece
-          if (selectedShape) {
-            const newShape = { ...selectedShape };
-            newShape.coords = normalise(
-              newShape.coords.map(([x, y]) => [y, -x])
-            );
-            setSelectedShape(newShape);
-          }
-          break;
-        case "s": // Solve puzzle
-          handleSolve();
-          break;
-        case "u": // Undo
-          handleUndo();
-          break;
-        case "f": // Flip piece
-          if (selectedShape) {
-            const newShape = { ...selectedShape };
-            newShape.coords = normalise(
-              newShape.coords.map(([x, y]) => [-x, y])
-            );
-            setSelectedShape(newShape);
-          }
-          break;
-        case "arrowleft": // Previous piece
-          if (shapes.length > 0) {
-            const currentIndex = shapes.findIndex(
-              (shape) => shape.symbol === selectedShape.symbol
-            );
-            const newIndex = (currentIndex - 1 + shapes.length) % shapes.length;
-            setSelectedShape(shapes[newIndex]);
-          }
-          break;
-        case "arrowright": // Next piece
-          if (shapes.length > 0) {
-            const currentIndex = shapes.findIndex(
-              (shape) => shape.symbol === selectedShape.symbol
-            );
-            const newIndex = (currentIndex + 1) % shapes.length;
-            setSelectedShape(shapes[newIndex]);
-          }
-          break;
-        case "escape": // Clear board
-          handleClear();
-          break;
-        default:
-          break;
-      }
-    };
+  useKeyboardInput("f", () => {
+    if (!isSolving && selectedShape) {
+      const newShape = { ...selectedShape };
+      newShape.coords = normalise(newShape.coords.map(([x, y]) => [-x, y]));
+      setSelectedShape(newShape);
+    }
+  });
 
-    // Attach event listener
-    window.addEventListener("keydown", handleKeyDown);
+  useKeyboardInput("ArrowLeft", () => {
+    if (!isSolving && shapes.length > 0) {
+      const currentIndex = shapes.findIndex(
+        (shape) => shape.symbol === selectedShape.symbol
+      );
+      const newIndex = (currentIndex - 1 + shapes.length) % shapes.length;
+      setSelectedShape(shapes[newIndex]);
+    }
+  });
 
-    // Cleanup and remove event listener
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [
-    selectedShape,
-    shapes,
-    isSolving,
-    setSelectedShape,
-    handleSolve,
-    handleUndo,
-    handleClear,
-    normalise,
-  ]);
+  useKeyboardInput("ArrowRight", () => {
+    if (!isSolving && shapes.length > 0) {
+      const currentIndex = shapes.findIndex(
+        (shape) => shape.symbol === selectedShape.symbol
+      );
+      const newIndex = (currentIndex + 1) % shapes.length;
+      setSelectedShape(shapes[newIndex]);
+    }
+  });
+
+  useKeyboardInput("Escape", () => {
+    if (!isSolving) {
+      handleClear();
+    }
+  });
+
+  useKeyboardInput("s", () => {
+    if (!isSolving) {
+      handleSolve();
+    }
+  });
+
+  useKeyboardInput("u", () => {
+    if (!isSolving) {
+      handleUndo();
+    }
+  });
+
   // Render the controls description
   return (
     <div className="keyboardControls">

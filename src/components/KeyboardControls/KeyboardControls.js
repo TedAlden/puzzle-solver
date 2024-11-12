@@ -95,7 +95,6 @@ KeyboardControls.propTypes = {
   handleSolve: PropTypes.func.isRequired,
   handleUndo: PropTypes.func.isRequired,
   handleClear: PropTypes.func.isRequired,
-  normalise: PropTypes.func.isRequired,
 };
 
 export default KeyboardControls;

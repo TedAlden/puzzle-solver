@@ -1,5 +1,5 @@
 canvas {
-  height: calc(100vh - 50px);
+  height: calc(50vh);
 }
 .puzzleThree {
   max-width: 1000px;

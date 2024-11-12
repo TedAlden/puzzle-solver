@@ -1,21 +1,16 @@
 import "./PyramidPuzzle.css";
-//import ProgressBar from "../../components/ProgressBar/ProgressBar";
-//import KeyboardControls from "../../components/KeyboardControls/KeyboardControls";
-import { useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 
 function Piece(props) {
-  const [hovered, setHover] = useState(false);
-
   return (
-    <mesh
-      {...props}
-      onPointerOver={(event) => setHover(true)}
-      onPointerOut={(event) => setHover(false)}
-    >
+    <mesh {...props}>
       <sphereGeometry args={[2.5]} />
-      <meshStandardMaterial color={hovered ? "hotpink" : "orange"} />
+      <meshStandardMaterial
+        transparent={true}
+        opacity={0.7}
+        color={"#ffffff"}
+      />
     </mesh>
   );
 }
@@ -31,7 +26,6 @@ function PyramidPuzzle() {
         different configuration of spheres, and you can use the <b> Solve </b>
         button to find the best way to complete the board.
       </p>
-
       <Canvas
         camera={{
           position: [25, 25, 25],

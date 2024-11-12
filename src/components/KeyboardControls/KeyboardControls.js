@@ -1,6 +1,11 @@
 import PropTypes from "prop-types";
 import "./KeyboardControls.css";
 import useKeyboardInput from "../../hooks/useKeyboardInput";
+import {
+  flipShapeHorizontal,
+  normaliseShape,
+  rotateShapeCCW,
+} from "../../lib/utils";
 
 function KeyboardControls({
   selectedShape,
@@ -10,12 +15,11 @@ function KeyboardControls({
   handleSolve,
   handleUndo,
   handleClear,
-  normalise,
 }) {
   useKeyboardInput("r", () => {
     if (!isSolving && selectedShape) {
       const newShape = { ...selectedShape };
-      newShape.coords = normalise(newShape.coords.map(([x, y]) => [y, -x]));
+      newShape.coords = normaliseShape(rotateShapeCCW(newShape.coords));
       setSelectedShape(newShape);
     }
   });
@@ -23,7 +27,7 @@ function KeyboardControls({
   useKeyboardInput("f", () => {
     if (!isSolving && selectedShape) {
       const newShape = { ...selectedShape };
-      newShape.coords = normalise(newShape.coords.map(([x, y]) => [-x, y]));
+      newShape.coords = normaliseShape(flipShapeHorizontal(newShape.coords));
       setSelectedShape(newShape);
     }
   });

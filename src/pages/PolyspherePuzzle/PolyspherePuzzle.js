@@ -6,32 +6,7 @@ import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import KeyboardControls from "../../components/KeyboardControls/KeyboardControls";
 import pieces from "../../lib/pieces";
 import createPolysphereWorker from "../../workers/createPolysphereWorker";
-
-/**
- * Creates a 2D array representing a polysphere board. Each cell is initialized
- * with an empty string.
- *
- * @param {number} width The number of columns in the board.
- * @param {number} height The number of rows in the board.
- * @returns {Array<Array<string>>} A 2D array representing the board.
- */
-const createBoard = (width, height) =>
-  Array(height)
-    .fill()
-    .map(() => Array(width).fill(""));
-
-/**
- * Normalizes an array of shape coordinates by shifting them so that the
- * top-left corner is at (0, 0).
- *
- * @param {Array<Array<number>>} coords An array of [row, col] coordinates.
- * @returns {Array<Array<number>>} The adjusted array of coordinates.
- */
-const normalise = (coords) => {
-  const minRow = Math.min(...coords.map(([r, _]) => r));
-  const minCol = Math.min(...coords.map(([_, c]) => c));
-  return coords.map(([r, c]) => [r - minRow, c - minCol]);
-};
+import { createBoard2D } from "../../lib/utils";
 
 /**
  * A component displaying the polysphere puzzle solver, including the board,
@@ -40,7 +15,7 @@ const normalise = (coords) => {
  * @returns {React.JSX.Element}
  */
 function PolyspherePuzzle() {
-  const [board, setBoard] = useState(createBoard(11, 5));
+  const [board, setBoard] = useState(createBoard2D(11, 5, ""));
   const [shapes, setShapes] = useState(pieces);
   const [selectedShape, setSelectedShape] = useState(shapes[0]);
 
@@ -105,7 +80,7 @@ function PolyspherePuzzle() {
    * Handle clicking the clear button. Resets the board and game state.
    */
   const handleClear = () => {
-    setBoard(createBoard(11, 5));
+    setBoard(createBoard2D(11, 5, ""));
     setShapes(pieces);
     setSelectedShape(pieces[0]);
     setSolutions([]);
@@ -242,7 +217,6 @@ function PolyspherePuzzle() {
         handleSolve={handleSolve}
         handleUndo={handleUndo}
         handleClear={handleClear}
-        normalise={normalise}
       />
     </div>
   );

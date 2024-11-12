@@ -1,3 +1,32 @@
 canvas {
   height: calc(100vh - 50px);
 }
+.puzzleThree {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0.5rem;
+  color: white;
+}
+.puzzleThree h2 {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  background: linear-gradient(to right, #ec4899, #8b5cf6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+.puzzleThree p {
+  text-align: center;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+  font-size: 1.2rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.puzzleThree b {
+  color: #b952c9;
+  font-weight: 600;
+}

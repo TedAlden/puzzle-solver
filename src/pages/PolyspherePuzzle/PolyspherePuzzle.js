@@ -3,34 +3,10 @@ import { useState, useEffect } from "react";
 import PolyBoard from "../../components/PolyBoard/PolyBoard";
 import PieceSelector from "../../components/PieceSelector/PieceSelector";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
+import KeyboardControls from "../../components/KeyboardControls/KeyboardControls";
 import pieces from "../../lib/pieces";
 import createPolysphereWorker from "../../workers/createPolysphereWorker";
-
-/**
- * Creates a 2D array representing a polysphere board. Each cell is initialized
- * with an empty string.
- *
- * @param {number} width The number of columns in the board.
- * @param {number} height The number of rows in the board.
- * @returns {Array<Array<string>>} A 2D array representing the board.
- */
-const createBoard = (width, height) =>
-  Array(height)
-    .fill()
-    .map(() => Array(width).fill(""));
-
-/**
- * Normalizes an array of shape coordinates by shifting them so that the
- * top-left corner is at (0, 0).
- *
- * @param {Array<Array<number>>} coords An array of [row, col] coordinates.
- * @returns {Array<Array<number>>} The adjusted array of coordinates.
- */
-const normalise = (coords) => {
-  const minRow = Math.min(...coords.map(([r, _]) => r));
-  const minCol = Math.min(...coords.map(([_, c]) => c));
-  return coords.map(([r, c]) => [r - minRow, c - minCol]);
-};
+import { createBoard2D } from "../../lib/utils";
 
 /**
  * A component displaying the polysphere puzzle solver, including the board,
@@ -39,7 +15,7 @@ const normalise = (coords) => {
  * @returns {React.JSX.Element}
  */
 function PolyspherePuzzle() {
-  const [board, setBoard] = useState(createBoard(11, 5));
+  const [board, setBoard] = useState(createBoard2D(11, 5, ""));
   const [shapes, setShapes] = useState(pieces);
   const [selectedShape, setSelectedShape] = useState(shapes[0]);
 
@@ -74,84 +50,6 @@ function PolyspherePuzzle() {
     }
   }, [solutions, solutionIndex]);
 
-  // Register keyboard input
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (
-        ["r", "f", "s", "u", "ArrowLeft", "ArrowRight", "Escape"].includes(
-          e.key
-        )
-      ) {
-        e.preventDefault();
-      }
-      if (isSolving) return;
-      switch (e.key.toLowerCase()) {
-        // Rotate piece
-        case "r":
-          if (selectedShape) {
-            const newShape = { ...selectedShape };
-            newShape.coords = normalise(
-              newShape.coords.map(([x, y]) => [y, -x])
-            );
-            setSelectedShape(newShape);
-          }
-          break;
-        // Solve puzzle
-        case "s":
-          handleSolve();
-          break;
-        // undo
-        case "u":
-          handleUndo();
-          break;
-        // Flip piece
-        case "f":
-          if (selectedShape) {
-            const newShape = { ...selectedShape };
-            newShape.coords = normalise(
-              newShape.coords.map(([x, y]) => [-x, y])
-            );
-            setSelectedShape(newShape);
-          }
-          break;
-        // Previous piece
-        case "arrowleft":
-          if (shapes.length > 0) {
-            const currentIndex = shapes.findIndex(
-              (shape) => shape.symbol === selectedShape.symbol
-            );
-            const newIndex = (currentIndex - 1 + shapes.length) % shapes.length;
-            setSelectedShape(shapes[newIndex]);
-          }
-          break;
-        // Next piece
-        case "arrowright":
-          if (shapes.length > 0) {
-            const currentIndex = shapes.findIndex(
-              (shape) => shape.symbol === selectedShape.symbol
-            );
-            const newIndex = (currentIndex + 1) % shapes.length;
-            setSelectedShape(shapes[newIndex]);
-          }
-          break;
-        // Clear board
-        case "escape":
-          handleClear();
-          break;
-        // Default
-        default:
-          break;
-      }
-    };
-    // Attach event listener
-    window.addEventListener("keydown", handleKeyDown);
-    // Cleanup and remove event listener
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedShape, shapes, isSolving, moveStack]);
-
   /**
    * Handle clicking the solve button. Starts the puzzle solver using a
    * background worker. Updates the solutions array as the worker finds new
@@ -182,7 +80,7 @@ function PolyspherePuzzle() {
    * Handle clicking the clear button. Resets the board and game state.
    */
   const handleClear = () => {
-    setBoard(createBoard(11, 5));
+    setBoard(createBoard2D(11, 5, ""));
     setShapes(pieces);
     setSelectedShape(pieces[0]);
     setSolutions([]);
@@ -310,19 +208,16 @@ function PolyspherePuzzle() {
             </button>
           </div>
         )}
-        <div className="keyboardControls">
-          <p>Keyboard Controls</p>
-          <ul>
-            <li>R : Rotate piece</li>
-            <li>F : Flip piece</li>
-            <li>← : Previous piece</li>
-            <li>→ : Next piece</li>
-            <li>U : Undo</li>
-            <li>S : Solve puzzle</li>
-            <li>Esc : Clear board</li>
-          </ul>
-        </div>
       </div>
+      <KeyboardControls
+        selectedShape={selectedShape}
+        setSelectedShape={setSelectedShape}
+        shapes={shapes}
+        isSolving={isSolving}
+        handleSolve={handleSolve}
+        handleUndo={handleUndo}
+        handleClear={handleClear}
+      />
     </div>
   );
 }

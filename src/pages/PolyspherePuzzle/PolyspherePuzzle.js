@@ -7,6 +7,11 @@ import KeyboardControls from "../../components/KeyboardControls/KeyboardControls
 import pieces from "../../lib/pieces";
 import createPolysphereWorker from "../../workers/createPolysphereWorker";
 import { createBoard2D } from "../../lib/utils";
+import {
+  flipShapeHorizontal,
+  normaliseShape,
+  rotateShapeCCW,
+} from "../../lib/utils";
 
 /**
  * A component displaying the polysphere puzzle solver, including the board,
@@ -210,13 +215,95 @@ function PolyspherePuzzle() {
         )}
       </div>
       <KeyboardControls
-        selectedShape={selectedShape}
-        setSelectedShape={setSelectedShape}
-        shapes={shapes}
-        isSolving={isSolving}
-        handleSolve={handleSolve}
-        handleUndo={handleUndo}
-        handleClear={handleClear}
+        keyMap={[
+          {
+            key: "r",
+            keyAlias: "R",
+            description: "Rotate piece",
+            onClick: () => {
+              if (!isSolving && selectedShape) {
+                const newShape = { ...selectedShape };
+                newShape.coords = normaliseShape(
+                  rotateShapeCCW(newShape.coords)
+                );
+                setSelectedShape(newShape);
+              }
+            },
+          },
+          {
+            key: "f",
+            keyAlias: "F",
+            description: "Flip piece",
+            onClick: () => {
+              if (!isSolving && selectedShape) {
+                const newShape = { ...selectedShape };
+                newShape.coords = normaliseShape(
+                  flipShapeHorizontal(newShape.coords)
+                );
+                setSelectedShape(newShape);
+              }
+            },
+          },
+          {
+            key: "ArrowLeft",
+            keyAlias: "←",
+            description: "Previous piece",
+            onClick: () => {
+              if (!isSolving && shapes.length > 0) {
+                const currentIndex = shapes.findIndex(
+                  (shape) => shape.symbol === selectedShape.symbol
+                );
+                const newIndex =
+                  (currentIndex - 1 + shapes.length) % shapes.length;
+                setSelectedShape(shapes[newIndex]);
+              }
+            },
+          },
+          {
+            key: "ArrowRight",
+            keyAlias: "→",
+            description: "Next piece",
+            onClick: () => {
+              if (!isSolving && shapes.length > 0) {
+                const currentIndex = shapes.findIndex(
+                  (shape) => shape.symbol === selectedShape.symbol
+                );
+                const newIndex = (currentIndex + 1) % shapes.length;
+                setSelectedShape(shapes[newIndex]);
+              }
+            },
+          },
+          {
+            key: "Escape",
+            keyAlias: "Esc",
+            description: "Clear board",
+            onClick: () => {
+              if (!isSolving) {
+                handleClear();
+              }
+            },
+          },
+          {
+            key: "u",
+            keyAlias: "U",
+            description: "Undo action",
+            onClick: () => {
+              if (!isSolving) {
+                handleUndo();
+              }
+            },
+          },
+          {
+            key: "s",
+            keyAlias: "S",
+            description: "Solve puzzle",
+            onClick: () => {
+              if (!isSolving) {
+                handleSolve();
+              }
+            },
+          },
+        ]}
       />
     </div>
   );

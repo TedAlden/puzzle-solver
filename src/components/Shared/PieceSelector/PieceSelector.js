@@ -1,10 +1,10 @@
 import "./PieceSelector.css";
-import ShapePreview from "../ShapePreview/ShapePreview";
+import ShapePreview from "../../ShapePreview/ShapePreview";
 import {
   flipShapeHorizontal,
   normaliseShape,
   rotateShapeCCW,
-} from "../../lib/utils";
+} from "../../../lib/utils";
 
 /**
  * A component for selecting and transforming polysphere shape pieces. Allows
@@ -18,7 +18,7 @@ import {
  *  shape.
  * @returns {JSX.Element}
  */
-function PieceSelector({ shapes, selectedShape, setSelectedShape }) {
+function PieceSelector({ shapes, selectedShape, setSelectedShape, variant ='polysphere' }) {
   /**
    * Selects the previous shape in the shapes array. Wraps to the end of the
    * list if the current shape is the first element.

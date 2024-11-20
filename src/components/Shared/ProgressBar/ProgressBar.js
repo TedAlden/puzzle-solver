@@ -7,12 +7,14 @@ import "./ProgressBar.css";
  * @param {Object} props Component properties.
  * @param {number} props.current The current number of pieces placed.
  * @param {number} props.total The total number of pieces to be placed.
+ * @param {string} props.variant Style variant ('polysphere' | 'pyramid')
  * @returns {JSX.Element}
  */
-function ProgressBar({ current, total }) {
+function ProgressBar({ current, total, variant = 'polysphere' }) {
   const progress = (current / total) * 100;
+
   return (
-    <div className="progress-tracker">
+    <div className= { `progress-tracker ${variant}`}>
       <div className="progress-stats">
         <div className="progress-text">
           <span className="progress-label">Progress:</span>

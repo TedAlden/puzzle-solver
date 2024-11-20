@@ -16,10 +16,11 @@
   gap: 0.5rem;
   align-items: center;
 }
+
 .progress-label {
   color: #8b5cf6;
-  font-weight: 600;
 }
+
 .progress-count {
   color: #e5e7eb;
 }
@@ -42,4 +43,17 @@
   background: linear-gradient(to right, #ec4899, #8b5cf6);
   transition: width 0.3s ease;
   border-radius: 8px;
+}
+
+.progress-tracker.pyramid .progress-fill {
+  background: linear-gradient(to right, #ca8a04, #eab308);
+}
+
+.progress-tracker.pyramid .progress-percentage {
+  background: rgba(202, 138, 4, 0.2);
+  color: #eab308;
+}
+
+.progress-tracker.pyramid .progress-label {
+  color: #eab308;
 }

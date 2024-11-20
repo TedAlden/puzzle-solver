@@ -1,5 +1,8 @@
 import "./PyramidPuzzle.css";
 import { useEffect, useState } from "react";
+import ProgressBar from "../../components/Shared/ProgressBar/ProgressBar";
+import PieceSelector from "../../components/Shared/PieceSelector/PieceSelector";
+import pieces from "../../lib/pieces";
 import PyramidBoard from "../../components/PyramidBoard/PyramidBoard";
 
 /**
@@ -15,6 +18,8 @@ const createPyramid = (size) =>
 
 function PyramidPuzzle() {
   const [board, setBoard] = useState(createPyramid(5));
+  const [shapes, setShapes] = useState(pieces);
+  const [selectedShape, setSelectedShape] = useState(shapes[0]);
 
   useEffect(() => {
     const newPyramid = createPyramid(5);
@@ -32,6 +37,17 @@ function PyramidPuzzle() {
         different configuration of spheres, and you can use the <b> Solve </b>
         button to find the best way to complete the board.
       </p>
+
+      <ProgressBar current={12 - shapes.length} total={12} variant="pyramid" />
+
+      {shapes.length > 0 && (
+        <PieceSelector
+          shapes={shapes}
+          selectedShape={selectedShape}
+          setSelectedShape={setSelectedShape}
+        />
+      )}
+
       <PyramidBoard board={board} />
     </div>
   );

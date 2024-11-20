@@ -20,6 +20,7 @@ const createPyramid = (size) =>
   );
 
 function PyramidPuzzle() {
+  // eslint-disable-next-line no-unused-vars
   const [board, setBoard] = useState(createPyramid(5));
 
   const isValidMove = (newIndex) => {
@@ -49,31 +50,16 @@ function PyramidPuzzle() {
   const [selectedShape, setSelectedShape] = useState(shapes[0]);
 
   const [selectedIndex, setSelectedIndex] = useState([0, 0, 0]); // y, x, z
+  const [highlightedCells, setHighlightedCells] = useState([]);
 
   useEffect(() => {
-    // update highlighted cells when index changes
+    // update highlighted cells when selected index (or shape) changes
     const highlightedCells = selectedShape.coords.map(([x, z]) => [
       x + selectedIndex[1],
       0 + selectedIndex[0],
       z + selectedIndex[2],
     ]);
-
-    const newBoard = board.map((level, y) =>
-      level.map((row, x) =>
-        row.map((cell, z) => {
-          if (
-            highlightedCells.some(
-              ([hx, hy, hz]) => hx === x && hy === y && hz === z
-            )
-          ) {
-            return selectedShape.symbol;
-          }
-          return 0;
-        })
-      )
-    );
-    setBoard(newBoard);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setHighlightedCells(highlightedCells);
   }, [selectedIndex, selectedShape]);
 
   return (
@@ -94,7 +80,7 @@ function PyramidPuzzle() {
           setSelectedShape={setSelectedShape}
         />
       )}
-      <PyramidBoard board={board} />
+      <PyramidBoard board={board} highlightedCells={highlightedCells} />
       <KeyboardControls
         keyMap={[
           {

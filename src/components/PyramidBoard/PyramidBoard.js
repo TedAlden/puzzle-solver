@@ -2,7 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import PyramidCell from "../PyramidCell/PyramidCell";
 
-function PyramidBoard({ board }) {
+function PyramidBoard({ board, highlightedCells }) {
   const renderPyramid = (pyramid) => {
     const size = pyramid.length;
     // Offset y coordinate to center the pyramid at (0, 0, 0)
@@ -15,11 +15,15 @@ function PyramidBoard({ board }) {
         for (let k = 0; k < layerSize; k++) {
           const x = (j - (layerSize - 1) / 2) * 5;
           const z = (k - (layerSize - 1) / 2) * 5;
+          const isHighlighted = highlightedCells.some(
+            (cell) => cell[0] === j && cell[1] === i && cell[2] === k
+          );
           elements.push(
             <PyramidCell
               key={`${j}-${i}-${k}`}
               position={[x, y, z]}
-              shapeValue={pyramid[i][j][k]}
+              shapeSymbol={pyramid[i][j][k]}
+              isHighlighted={isHighlighted}
             />
           );
         }

@@ -62,11 +62,11 @@
   transition: all 0.2s ease;
 }
 .input-section button:first-of-type {
-  background: #3b82f6;
+  background: #0066FF;
   color: white;
 }
 .input-section button:first-of-type:hover {
-  background: #2563eb;
+  background: #0052CC;
 }
 .input-section button:last-of-type {
   background: #4b5563;

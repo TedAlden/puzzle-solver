@@ -5,7 +5,7 @@
   gap: 1rem;
   margin: 2rem 0;
   padding: 1rem;
-  background: #4b55634d;
+  background: #37415180;
   border-radius: 8px;
   width: fit-content;
   margin-left: auto;
@@ -13,7 +13,7 @@
 }
 .pieceSelector button {
   padding: 0.75rem 1.5rem;
-  background: #4c1d95;
+  background: #0066FF;
   color: white;
   border: none;
   border-radius: 8px;
@@ -27,12 +27,9 @@
   justify-content: center;
   gap: 0.5rem;
 }
+
 .pieceSelector button:hover {
-  background: #5b21b6;
-  transform: translateY(-1px);
-}
-.pieceSelector button:hover {
-  background: #5b21b6;
+  background: #0052CC;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
 }
@@ -51,17 +48,4 @@
 }
 .pieceSelector button:last-child::before {
   content: "🔄";
-}
-.pieceSelector.polysphere {
-  background: #4b55634d;
-}
-
-.pieceSelector.polysphere button {
-  background: #4c1d95;
-}
-
-.pieceSelector.polysphere button:hover {
-  background: #5b21b6;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
 }

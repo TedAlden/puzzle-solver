@@ -1,5 +1,5 @@
 .progress-tracker {
-  background: rgba(55, 65, 81, 0.5);
+  background: #37415180;
   border-radius: 8px;
   padding: 1.25rem;
   margin: 1.5rem auto;
@@ -18,7 +18,7 @@
 }
 
 .progress-label {
-  color: #8b5cf6;
+  color: #00ACC1;
 }
 
 .progress-count {
@@ -26,7 +26,7 @@
 }
 .progress-percentage {
   background: rgba(139, 92, 246, 0.2);
-  color: #8b5cf6;
+  color: #00ACC1;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-weight: 600;
@@ -40,13 +40,13 @@
 }
 .progress-fill {
   height: 100%;
-  background: linear-gradient(to right, #ec4899, #8b5cf6);
+  background: linear-gradient(to right, #0066FF, #00ACC1);
   transition: width 0.3s ease;
   border-radius: 8px;
 }
 
 .progress-tracker.pyramid .progress-fill {
-  background: linear-gradient(to right, #ca8a04, #eab308);
+  background: linear-gradient(to right, #FFD700, #FF6600);
 }
 
 .progress-tracker.pyramid .progress-percentage {

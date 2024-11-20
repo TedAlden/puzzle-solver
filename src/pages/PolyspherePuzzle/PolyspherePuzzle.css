@@ -8,7 +8,7 @@
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 2rem;
-  background: linear-gradient(to right, #ec4899, #8b5cf6);
+  background: linear-gradient(to right, #0066FF, #00ACC1);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -24,7 +24,7 @@
   margin-right: auto;
 }
 .puzzleTwo b {
-  color: #b952c9;
+  color: #00ACC1;
   font-weight: 600;
 }
 .controlsContainer {
@@ -41,13 +41,13 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: #4c1d95;
+  background: #0066FF;
   color: white;
 }
 .controlsContainer button:hover:not(:disabled) {
-  background: #5b21b6;
+  background: #0052CC;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px #7c3aed4d;
+  box-shadow: 0 4px 12px #0052CC;
 }
 .controlsContainer button:disabled {
   opacity: 0.6;
@@ -64,7 +64,7 @@
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 8px;
-  background: #4c1d95;
+  background: #0066FF;
   color: white;
   font-size: 1rem;
   cursor: pointer;
@@ -75,6 +75,6 @@
   cursor: not-allowed;
 }
 .solutionNavigation span {
-  color: #a78bfa;
+  color: white;
   font-weight: 600;
 }

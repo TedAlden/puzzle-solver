@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import PolyBoard from "../../components/PolyBoard/PolyBoard";
 import PieceSelector from "../../components/Shared/PieceSelector/PieceSelector";
 import ProgressBar from "../../components/Shared/ProgressBar/ProgressBar";
-import KeyboardControls from "../../components/KeyboardControls/KeyboardControls";
+import KeyboardControls from "../../components/Shared/KeyboardControls/KeyboardControls";
 import pieces from "../../lib/pieces";
 import createPolysphereWorker from "../../workers/createPolysphereWorker";
 import { createBoard2D } from "../../lib/utils";

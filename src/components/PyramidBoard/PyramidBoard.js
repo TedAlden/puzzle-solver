@@ -43,7 +43,7 @@ function PyramidBoard({ board }) {
   return (
     <Canvas
       camera={{
-        position: [25, 25, 25],
+        position: [35, 15, 35],
         fov: 50,
       }}
     >

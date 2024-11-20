@@ -1,5 +1,5 @@
 import "./PieceSelector.css";
-import ShapePreview from "../../ShapePreview/ShapePreview";
+import ShapePreview from "../ShapePreview/ShapePreview";
 import {
   flipShapeHorizontal,
   normaliseShape,
@@ -18,7 +18,12 @@ import {
  *  shape.
  * @returns {JSX.Element}
  */
-function PieceSelector({ shapes, selectedShape, setSelectedShape, variant ='polysphere' }) {
+function PieceSelector({
+  shapes,
+  selectedShape,
+  setSelectedShape,
+  variant = "polysphere",
+}) {
   /**
    * Selects the previous shape in the shapes array. Wraps to the end of the
    * list if the current shape is the first element.

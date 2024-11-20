@@ -1,6 +1,7 @@
 import { useState } from "react";
 import QueenBoard from "../../components/QueenBoard/QueenBoard";
 import { solveNQueens } from "../../lib/nqueens";
+import KeyboardControls from "../../components/Shared/KeyboardControls/KeyboardControls";
 import "./NQueenPuzzle.css";
 
 /**
@@ -94,6 +95,44 @@ function NQueenPuzzle() {
       <div className="board-section">
         <QueenBoard board={board} setBoard={setBoard} />
       </div>
+      <KeyboardControls
+        keyMap={[
+          {
+            key: "Escape",
+            keyAlias: "Esc",
+            description: "Clear board",
+            onClick: clearBoard,
+          },
+          {
+            key: "s",
+            keyAlias: "S",
+            description: "Solve puzzle",
+            onClick: solveBoard,
+          },
+          {
+            key: "ArrowUp",
+            keyAlias: "↑",
+            description: "Increase board size",
+            onClick: () => {
+              const newSize = Math.max(1, boardSize + 1);
+              setBoardSize(newSize);
+              setBoard(createBoard(newSize));
+              setSolved(false);
+            },
+          },
+          {
+            key: "ArrowDown",
+            keyAlias: "↓",
+            description: "Decrease board size",
+            onClick: () => {
+              const newSize = Math.max(1, boardSize - 1);
+              setBoardSize(newSize);
+              setBoard(createBoard(newSize));
+              setSolved(false);
+            },
+          },
+        ]}
+      />
     </div>
   );
 }

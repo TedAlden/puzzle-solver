@@ -6,6 +6,8 @@ import pieces from "../../lib/pieces";
 import PyramidBoard from "../../components/PyramidBoard/PyramidBoard";
 import KeyboardControls from "../../components/Shared/KeyboardControls/KeyboardControls";
 
+// TODO: add x,y,z guide lines
+
 /**
  * Creates a 3D pyramid puzzle with a given size.
  *
@@ -19,6 +21,28 @@ const createPyramid = (size) =>
 
 function PyramidPuzzle() {
   const [board, setBoard] = useState(createPyramid(5));
+
+  const isValidMove = (newIndex) => {
+    const [newY, newX, newZ] = newIndex;
+
+    return selectedShape.coords.every(([dx, dz]) => {
+      const targetY = newY;
+      const targetX = newX + dx;
+      const targetZ = newZ + dz;
+
+      // Check if the target layer exists
+      if (targetY < 0 || targetY >= board.length) return false;
+
+      // Check if the target row exists within the layer
+      if (targetX < 0 || targetX >= board[targetY].length) return false;
+
+      // Check if the target cell exists within the row
+      if (targetZ < 0 || targetZ >= board[targetY][targetX].length)
+        return false;
+
+      return true;
+    });
+  };
 
   // eslint-disable-next-line no-unused-vars
   const [shapes, setShapes] = useState(pieces);
@@ -78,8 +102,11 @@ function PyramidPuzzle() {
             keyAlias: "→",
             description: "Move shape right",
             onClick: () => {
-              var [y, x, z] = selectedIndex;
-              setSelectedIndex([y, x, z - 1]);
+              const [y, x, z] = selectedIndex;
+              const newIndex = [y, x, z - 1];
+              if (isValidMove(newIndex)) {
+                setSelectedIndex(newIndex);
+              }
             },
           },
           {
@@ -87,8 +114,11 @@ function PyramidPuzzle() {
             keyAlias: "←",
             description: "Move shape left",
             onClick: () => {
-              var [y, x, z] = selectedIndex;
-              setSelectedIndex([y, x, z + 1]);
+              const [y, x, z] = selectedIndex;
+              const newIndex = [y, x, z + 1];
+              if (isValidMove(newIndex)) {
+                setSelectedIndex(newIndex);
+              }
             },
           },
           {
@@ -96,8 +126,11 @@ function PyramidPuzzle() {
             keyAlias: "↑",
             description: "Move shape forwards",
             onClick: () => {
-              var [y, x, z] = selectedIndex;
-              setSelectedIndex([y, x - 1, z]);
+              const [y, x, z] = selectedIndex;
+              const newIndex = [y, x - 1, z];
+              if (isValidMove(newIndex)) {
+                setSelectedIndex(newIndex);
+              }
             },
           },
           {
@@ -105,9 +138,11 @@ function PyramidPuzzle() {
             keyAlias: "↓",
             description: "Move shape backwards",
             onClick: () => {
-              var [y, x, z] = selectedIndex;
-              var newIndex = [y, x + 1, z];
-              setSelectedIndex(newIndex);
+              const [y, x, z] = selectedIndex;
+              const newIndex = [y, x + 1, z];
+              if (isValidMove(newIndex)) {
+                setSelectedIndex(newIndex);
+              }
             },
           },
           {
@@ -115,8 +150,22 @@ function PyramidPuzzle() {
             keyAlias: "W",
             description: "Move shape up",
             onClick: () => {
-              var [y, x, z] = selectedIndex;
-              setSelectedIndex([y + 1, x, z]);
+              const [y, x, z] = selectedIndex;
+              // when moving upwards, there are multiple different directions
+              // to choose from, since the layers are not vertically
+              // stacked/aligned.
+              const newIndices = [
+                [y + 1, x, z],
+                [y + 1, x - 1, z - 1],
+                [y + 1, x - 1, z],
+                [y + 1, x, z - 1],
+              ];
+              newIndices.forEach((newIndex) => {
+                if (isValidMove(newIndex)) {
+                  setSelectedIndex(newIndex);
+                  return;
+                }
+              });
             },
           },
           {
@@ -124,8 +173,11 @@ function PyramidPuzzle() {
             keyAlias: "S",
             description: "Move shape down",
             onClick: () => {
-              var [y, x, z] = selectedIndex;
-              setSelectedIndex([y - 1, x, z]);
+              const [y, x, z] = selectedIndex;
+              const newIndex = [y - 1, x, z];
+              if (isValidMove(newIndex)) {
+                setSelectedIndex(newIndex);
+              }
             },
           },
         ]}

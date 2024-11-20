@@ -20,7 +20,6 @@ const createPyramid = (size) =>
   );
 
 function PyramidPuzzle() {
-  // eslint-disable-next-line no-unused-vars
   const [board, setBoard] = useState(createPyramid(5));
 
   const isValidMove = (newIndex) => {
@@ -163,6 +162,50 @@ function PyramidPuzzle() {
               const newIndex = [y - 1, x, z];
               if (isValidMove(newIndex)) {
                 setSelectedIndex(newIndex);
+              }
+            },
+          },
+          {
+            key: "d",
+            keyAlias: "D",
+            description: "Place shape",
+            onClick: () => {
+              const [y, x, z] = selectedIndex;
+              // Map the coords of each shape tile to the current selected index
+              // to calculate the coords of each shape tile on the board
+              const shapeIndices = selectedShape.coords.map(([dx, dz]) => [
+                y,
+                x + dx,
+                z + dz,
+              ]);
+              // Check if any of the shape tiles are already occupied
+              const isSpaceOccupied = shapeIndices.some(
+                ([dy, dx, dz]) => board[dy][dx][dz] !== ""
+              );
+              // If there is space, then:
+              if (!isSpaceOccupied) {
+                // 1. place the shape on the pyramid board
+                setBoard(
+                  board.map((layer, i) =>
+                    layer.map((row, j) =>
+                      row.map((cell, k) =>
+                        shapeIndices.some(
+                          ([dy, dx, dz]) => dy === i && dx === j && dz === k
+                        )
+                          ? selectedShape.symbol
+                          : cell
+                      )
+                    )
+                  )
+                );
+                // 2. remove the shape from our inventory of available shapes
+                setShapes((prevShapes) => {
+                  const newShapes = prevShapes.filter(
+                    (shape) => shape.symbol !== selectedShape.symbol
+                  );
+                  setSelectedShape(newShapes[0] || null);
+                  return newShapes;
+                });
               }
             },
           },

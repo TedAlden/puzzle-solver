@@ -1,18 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-
-function Piece(props) {
-  return (
-    <mesh {...props}>
-      <sphereGeometry args={[2.5]} />
-      <meshStandardMaterial
-        transparent={true}
-        opacity={0.7}
-        color={props.shapeValue === 0 ? "#ffffff" : "#ff0000"}
-      />
-    </mesh>
-  );
-}
+import PyramidCell from "../PyramidCell/PyramidCell";
 
 function PyramidBoard({ board }) {
   const renderPyramid = (pyramid) => {
@@ -28,7 +16,7 @@ function PyramidBoard({ board }) {
           const x = (j - (layerSize - 1) / 2) * 5;
           const z = (k - (layerSize - 1) / 2) * 5;
           elements.push(
-            <Piece
+            <PyramidCell
               key={`${j}-${i}-${k}`}
               position={[x, y, z]}
               shapeValue={pyramid[i][j][k]}

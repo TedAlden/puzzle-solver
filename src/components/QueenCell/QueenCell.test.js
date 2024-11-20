@@ -1,10 +1,12 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import Cell from "./Cell";
+import QueenCell from "./QueenCell";
 
 describe("Board component", () => {
   it('should apply the "hovered" class when hovered over', () => {
     const onMouseClick = jest.fn();
-    render(<Cell isEven={true} isQueen={false} onMouseClick={onMouseClick} />);
+    render(
+      <QueenCell isEven={true} isQueen={false} onMouseClick={onMouseClick} />
+    );
 
     const cell = screen.getByRole("cell");
 

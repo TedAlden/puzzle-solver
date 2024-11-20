@@ -1,5 +1,5 @@
-import "./Board.css";
-import Cell from "../Cell/Cell";
+import "./QueenBoard.css";
+import QueenCell from "../QueenCell/QueenCell";
 
 /**
  * A grid board containing toggleable cells for placing/removing queens. Each
@@ -10,7 +10,7 @@ import Cell from "../Cell/Cell";
  * @param {function} props.setBoard A function to update the board state.
  * @returns {React.JSX.Element}
  */
-function Board({ board, setBoard }) {
+function QueenBoard({ board, setBoard }) {
   /**
    * Toggle the placement of a queen at a given cell (row, col).
    */
@@ -31,7 +31,7 @@ function Board({ board, setBoard }) {
     >
       {board.map((row, rowIndex) =>
         row.map((cell, colIndex) => (
-          <Cell
+          <QueenCell
             key={`${rowIndex}-${colIndex}`}
             isEven={(rowIndex + colIndex) % 2 === 0}
             isQueen={cell === 1}
@@ -43,4 +43,4 @@ function Board({ board, setBoard }) {
   );
 }
 
-export default Board;
+export default QueenBoard;

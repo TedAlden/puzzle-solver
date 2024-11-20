@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Board from "../../components/Board/Board";
+import QueenBoard from "../../components/QueenBoard/QueenBoard";
 import { solveNQueens } from "../../lib/nqueens";
 import "./NQueenPuzzle.css";
 
@@ -92,7 +92,7 @@ function NQueenPuzzle() {
       </div>
       {solved && <h2>Solution found</h2>}
       <div className="board-section">
-        <Board board={board} setBoard={setBoard} />
+        <QueenBoard board={board} setBoard={setBoard} />
       </div>
     </div>
   );

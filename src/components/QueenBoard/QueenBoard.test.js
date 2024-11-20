@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Board from "./Board";
+import QueenBoard from "./QueenBoard";
 
 describe("N-Queens Board Integration Test", () => {
   test("Board array should have queen after clicking on empty cell", () => {
@@ -15,7 +15,7 @@ describe("N-Queens Board Integration Test", () => {
     const setBoardMock = jest.fn();
 
     const { getAllByRole } = render(
-      <Board board={board} setBoard={setBoardMock} />
+      <QueenBoard board={board} setBoard={setBoardMock} />
     );
 
     // Simulate click on the first cell (row 0, col 0)
@@ -43,7 +43,7 @@ describe("N-Queens Board Integration Test", () => {
     const setBoardMock = jest.fn();
 
     const { getAllByRole } = render(
-      <Board board={board} setBoard={setBoardMock} />
+      <QueenBoard board={board} setBoard={setBoardMock} />
     );
 
     // Simulate click on the first cell (row 0, col 0)
@@ -76,7 +76,7 @@ describe("N-Queens Board Integration Test", () => {
     });
 
     const { getAllByRole, rerender } = render(
-      <Board board={board} setBoard={setBoardMock} />
+      <QueenBoard board={board} setBoard={setBoardMock} />
     );
 
     // Simulate click on the first cell (row 0, col 0)
@@ -88,7 +88,7 @@ describe("N-Queens Board Integration Test", () => {
     const updatedBoard = [...board];
     updatedBoard[0][0] = 1;
     setBoardMock(updatedBoard);
-    rerender(<Board board={updatedBoard} setBoard={setBoardMock} />);
+    rerender(<QueenBoard board={updatedBoard} setBoard={setBoardMock} />);
 
     // After clicking, expect a queen to be displayed
     await waitFor(() => {
@@ -112,7 +112,7 @@ describe("N-Queens Board Integration Test", () => {
     });
 
     const { getAllByRole, rerender } = render(
-      <Board board={board} setBoard={setBoardMock} />
+      <QueenBoard board={board} setBoard={setBoardMock} />
     );
 
     // Simulate click on the first cell (row 0, col 0)
@@ -124,7 +124,7 @@ describe("N-Queens Board Integration Test", () => {
     const updatedBoard = [...board];
     updatedBoard[0][0] = 0;
     setBoardMock(updatedBoard);
-    rerender(<Board board={updatedBoard} setBoard={setBoardMock} />);
+    rerender(<QueenBoard board={updatedBoard} setBoard={setBoardMock} />);
 
     // After clicking, expect a queen to not be displayed
     await waitFor(() => {

@@ -1,4 +1,4 @@
-import "./Cell.css";
+import "./QueenCell.css";
 import { useState } from "react";
 
 /**
@@ -11,7 +11,7 @@ import { useState } from "react";
  * @param {function} props.onMouseClick Called when the cell is clicked.
  * @returns {React.JSX.Element}
  */
-function Cell({ isEven, isQueen, onMouseClick }) {
+function QueenCell({ isEven, isQueen, onMouseClick }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -29,4 +29,4 @@ function Cell({ isEven, isQueen, onMouseClick }) {
   );
 }
 
-export default Cell;
+export default QueenCell;

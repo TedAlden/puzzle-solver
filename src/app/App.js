@@ -7,7 +7,7 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../components/Shared/Navbar/Navbar";
 import Home from "../pages/Home/Home";
 import NQueenPuzzle from "../pages/NQueenPuzzle/NQueenPuzzle";
 import PolyspherePuzzle from "../pages/PolyspherePuzzle/PolyspherePuzzle";

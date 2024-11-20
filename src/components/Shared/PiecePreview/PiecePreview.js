@@ -1,4 +1,4 @@
-import "./ShapePreview.css";
+import "./PiecePreview.css";
 
 /**
  * Displays a preview of the currently selected shape. It generates an SVG
@@ -8,7 +8,7 @@ import "./ShapePreview.css";
  * @param {Object} props.selectedShape The shape piece.
  * @returns {JSX.Element}
  */
-function ShapePreview({ selectedShape }) {
+function PiecePreview({ selectedShape }) {
   const tileSize = 20; // Size of each square tile in shape preview (px)
   const previewCols = 5; // Width of preview viewport (# of tiles)
   const previewRows = 5; // Height of preview viewport (# of tiles)
@@ -72,4 +72,4 @@ function ShapePreview({ selectedShape }) {
   );
 }
 
-export default ShapePreview;
+export default PiecePreview;

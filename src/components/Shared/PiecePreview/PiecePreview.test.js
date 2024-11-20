@@ -1,6 +1,5 @@
 import { render } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import ShapePreview from "./ShapePreview";
+import PiecePreview from "./PiecePreview";
 
 describe("ShapePreview Component", () => {
   // Mock shape data
@@ -24,12 +23,12 @@ describe("ShapePreview Component", () => {
   };
 
   test("renders without crashing", () => {
-    const { container } = render(<ShapePreview selectedShape={mockShape} />);
+    const { container } = render(<PiecePreview selectedShape={mockShape} />);
     expect(container).toBeInTheDocument();
   });
 
   test("renders SVG element with correct dimensions", () => {
-    const { container } = render(<ShapePreview selectedShape={mockShape} />);
+    const { container } = render(<PiecePreview selectedShape={mockShape} />);
     const svg = container.querySelector("svg");
 
     expect(svg).toBeInTheDocument();
@@ -40,21 +39,21 @@ describe("ShapePreview Component", () => {
   });
 
   test("renders correct number of rectangles for square shape", () => {
-    const { container } = render(<ShapePreview selectedShape={mockShape} />);
+    const { container } = render(<PiecePreview selectedShape={mockShape} />);
     const rects = container.querySelectorAll("rect");
 
     expect(rects).toHaveLength(4); // Square shape 4 tiles
   });
 
   test("renders correct number of rectangles for L shape", () => {
-    const { container } = render(<ShapePreview selectedShape={mockLShape} />);
+    const { container } = render(<PiecePreview selectedShape={mockLShape} />);
     const rects = container.querySelectorAll("rect");
 
     expect(rects).toHaveLength(4); // L shape 4 tiles
   });
 
   test("applies correct color to rectangles", () => {
-    const { container } = render(<ShapePreview selectedShape={mockShape} />);
+    const { container } = render(<PiecePreview selectedShape={mockShape} />);
     const rects = container.querySelectorAll("rect");
 
     rects.forEach((rect) => {
@@ -63,7 +62,7 @@ describe("ShapePreview Component", () => {
   });
 
   test("centers shapes correctly", () => {
-    const { container } = render(<ShapePreview selectedShape={mockShape} />);
+    const { container } = render(<PiecePreview selectedShape={mockShape} />);
     const rects = Array.from(container.querySelectorAll("rect"));
 
     // Check if rectangles are centered by verifying their positions
@@ -88,7 +87,7 @@ describe("ShapePreview Component", () => {
   });
 
   test("SVG has correct styling", () => {
-    const { container } = render(<ShapePreview selectedShape={mockShape} />);
+    const { container } = render(<PiecePreview selectedShape={mockShape} />);
     const svg = container.querySelector("svg");
 
     expect(svg).toHaveStyle({

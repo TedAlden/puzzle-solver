@@ -1,5 +1,5 @@
 import "./PieceSelector.css";
-import ShapePreview from "../ShapePreview/ShapePreview";
+import PiecePreview from "../PiecePreview/PiecePreview";
 import {
   flipShapeHorizontal,
   normaliseShape,
@@ -72,7 +72,7 @@ function PieceSelector({
     <div className="pieceSelector">
       <button onClick={handleFlipShape}>Flip</button>
       <button onClick={handlePreviousShape}>Prev</button>
-      <ShapePreview selectedShape={selectedShape} />
+      <PiecePreview selectedShape={selectedShape} />
       <button onClick={handleNextShape}>Next</button>
       <button onClick={handleRotateShape}>Rotate</button>
     </div>

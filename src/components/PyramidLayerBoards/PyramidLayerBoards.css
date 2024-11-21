@@ -1,0 +1,44 @@
+/* PyramidLayerBoards.css */
+.layer-boards-container {
+  background-color: #37415180;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  max-width: 300px;
+
+}
+
+.layer-title {
+  color: rgb(234, 179, 8);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.layer-section {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.layer-label {
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.layer-grid {
+  display: grid;
+  gap: 1px;
+  padding: 1px;
+  background-color: rgb(75, 85, 99);
+  border-radius: 0.25rem;
+}
+
+.layer-cell {
+  aspect-ratio: 1;
+  background-color: rgb(31, 41, 55);
+  border: 1px solid rgb(75, 85, 99);
+}
+
+.layer-cell.highlighted {
+  background-color: rgba(59, 130, 246, 0.5);
+}

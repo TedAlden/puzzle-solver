@@ -4,6 +4,7 @@ import ProgressBar from "../../components/Shared/ProgressBar/ProgressBar";
 import PieceSelector from "../../components/Shared/PieceSelector/PieceSelector";
 import pieces from "../../lib/pieces";
 import PyramidBoard from "../../components/PyramidBoard/PyramidBoard";
+import PyramidLayerBoards from "../../components/PyramidLayerBoards/PyramidLayerBoards";
 import KeyboardControls from "../../components/Shared/KeyboardControls/KeyboardControls";
 
 // TODO: add x,y,z guide lines
@@ -79,7 +80,15 @@ function PyramidPuzzle() {
           setSelectedShape={setSelectedShape}
         />
       )}
+
+      <div className ="pyramid-area">
       <PyramidBoard board={board} highlightedCells={highlightedCells} />
+      <PyramidLayerBoards
+        board={board}
+        highlightedCells={highlightedCells}
+        selectedShape={selectedShape}
+      />
+      </div>
       <KeyboardControls
         keyMap={[
           {

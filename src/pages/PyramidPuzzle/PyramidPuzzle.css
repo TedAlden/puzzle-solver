@@ -30,3 +30,11 @@ canvas {
   color: #FF6600;
   font-weight: 600;
 }
+
+.pyramid-area {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+  justify-content: center;
+  margin: 1rem auto;
+}

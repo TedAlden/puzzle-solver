@@ -28,9 +28,9 @@ function PyramidLayerBoards({
 }) {
   const handleMouseEnterCell = (layer, row, col) => {
     const highlightedCells = selectedShape.coords.map(([x, z]) => [
-      x + row,
+      x + col,
       0 + layer,
-      z + col,
+      z + row,
     ]);
     const isInBounds = highlightedCells.every(
       ([x, y, z]) =>
@@ -106,7 +106,7 @@ function PyramidLayerBoards({
               // Check if this cell is part of the preview (highlighted)
               const isHighlighted = highlightedCells.some(
                 ([x, y, z]) =>
-                  x === rowIndex && y === layerIndex && z === colIndex
+                  x === colIndex && y === layerIndex && z === rowIndex
               );
 
               // Determine the cell's class based on its state

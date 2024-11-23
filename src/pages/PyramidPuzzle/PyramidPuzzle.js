@@ -30,8 +30,14 @@ function PyramidPuzzle() {
   const [shapes, setShapes] = useState(pieces);
   const [selectedShape, setSelectedShape] = useState(shapes[0]);
   const [highlightedCells, setHighlightedCells] = useState([]);
+  const [isSolving, setIsSolving] = useState(false);
 
-  const isSolving = false;
+  const handleClear = () => {
+    setBoard(createPyramid(5));
+    setShapes(pieces);
+    setSelectedShape(shapes[0]);
+    setIsSolving(false);
+  };
 
   return (
     <div className="puzzleThree">
@@ -124,6 +130,16 @@ function PyramidPuzzle() {
                 );
                 const newIndex = (currentIndex + 1) % shapes.length;
                 setSelectedShape(shapes[newIndex]);
+              }
+            },
+          },
+          {
+            key: "Escape",
+            keyAlias: "Esc",
+            description: "Clear board",
+            onClick: () => {
+              if (!isSolving) {
+                handleClear();
               }
             },
           },

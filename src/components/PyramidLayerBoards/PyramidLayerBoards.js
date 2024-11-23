@@ -52,11 +52,25 @@ function PyramidLayerBoards({
   };
 
   const handleMouseClickCell = (layer, row, col) => {
-    const isSpaceOccupied = highlightedCells.some(
-      ([dx, dy, dz]) => board[dy][dx][dz] !== ""
+    const highlightedCells = selectedShape.coords.map(([x, z]) => [
+      x + col,
+      0 + layer,
+      z + row,
+    ]);
+    const isInBounds = highlightedCells.every(
+      ([x, y, z]) =>
+        x >= 0 &&
+        x < board[y].length &&
+        y >= 0 &&
+        y < board.length &&
+        z >= 0 &&
+        z < board[y][x].length
     );
-    // If there is space, then:
-    if (!isSpaceOccupied) {
+    const isUnoccupiedSpace = isInBounds
+      ? !highlightedCells.some(([dx, dy, dz]) => board[dy][dx][dz] !== "")
+      : false;
+    // If there is space, and the shape is within the boards edge bounds then:
+    if (isUnoccupiedSpace && isInBounds) {
       // 1. add the move to the move stack
       addMove([...board.map((row) => [...row])], selectedShape);
       // 2. place the shape on the pyramid board

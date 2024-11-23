@@ -2,7 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import PyramidCell from "../PyramidCell/PyramidCell";
 
-function PyramidBoard({ board, highlightedCells }) {
+function PyramidBoard({ board, highlightedCells, selectedShape }) {
   const renderPyramid = (pyramid) => {
     const size = pyramid.length;
     // Offset y coordinate to center the pyramid at (0, 0, 0)
@@ -24,6 +24,7 @@ function PyramidBoard({ board, highlightedCells }) {
               position={[x, y, z]}
               shapeSymbol={pyramid[i][j][k]}
               isHighlighted={isHighlighted}
+              selectedShape={selectedShape}
             />
           );
         }

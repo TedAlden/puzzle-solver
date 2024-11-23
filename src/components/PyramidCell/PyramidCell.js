@@ -13,20 +13,22 @@ const COLOURS = {
   l: "#0091d4",
 };
 
-function PyramidCell({ position, shapeSymbol, isHighlighted }) {
+function PyramidCell({ position, shapeSymbol, isHighlighted, selectedShape }) {
+  const hasShapePlaced = shapeSymbol !== "";
+
+  const colour = hasShapePlaced
+    ? COLOURS[shapeSymbol.toLowerCase()]
+    : isHighlighted
+    ? COLOURS[selectedShape.symbol.toLowerCase()]
+    : "#ffffff";
+
   return (
     <mesh position={position}>
       <sphereGeometry args={[2.5]} />
       <meshStandardMaterial
         transparent={true}
-        opacity={isHighlighted ? 1 : 0.7}
-        color={
-          shapeSymbol
-            ? COLOURS[shapeSymbol.toLowerCase()]
-            : isHighlighted
-            ? "#ff0000"
-            : "#ffffff"
-        }
+        opacity={hasShapePlaced ? 0.9 : 0.5}
+        color={colour}
       />
     </mesh>
   );

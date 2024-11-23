@@ -46,7 +46,11 @@ function PyramidPuzzle() {
       )}
 
       <div className="pyramid-area">
-        <PyramidBoard board={board} highlightedCells={highlightedCells} />
+        <PyramidBoard
+          board={board}
+          highlightedCells={highlightedCells}
+          selectedShape={selectedShape}
+        />
         <PyramidLayerBoards
           board={board}
           setBoard={setBoard}

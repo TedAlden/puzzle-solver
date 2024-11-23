@@ -112,7 +112,7 @@ function PyramidLayerBoards({
               // Determine the cell's class based on its state
               const cellClass = `polyboard-cell ${
                 isHighlighted ? "highlighted" : ""
-              } ${cell || ""}`;
+              } ${layer[colIndex][rowIndex] || ""}`;
 
               return (
                 <div

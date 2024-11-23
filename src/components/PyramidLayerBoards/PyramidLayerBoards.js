@@ -1,8 +1,9 @@
 import "./PyramidLayerBoards.css";
 
 /**
- * A component that displays 2D grid representations of each layer in the pyramid.
- * Shows all placed pieces.
+ * A component that displays 2D grid representations of each layer in the
+ * pyramid. Shows all placed pieces.
+ *
  * Each layer's grid size matches its position in the pyramid:
  * Layer 1 (top): 1x1
  * Layer 2: 2x2
@@ -15,7 +16,7 @@ import "./PyramidLayerBoards.css";
  * @param {Array<Array<number>>} props.highlightedCells Array of coordinates for
  *  cells to highlight.
  * @param {Object} props.selectedShape The currently selected shape object.
- * @returns {JSX.Element}
+ * @returns {React.JSX.Element}
  */
 function PyramidLayerBoards({
   board,
@@ -24,68 +25,61 @@ function PyramidLayerBoards({
   handleMouseLeaveCell,
   handleMouseClickCell,
 }) {
-  /**
-   * Renders a single layer of the pyramid.
-   *
-   * @param {number} layerIndex The index of the layer to render (0-4)
-   * @returns {JSX.Element}
-   */
-  const renderLayer = (layerIndex) => {
-    const layerSize = board.length - layerIndex;
-    const layer = board[layerIndex];
-
-    return (
-      <div key={layerIndex} className="layer-section">
-        <div className="layer-label">Layer {layerSize}</div>
-        <div
-          className="layer-grid"
-          style={{
-            gridTemplateColumns: `repeat(${layerSize}, 1fr)`,
-            width: `${layerSize * 40}px`,
-          }}
-        >
-          {layer.map((row, rowIndex) =>
-            row.map((cell, colIndex) => {
-              // Check if this cell is part of the preview (highlighted)
-              const isHighlighted = highlightedCells.some(
-                ([x, y, z]) =>
-                  x === colIndex && y === layerIndex && z === rowIndex
-              );
-
-              // Determine the cell's class based on its state
-              const cellClass = `polyboard-cell ${
-                isHighlighted ? "highlighted" : ""
-              } ${layer[colIndex][rowIndex] || ""}`;
-
-              return (
-                <div
-                  key={`${rowIndex}-${colIndex}`}
-                  className={cellClass}
-                  onMouseEnter={() =>
-                    handleMouseEnterCell(layerIndex, rowIndex, colIndex)
-                  }
-                  onMouseLeave={() =>
-                    handleMouseLeaveCell(layerIndex, rowIndex, colIndex)
-                  }
-                  onClick={() =>
-                    handleMouseClickCell(layerIndex, rowIndex, colIndex)
-                  }
-                />
-              );
-            })
-          )}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="layer-boards-container">
       <div className="layer-title">Layer Views</div>
-      {/* Render layers from bottom to top */}
-      {Array.from({ length: board.length })
-        .map((_, i) => board.length - i - 1)
-        .map((layerIndex) => renderLayer(layerIndex))}
+      {board
+        .slice()
+        .reverse()
+        .map((layer, reversedIndex) => {
+          const layerIndex = board.length - reversedIndex - 1;
+          const layerSize = layer.length;
+          return (
+            // Draw each layer...
+            <div key={layerIndex} className="layer-section">
+              <div className="layer-label">Layer {layerSize}</div>
+              <div
+                className="layer-grid"
+                style={{
+                  gridTemplateColumns: `repeat(${layerSize}, 1fr)`,
+                  width: `${layerSize * 40}px`,
+                }}
+              >
+                {layer.map((row, rowIndex) =>
+                  row.map((cell, colIndex) => {
+                    // Check if this cell is highlighted from being hovered over
+                    const highlighted = highlightedCells.some(
+                      ([x, y, z]) =>
+                        x === colIndex && y === layerIndex && z === rowIndex
+                    )
+                      ? "highlighted"
+                      : "";
+                    // Get the value of the cell (the symbol of the shape piece
+                    // i.e, "A", "B", "C", etc.) or an empty string if there is
+                    // no piece
+                    const value = layer[colIndex][rowIndex] || "";
+                    // Construct the cell element
+                    return (
+                      <div
+                        key={`${rowIndex}-${colIndex}`}
+                        className={`polyboard-cell ${highlighted} ${value}`}
+                        onMouseEnter={() =>
+                          handleMouseEnterCell(layerIndex, rowIndex, colIndex)
+                        }
+                        onMouseLeave={() =>
+                          handleMouseLeaveCell(layerIndex, rowIndex, colIndex)
+                        }
+                        onClick={() =>
+                          handleMouseClickCell(layerIndex, rowIndex, colIndex)
+                        }
+                      />
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          );
+        })}
     </div>
   );
 }

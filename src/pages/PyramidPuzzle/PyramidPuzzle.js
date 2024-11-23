@@ -31,12 +31,35 @@ function PyramidPuzzle() {
   const [selectedShape, setSelectedShape] = useState(shapes[0]);
   const [highlightedCells, setHighlightedCells] = useState([]);
   const [isSolving, setIsSolving] = useState(false);
+  const [moveStack, setMoveStack] = useState([]);
 
   const handleClear = () => {
     setBoard(createPyramid(5));
     setShapes(pieces);
     setSelectedShape(shapes[0]);
     setIsSolving(false);
+    setMoveStack([]);
+  };
+
+  const handleUndo = () => {
+    if (moveStack.length > 0) {
+      setMoveStack((prev) => {
+        const newStack = [...prev];
+        const lastMove = newStack.pop();
+        // Restore the board to the previous state
+        setBoard(lastMove.board);
+        // Restore the piece to availabe pieces
+        if (lastMove.piece) {
+          setShapes((prev) => [...prev, lastMove.piece]);
+          setSelectedShape(lastMove.piece);
+        }
+        return newStack;
+      });
+    }
+  };
+
+  const addMove = (board, piece) => {
+    setMoveStack((prev) => [...prev, { board, piece }]);
   };
 
   return (
@@ -72,6 +95,7 @@ function PyramidPuzzle() {
           selectedShape={selectedShape}
           setSelectedShape={setSelectedShape}
           setShapes={setShapes}
+          addMove={addMove}
         />
       </div>
       <KeyboardControls
@@ -140,6 +164,16 @@ function PyramidPuzzle() {
             onClick: () => {
               if (!isSolving) {
                 handleClear();
+              }
+            },
+          },
+          {
+            key: "u",
+            keyAlias: "U",
+            description: "Undo action",
+            onClick: () => {
+              if (!isSolving) {
+                handleUndo();
               }
             },
           },

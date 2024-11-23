@@ -25,6 +25,7 @@ function PyramidLayerBoards({
   selectedShape,
   setSelectedShape,
   setShapes,
+  addMove,
 }) {
   const handleMouseEnterCell = (layer, row, col) => {
     const highlightedCells = selectedShape.coords.map(([x, z]) => [
@@ -56,7 +57,9 @@ function PyramidLayerBoards({
     );
     // If there is space, then:
     if (!isSpaceOccupied) {
-      // 1. place the shape on the pyramid board
+      // 1. add the move to the move stack
+      addMove([...board.map((row) => [...row])], selectedShape);
+      // 2. place the shape on the pyramid board
       setBoard(
         board.map((layer, i) =>
           layer.map((row, j) =>
@@ -70,7 +73,7 @@ function PyramidLayerBoards({
           )
         )
       );
-      // 2. remove the shape from our inventory of available shapes
+      // 3. remove the shape from our inventory of available shapes
       setShapes((prevShapes) => {
         const newShapes = prevShapes.filter(
           (shape) => shape.symbol !== selectedShape.symbol

@@ -1,4 +1,3 @@
-import React from "react";
 import "./PyramidLayerBoards.css";
 
 /**
@@ -18,14 +17,76 @@ import "./PyramidLayerBoards.css";
  * @param {Object} props.selectedShape The currently selected shape object.
  * @returns {JSX.Element}
  */
-function PyramidLayerBoards({ board, highlightedCells, selectedShape }) {
+function PyramidLayerBoards({
+  board,
+  setBoard,
+  highlightedCells,
+  setHighlightedCells,
+  selectedShape,
+  setSelectedShape,
+  setShapes,
+}) {
+  const handleMouseEnterCell = (layer, row, col) => {
+    const highlightedCells = selectedShape.coords.map(([x, z]) => [
+      x + row,
+      0 + layer,
+      z + col,
+    ]);
+    const isInBounds = highlightedCells.every(
+      ([x, y, z]) =>
+        x >= 0 &&
+        x < board[y].length &&
+        y >= 0 &&
+        y < board.length &&
+        z >= 0 &&
+        z < board[y][x].length
+    );
+    if (isInBounds) {
+      setHighlightedCells(highlightedCells);
+    }
+  };
+
+  const handleMouseLeaveCell = (layer, row, col) => {
+    setHighlightedCells([]);
+  };
+
+  const handleMouseClickCell = (layer, row, col) => {
+    const isSpaceOccupied = highlightedCells.some(
+      ([dx, dy, dz]) => board[dy][dx][dz] !== ""
+    );
+    // If there is space, then:
+    if (!isSpaceOccupied) {
+      // 1. place the shape on the pyramid board
+      setBoard(
+        board.map((layer, i) =>
+          layer.map((row, j) =>
+            row.map((cell, k) =>
+              highlightedCells.some(
+                ([dx, dy, dz]) => dy === i && dx === j && dz === k
+              )
+                ? selectedShape.symbol
+                : cell
+            )
+          )
+        )
+      );
+      // 2. remove the shape from our inventory of available shapes
+      setShapes((prevShapes) => {
+        const newShapes = prevShapes.filter(
+          (shape) => shape.symbol !== selectedShape.symbol
+        );
+        setSelectedShape(newShapes[0] || null);
+        return newShapes;
+      });
+    }
+  };
+
   /**
    * Renders a single layer of the pyramid.
    *
    * @param {number} layerIndex The index of the layer to render (0-4)
    * @returns {JSX.Element}
    */
-
   const renderLayer = (layerIndex) => {
     const layerSize = board.length - layerIndex;
     const layer = board[layerIndex];
@@ -54,7 +115,19 @@ function PyramidLayerBoards({ board, highlightedCells, selectedShape }) {
               } ${cell || ""}`;
 
               return (
-                <div key={`${rowIndex}-${colIndex}`} className={cellClass} />
+                <div
+                  key={`${rowIndex}-${colIndex}`}
+                  className={cellClass}
+                  onMouseEnter={() =>
+                    handleMouseEnterCell(layerIndex, rowIndex, colIndex)
+                  }
+                  onMouseLeave={() =>
+                    handleMouseLeaveCell(layerIndex, rowIndex, colIndex)
+                  }
+                  onClick={() =>
+                    handleMouseClickCell(layerIndex, rowIndex, colIndex)
+                  }
+                />
               );
             })
           )}

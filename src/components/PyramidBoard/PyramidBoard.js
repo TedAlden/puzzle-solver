@@ -14,7 +14,7 @@ function PyramidBoard({ board, highlightedCells }) {
       for (let j = 0; j < layerSize; j++) {
         for (let k = 0; k < layerSize; k++) {
           const x = (j - (layerSize - 1) / 2) * 5;
-          const z = (k - (layerSize - 1) / 2) * 5;
+          const z = -(k - (layerSize - 1) / 2) * 5;
           const isHighlighted = highlightedCells.some(
             (cell) => cell[0] === j && cell[1] === i && cell[2] === k
           );

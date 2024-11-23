@@ -1,13 +1,14 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import PyramidCell from "../PyramidCell/PyramidCell";
+import pieces from "../../lib/pieces";
 
-function PyramidBoard({ board, highlightedCells }) {
+function PyramidBoard({ board, highlightedCells, selectedShape }) {
   const renderPyramid = (pyramid) => {
     const size = pyramid.length;
     // Offset y coordinate to center the pyramid at (0, 0, 0)
     const heightOffset = (size - 1) * 2;
-    const elements = [];
+    const spheres = [];
     for (let i = 0; i < size; i++) {
       const layerSize = size - i; // i.e. 5 for the first 5x5 layer
       const y = i * 4 - heightOffset;
@@ -15,21 +16,37 @@ function PyramidBoard({ board, highlightedCells }) {
         for (let k = 0; k < layerSize; k++) {
           const x = (j - (layerSize - 1) / 2) * 5;
           const z = (k - (layerSize - 1) / 2) * 5;
+          const hasShapePlaced = pyramid[i][j][k] !== "";
           const isHighlighted = highlightedCells.some(
             (cell) => cell[0] === j && cell[1] === i && cell[2] === k
           );
-          elements.push(
+          // Determine cell opacity
+          const opacity = hasShapePlaced ? 0.9 : 0.5;
+          // Determine cell colour
+          let colour = "#ffffff";
+          if (hasShapePlaced) {
+            // If there is a shape piece placed in the cell, look up the colour
+            const piece = pieces.find(
+              (piece) => piece.symbol === pyramid[i][j][k]
+            );
+            colour = piece.colour;
+          } else if (isHighlighted) {
+            // Otherwise, if the cell is highlighted (being hovered over), use
+            // the current selected shape's colour
+            colour = selectedShape.colour;
+          }
+          // Add the sphere mesh to the list
+          spheres.push(
             <PyramidCell
-              key={`${j}-${i}-${k}`}
               position={[x, y, z]}
-              shapeSymbol={pyramid[i][j][k]}
-              isHighlighted={isHighlighted}
+              opacity={opacity}
+              colour={colour}
             />
           );
         }
       }
     }
-    return elements;
+    return spheres;
   };
 
   return (

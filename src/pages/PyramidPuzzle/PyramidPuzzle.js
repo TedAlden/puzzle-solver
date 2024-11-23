@@ -1,10 +1,16 @@
 import "./PyramidPuzzle.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ProgressBar from "../../components/Shared/ProgressBar/ProgressBar";
 import PieceSelector from "../../components/Shared/PieceSelector/PieceSelector";
 import pieces from "../../lib/pieces";
 import PyramidBoard from "../../components/PyramidBoard/PyramidBoard";
+import PyramidLayerBoards from "../../components/PyramidLayerBoards/PyramidLayerBoards";
 import KeyboardControls from "../../components/Shared/KeyboardControls/KeyboardControls";
+import {
+  flipShapeHorizontal,
+  normaliseShape,
+  rotateShapeCCW,
+} from "../../lib/utils";
 
 // TODO: add x,y,z guide lines
 
@@ -21,45 +27,40 @@ const createPyramid = (size) =>
 
 function PyramidPuzzle() {
   const [board, setBoard] = useState(createPyramid(5));
-
-  const isValidMove = (newIndex) => {
-    const [newY, newX, newZ] = newIndex;
-
-    return selectedShape.coords.every(([dx, dz]) => {
-      const targetY = newY;
-      const targetX = newX + dx;
-      const targetZ = newZ + dz;
-
-      // Check if the target layer exists
-      if (targetY < 0 || targetY >= board.length) return false;
-
-      // Check if the target row exists within the layer
-      if (targetX < 0 || targetX >= board[targetY].length) return false;
-
-      // Check if the target cell exists within the row
-      if (targetZ < 0 || targetZ >= board[targetY][targetX].length)
-        return false;
-
-      return true;
-    });
-  };
-
-  // eslint-disable-next-line no-unused-vars
   const [shapes, setShapes] = useState(pieces);
   const [selectedShape, setSelectedShape] = useState(shapes[0]);
-
-  const [selectedIndex, setSelectedIndex] = useState([0, 0, 0]); // y, x, z
   const [highlightedCells, setHighlightedCells] = useState([]);
+  const [isSolving, setIsSolving] = useState(false);
+  const [moveStack, setMoveStack] = useState([]);
 
-  useEffect(() => {
-    // update highlighted cells when selected index (or shape) changes
-    const highlightedCells = selectedShape.coords.map(([x, z]) => [
-      x + selectedIndex[1],
-      0 + selectedIndex[0],
-      z + selectedIndex[2],
-    ]);
-    setHighlightedCells(highlightedCells);
-  }, [selectedIndex, selectedShape]);
+  const handleClear = () => {
+    setBoard(createPyramid(5));
+    setShapes(pieces);
+    setSelectedShape(shapes[0]);
+    setIsSolving(false);
+    setMoveStack([]);
+  };
+
+  const handleUndo = () => {
+    if (moveStack.length > 0) {
+      setMoveStack((prev) => {
+        const newStack = [...prev];
+        const lastMove = newStack.pop();
+        // Restore the board to the previous state
+        setBoard(lastMove.board);
+        // Restore the piece to availabe pieces
+        if (lastMove.piece) {
+          setShapes((prev) => [...prev, lastMove.piece]);
+          setSelectedShape(lastMove.piece);
+        }
+        return newStack;
+      });
+    }
+  };
+
+  const addMove = (board, piece) => {
+    setMoveStack((prev) => [...prev, { board, piece }]);
+  };
 
   return (
     <div className="puzzleThree">
@@ -79,134 +80,109 @@ function PyramidPuzzle() {
           setSelectedShape={setSelectedShape}
         />
       )}
-      <PyramidBoard board={board} highlightedCells={highlightedCells} />
+
+      <div className="pyramid-area">
+        <PyramidBoard
+          board={board}
+          highlightedCells={highlightedCells}
+          selectedShape={selectedShape}
+        />
+        <PyramidLayerBoards
+          board={board}
+          setBoard={setBoard}
+          highlightedCells={highlightedCells}
+          setHighlightedCells={setHighlightedCells}
+          selectedShape={selectedShape}
+          setSelectedShape={setSelectedShape}
+          setShapes={setShapes}
+          addMove={addMove}
+        />
+      </div>
       <KeyboardControls
         keyMap={[
           {
-            key: "ArrowRight",
-            keyAlias: "→",
-            description: "Move shape right",
+            key: "r",
+            keyAlias: "R",
+            description: "Rotate piece",
             onClick: () => {
-              const [y, x, z] = selectedIndex;
-              const newIndex = [y, x, z - 1];
-              if (isValidMove(newIndex)) {
-                setSelectedIndex(newIndex);
+              if (!isSolving && selectedShape) {
+                const newShape = { ...selectedShape };
+                newShape.coords = normaliseShape(
+                  rotateShapeCCW(newShape.coords)
+                );
+                setSelectedShape(newShape);
+              }
+            },
+          },
+          {
+            key: "f",
+            keyAlias: "F",
+            description: "Flip piece",
+            onClick: () => {
+              if (!isSolving && selectedShape) {
+                const newShape = { ...selectedShape };
+                newShape.coords = normaliseShape(
+                  flipShapeHorizontal(newShape.coords)
+                );
+                setSelectedShape(newShape);
               }
             },
           },
           {
             key: "ArrowLeft",
             keyAlias: "←",
-            description: "Move shape left",
+            description: "Previous piece",
             onClick: () => {
-              const [y, x, z] = selectedIndex;
-              const newIndex = [y, x, z + 1];
-              if (isValidMove(newIndex)) {
-                setSelectedIndex(newIndex);
+              if (!isSolving && shapes.length > 0) {
+                const currentIndex = shapes.findIndex(
+                  (shape) => shape.symbol === selectedShape.symbol
+                );
+                const newIndex =
+                  (currentIndex - 1 + shapes.length) % shapes.length;
+                setSelectedShape(shapes[newIndex]);
               }
             },
           },
           {
-            key: "ArrowUp",
-            keyAlias: "↑",
-            description: "Move shape forwards",
+            key: "ArrowRight",
+            keyAlias: "→",
+            description: "Next piece",
             onClick: () => {
-              const [y, x, z] = selectedIndex;
-              const newIndex = [y, x - 1, z];
-              if (isValidMove(newIndex)) {
-                setSelectedIndex(newIndex);
+              if (!isSolving && shapes.length > 0) {
+                const currentIndex = shapes.findIndex(
+                  (shape) => shape.symbol === selectedShape.symbol
+                );
+                const newIndex = (currentIndex + 1) % shapes.length;
+                setSelectedShape(shapes[newIndex]);
               }
             },
           },
           {
-            key: "ArrowDown",
-            keyAlias: "↓",
-            description: "Move shape backwards",
+            key: "Escape",
+            keyAlias: "Esc",
+            description: "Clear board",
             onClick: () => {
-              const [y, x, z] = selectedIndex;
-              const newIndex = [y, x + 1, z];
-              if (isValidMove(newIndex)) {
-                setSelectedIndex(newIndex);
+              if (!isSolving) {
+                handleClear();
               }
             },
           },
           {
-            key: "w",
-            keyAlias: "W",
-            description: "Move shape up",
+            key: "u",
+            keyAlias: "U",
+            description: "Undo action",
             onClick: () => {
-              const [y, x, z] = selectedIndex;
-              // when moving upwards, there are multiple different directions
-              // to choose from, since the layers are not vertically
-              // stacked/aligned.
-              const newIndices = [
-                [y + 1, x, z],
-                [y + 1, x - 1, z - 1],
-                [y + 1, x - 1, z],
-                [y + 1, x, z - 1],
-              ];
-              newIndices.forEach((newIndex) => {
-                if (isValidMove(newIndex)) {
-                  setSelectedIndex(newIndex);
-                  return;
-                }
-              });
+              if (!isSolving) {
+                handleUndo();
+              }
             },
           },
           {
             key: "s",
             keyAlias: "S",
-            description: "Move shape down",
+            description: "Solve (placeholder)",
             onClick: () => {
-              const [y, x, z] = selectedIndex;
-              const newIndex = [y - 1, x, z];
-              if (isValidMove(newIndex)) {
-                setSelectedIndex(newIndex);
-              }
-            },
-          },
-          {
-            key: "d",
-            keyAlias: "D",
-            description: "Place shape",
-            onClick: () => {
-              const [y, x, z] = selectedIndex;
-              // Map the coords of each shape tile to the current selected index
-              // to calculate the coords of each shape tile on the board
-              const shapeIndices = selectedShape.coords.map(([dx, dz]) => [
-                y,
-                x + dx,
-                z + dz,
-              ]);
-              // Check if any of the shape tiles are already occupied
-              const isSpaceOccupied = shapeIndices.some(
-                ([dy, dx, dz]) => board[dy][dx][dz] !== ""
-              );
-              // If there is space, then:
-              if (!isSpaceOccupied) {
-                // 1. place the shape on the pyramid board
-                setBoard(
-                  board.map((layer, i) =>
-                    layer.map((row, j) =>
-                      row.map((cell, k) =>
-                        shapeIndices.some(
-                          ([dy, dx, dz]) => dy === i && dx === j && dz === k
-                        )
-                          ? selectedShape.symbol
-                          : cell
-                      )
-                    )
-                  )
-                );
-                // 2. remove the shape from our inventory of available shapes
-                setShapes((prevShapes) => {
-                  const newShapes = prevShapes.filter(
-                    (shape) => shape.symbol !== selectedShape.symbol
-                  );
-                  setSelectedShape(newShapes[0] || null);
-                  return newShapes;
-                });
-              }
+              console.log("Placeholder");
             },
           },
         ]}

@@ -15,6 +15,10 @@ function usePyramidPuzzle() {
   const [isSolving, setIsSolving] = useState(false);
   const [moveStack, setMoveStack] = useState([]);
 
+  const addMove = (board, piece) => {
+    setMoveStack((prev) => [...prev, { board, piece }]);
+  };
+
   const handleRotatePiece = () => {
     if (!isSolving && selectedShape) {
       const newShape = { ...selectedShape };
@@ -131,7 +135,7 @@ function usePyramidPuzzle() {
     // If there is space, and the shape is within the boards edge bounds then:
     if (isUnoccupiedSpace && isInBounds) {
       // 1. add the move to the move stack
-      setMoveStack((prev) => [...prev, { board, selectedShape }]);
+      addMove([...board.map((row) => [...row])], selectedShape);
       // 2. place the shape on the pyramid board
       setBoard(
         board.map((layer, i) =>

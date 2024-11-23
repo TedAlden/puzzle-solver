@@ -33,15 +33,45 @@ export const flipShapeHorizontal = (coords) => {
 
 /**
  * Creates a 2D array representing a puzzle board, each cell initially holding a
- * specified character.
+ * specified value.
  *
  * @param {number} width The number of columns in the board.
  * @param {number} height The number of rows in the board.
  * @param {*} value The initial value to fill the board with.
  * @returns {Array<Array<*>>} A 2D array representing the board.
+ * @example
+ * createBoard2D(4, 3, "");
+ * // Returns:
+ * // [
+ * //   ["", "", "", ""],
+ * //   ["", "", "", ""],
+ * ///  ["", "", "", ""]
+ * // ]
  */
 export const createBoard2D = (width, height, value) => {
   return Array(height)
     .fill()
     .map(() => Array(width).fill(value));
+};
+
+/**
+ * Creates a 3D array representing a pyramid puzzle board, each cell initially
+ * holding a specified value.
+ *
+ * @param {number} size The size of the pyramid.
+ * @param {*} value The initial value to fill the board with.
+ * @returns {Array<Array<Array<*>>>} A 3D array representing the pyramid.
+ * @example
+ * createBoardPyramid(3);
+ * // Returns:
+ * // [
+ * //   [["", "", ""], ["", "", ""], ["", "", ""]],
+ * //   [["", ""], ["", ""]],
+ * //   [[""]]
+ * // ]
+ */
+export const createBoardPyramid = (size, value) => {
+  return Array.from({ length: size }, (_, i) =>
+    Array.from({ length: size - i }, () => Array(size - i).fill(value))
+  );
 };

@@ -19,85 +19,11 @@ import "./PyramidLayerBoards.css";
  */
 function PyramidLayerBoards({
   board,
-  setBoard,
   highlightedCells,
-  setHighlightedCells,
-  selectedShape,
-  setSelectedShape,
-  setShapes,
-  addMove,
+  handleMouseEnterCell,
+  handleMouseLeaveCell,
+  handleMouseClickCell,
 }) {
-  const handleMouseEnterCell = (layer, row, col) => {
-    const highlightedCells = selectedShape.coords.map(([x, z]) => [
-      x + col,
-      0 + layer,
-      z + row,
-    ]);
-    const isInBounds = highlightedCells.every(
-      ([x, y, z]) =>
-        x >= 0 &&
-        x < board[y].length &&
-        y >= 0 &&
-        y < board.length &&
-        z >= 0 &&
-        z < board[y][x].length
-    );
-    if (isInBounds) {
-      setHighlightedCells(highlightedCells);
-    }
-  };
-
-  const handleMouseLeaveCell = (layer, row, col) => {
-    setHighlightedCells([]);
-  };
-
-  const handleMouseClickCell = (layer, row, col) => {
-    const highlightedCells = selectedShape.coords.map(([x, z]) => [
-      x + col,
-      0 + layer,
-      z + row,
-    ]);
-    const isInBounds = highlightedCells.every(
-      ([x, y, z]) =>
-        x >= 0 &&
-        x < board[y].length &&
-        y >= 0 &&
-        y < board.length &&
-        z >= 0 &&
-        z < board[y][x].length
-    );
-    const isUnoccupiedSpace = isInBounds
-      ? !highlightedCells.some(([dx, dy, dz]) => board[dy][dx][dz] !== "")
-      : false;
-    // If there is space, and the shape is within the boards edge bounds then:
-    if (isUnoccupiedSpace && isInBounds) {
-      // 1. add the move to the move stack
-      addMove([...board.map((row) => [...row])], selectedShape);
-      // 2. place the shape on the pyramid board
-      setBoard(
-        board.map((layer, i) =>
-          layer.map((row, j) =>
-            row.map((cell, k) =>
-              highlightedCells.some(
-                ([dx, dy, dz]) => dy === i && dx === j && dz === k
-              )
-                ? selectedShape.symbol
-                : cell
-            )
-          )
-        )
-      );
-      // 3. remove the shape from our inventory of available shapes
-      setShapes((prevShapes) => {
-        const newShapes = prevShapes.filter(
-          (shape) => shape.symbol !== selectedShape.symbol
-        );
-        setSelectedShape(newShapes[0] || null);
-        return newShapes;
-      });
-    }
-  };
-
   /**
    * Renders a single layer of the pyramid.
    *

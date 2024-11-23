@@ -6,6 +6,11 @@ import pieces from "../../lib/pieces";
 import PyramidBoard from "../../components/PyramidBoard/PyramidBoard";
 import PyramidLayerBoards from "../../components/PyramidLayerBoards/PyramidLayerBoards";
 import KeyboardControls from "../../components/Shared/KeyboardControls/KeyboardControls";
+import {
+  flipShapeHorizontal,
+  normaliseShape,
+  rotateShapeCCW,
+} from "../../lib/utils";
 
 // TODO: add x,y,z guide lines
 
@@ -25,6 +30,8 @@ function PyramidPuzzle() {
   const [shapes, setShapes] = useState(pieces);
   const [selectedShape, setSelectedShape] = useState(shapes[0]);
   const [highlightedCells, setHighlightedCells] = useState([]);
+
+  const isSolving = false;
 
   return (
     <div className="puzzleThree">
@@ -63,6 +70,63 @@ function PyramidPuzzle() {
       </div>
       <KeyboardControls
         keyMap={[
+          {
+            key: "r",
+            keyAlias: "R",
+            description: "Rotate piece",
+            onClick: () => {
+              if (!isSolving && selectedShape) {
+                const newShape = { ...selectedShape };
+                newShape.coords = normaliseShape(
+                  rotateShapeCCW(newShape.coords)
+                );
+                setSelectedShape(newShape);
+              }
+            },
+          },
+          {
+            key: "f",
+            keyAlias: "F",
+            description: "Flip piece",
+            onClick: () => {
+              if (!isSolving && selectedShape) {
+                const newShape = { ...selectedShape };
+                newShape.coords = normaliseShape(
+                  flipShapeHorizontal(newShape.coords)
+                );
+                setSelectedShape(newShape);
+              }
+            },
+          },
+          {
+            key: "ArrowLeft",
+            keyAlias: "←",
+            description: "Previous piece",
+            onClick: () => {
+              if (!isSolving && shapes.length > 0) {
+                const currentIndex = shapes.findIndex(
+                  (shape) => shape.symbol === selectedShape.symbol
+                );
+                const newIndex =
+                  (currentIndex - 1 + shapes.length) % shapes.length;
+                setSelectedShape(shapes[newIndex]);
+              }
+            },
+          },
+          {
+            key: "ArrowRight",
+            keyAlias: "→",
+            description: "Next piece",
+            onClick: () => {
+              if (!isSolving && shapes.length > 0) {
+                const currentIndex = shapes.findIndex(
+                  (shape) => shape.symbol === selectedShape.symbol
+                );
+                const newIndex = (currentIndex + 1) % shapes.length;
+                setSelectedShape(shapes[newIndex]);
+              }
+            },
+          },
           {
             key: "s",
             keyAlias: "S",

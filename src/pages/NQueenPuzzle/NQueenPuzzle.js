@@ -1,6 +1,6 @@
 import "./NQueenPuzzle.css";
 import QueenBoard from "../../components/QueenBoard/QueenBoard";
-import KeyboardControls from "../../components/Shared/KeyboardControls/KeyboardControls";
+import KeyboardControls from "../../components/KeyboardControls/KeyboardControls";
 import useNQueenPuzzle from "../../hooks/useNQueenPuzzle";
 
 /**

@@ -1,5 +1,5 @@
 import "./KeyboardControls.css";
-import useKeyboardInput from "../../../hooks/useKeyboardInput";
+import useKeyboardInput from "../../hooks/useKeyboardInput";
 
 function KeyboardControls({ keyMap }) {
   // Create a map of key:onClick functions

@@ -1,4 +1,4 @@
-import "./PolyBoard.css";
+import "./PolysphereBoard.css";
 
 /**
  * A component that displays a grid board for placing polysphere shapes. Allows
@@ -8,7 +8,7 @@ import "./PolyBoard.css";
  *
  * @returns {JSX.Element}
  */
-function PolyBoard({
+function PolysphereBoard({
   board,
   highlightedCells,
   handleMouseEnterCell,
@@ -41,4 +41,4 @@ function PolyBoard({
   );
 }
 
-export default PolyBoard;
+export default PolysphereBoard;

@@ -1,9 +1,9 @@
 import "./PyramidPuzzle.css";
-import ProgressBar from "../../components/Shared/ProgressBar/ProgressBar";
-import PieceSelector from "../../components/Shared/PieceSelector/PieceSelector";
+import ProgressBar from "../../components/ProgressBar/ProgressBar";
+import PieceSelector from "../../components/PieceSelector/PieceSelector";
 import PyramidBoard from "../../components/PyramidBoard/PyramidBoard";
 import PyramidLayerBoards from "../../components/PyramidLayerBoards/PyramidLayerBoards";
-import KeyboardControls from "../../components/Shared/KeyboardControls/KeyboardControls";
+import KeyboardControls from "../../components/KeyboardControls/KeyboardControls";
 import usePyramidPuzzle from "../../hooks/usePyramidPuzzle";
 
 // TODO: add x,y,z guide lines

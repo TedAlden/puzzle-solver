@@ -1,6 +1,6 @@
 import { render, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import PolyBoard from "./PolyBoard";
+import PolysphereBoard from "./PolysphereBoard";
 
 describe("PolyBoard Component test", () => {
   // const createEmptyBoard = (rows, cols) =>
@@ -250,7 +250,7 @@ describe("PolyBoard Component test", () => {
           }
         }),
       };
-      const { getAllByTestId } = render(<PolyBoard {...props} />);
+      const { getAllByTestId } = render(<PolysphereBoard {...props} />);
       const cells = getAllByTestId("cell");
       fireEvent.mouseEnter(cells[0]);
       fireEvent.click(cells[0]);

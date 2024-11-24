@@ -1,8 +1,8 @@
 import "./PolyspherePuzzle.css";
-import PolyBoard from "../../components/PolyBoard/PolyBoard";
-import PieceSelector from "../../components/Shared/PieceSelector/PieceSelector";
-import ProgressBar from "../../components/Shared/ProgressBar/ProgressBar";
-import KeyboardControls from "../../components/Shared/KeyboardControls/KeyboardControls";
+import PolysphereBoard from "../../components/PolysphereBoard/PolysphereBoard";
+import PieceSelector from "../../components/PieceSelector/PieceSelector";
+import ProgressBar from "../../components/ProgressBar/ProgressBar";
+import KeyboardControls from "../../components/KeyboardControls/KeyboardControls";
 import usePolyspherePuzzle from "../../hooks/usePolyspherePuzzle";
 
 /**
@@ -56,7 +56,7 @@ function PolyspherePuzzle() {
           handleRotateShape={handleRotateShape}
         />
       )}
-      <PolyBoard
+      <PolysphereBoard
         board={board}
         highlightedCells={highlightedCells}
         handleMouseEnterCell={handleMouseEnterCell}

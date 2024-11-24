@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import createPyramidWorker from "../workers/createPyramidWorker";
 import pieces from "../lib/pieces";

@@ -43,8 +43,8 @@
 
 ## Prerequisites
 
-- NodeJS `v22.5.1`
-- NPM `v10.8.2`
+- NodeJS `v20.10.0`
+- NPM `v10.2.3`
 - Git
 
 ## Installation

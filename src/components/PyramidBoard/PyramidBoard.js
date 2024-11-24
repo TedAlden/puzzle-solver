@@ -1,6 +1,5 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import PyramidCell from "../PyramidCell/PyramidCell";
 import pieces from "../../lib/pieces";
 
 function PyramidBoard({ board, highlightedCells, selectedShape }) {
@@ -37,11 +36,14 @@ function PyramidBoard({ board, highlightedCells, selectedShape }) {
           }
           // Add the sphere mesh to the list
           spheres.push(
-            <PyramidCell
-              position={[x, y, z]}
-              opacity={opacity}
-              colour={colour}
-            />
+            <mesh position={[x, y, z]}>
+              <sphereGeometry args={[2.5]} />
+              <meshStandardMaterial
+                transparent={true}
+                opacity={opacity}
+                color={colour}
+              />
+            </mesh>
           );
         }
       }

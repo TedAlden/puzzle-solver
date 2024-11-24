@@ -67,13 +67,13 @@ describe("PolyBoard Component test", () => {
   // });
 
   // describe("Mouse Event Handling", () => {
-  //   it("should highlight cells on mouse enter with valid shape", () => {
-  //     const { getAllByTestId } = render(<PolyBoard {...defaultProps} />);
-  //     const cells = getAllByTestId("cell");
+  // it("should highlight cells on mouse enter with valid shape", () => {
+  //   const { getAllByTestId } = render(<PolyBoard {...defaultProps} />);
+  //   const cells = getAllByTestId("cell");
 
-  //     fireEvent.mouseEnter(cells[0]);
-  //     expect(cells[0]).toHaveClass("highlighted");
-  //   });
+  //   fireEvent.mouseEnter(cells[0]);
+  //   expect(cells[0]).toHaveClass("highlighted");
+  // });
 
   //   it("should do nothing when handleMouseClickCell is called and no shape is selected", () => {
   //     const props = {
@@ -250,15 +250,7 @@ describe("PolyBoard Component test", () => {
           }
         }),
       };
-      const { getAllByTestId } = render(
-        <PolyBoard
-          board={props.board}
-          highlightedCells={props.highlightedCells}
-          handleMouseEnterCell={props.handleMouseEnterCell}
-          handleMouseLeaveCell={props.handleMouseLeaveCell}
-          handleMouseClickCell={props.handleMouseClickCell}
-        />
-      );
+      const { getAllByTestId } = render(<PolyBoard {...props} />);
       const cells = getAllByTestId("cell");
       fireEvent.mouseEnter(cells[0]);
       fireEvent.click(cells[0]);
@@ -268,3 +260,24 @@ describe("PolyBoard Component test", () => {
     });
   });
 });
+
+// describe("PolyCell", () => {
+//   it("Becomes highlighted when hovered over", () => {
+//     // Mock the onMouseEnter function to simulate the hover effect
+//     const handleMouseEnter = jest.fn();
+//     const { getByTestId } = render(
+//       <PolyCell
+//         onMouseEnter={handleMouseEnter}
+//         highlighted={1} // Set highlighted
+//         value="A"
+//       />
+//     );
+//     const cell = getByTestId("cell");
+//     // Simulate the mouse enter event
+//     fireEvent.mouseEnter(cell);
+//     // Check if the highlighted class is applied
+//     expect(cell).toHaveClass("highlighted");
+//     // Verify the onMouseEnter callback was called
+//     expect(handleMouseEnter).toHaveBeenCalled();
+//   });
+// });

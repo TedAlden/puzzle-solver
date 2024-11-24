@@ -36,7 +36,7 @@ function PyramidBoard({ board, highlightedCells, selectedShape }) {
           }
           // Add the sphere mesh to the list
           spheres.push(
-            <mesh position={[x, y, z]}>
+            <mesh position={[x, y, z]} key={`${x}-${y}-${z}`}>
               <sphereGeometry args={[2.5]} />
               <meshStandardMaterial
                 transparent={true}

@@ -1,5 +1,4 @@
 import "./QueenBoard.css";
-import QueenCell from "../QueenCell/QueenCell";
 
 /**
  * A grid board containing toggleable cells for placing/removing queens. Each
@@ -18,16 +17,20 @@ function QueenBoard({ board, handleMouseClickCell }) {
       style={{ gridTemplateColumns: `repeat(${board.length}, 50px)` }}
     >
       {board.map((row, rowIndex) =>
-        row.map((cell, colIndex) => (
-          <QueenCell
-            key={`${rowIndex}-${colIndex}`}
-            isEven={(rowIndex + colIndex) % 2 === 0}
-            isQueen={cell === 1}
-            onMouseClick={() => {
-              handleMouseClickCell(rowIndex, colIndex);
-            }}
-          />
-        ))
+        row.map((cell, colIndex) => {
+          const isQueen = cell === 1;
+          const isEven = (rowIndex + colIndex) % 2 === 0;
+          return (
+            <div
+              role="cell"
+              key={`${rowIndex}-${colIndex}`}
+              className={`board-cell ${isEven ? "even" : "odd"}`}
+              onClick={() => handleMouseClickCell(rowIndex, colIndex)}
+            >
+              {isQueen && <span className="board-queen">♛</span>}
+            </div>
+          );
+        })
       )}
     </div>
   );

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import createPyramidWorker from "../workers/createPyramidWorker";
 import pieces from "../lib/pieces";
 import {
   flipShapeHorizontal,
@@ -13,7 +14,31 @@ function usePyramidPuzzle() {
   const [selectedShape, setSelectedShape] = useState(shapes[0]);
   const [highlightedCells, setHighlightedCells] = useState([]);
   const [isSolving, setIsSolving] = useState(false);
+  const [isSolved, setIsSolved] = useState(false);
   const [moveStack, setMoveStack] = useState([]);
+  const [solutions, setSolutions] = useState([]);
+  const [solutionIndex, setSolutionIndex] = useState(0);
+  const [worker, setWorker] = useState(null);
+
+  useEffect(() => {
+    try {
+      const newWorker = createPyramidWorker();
+      setWorker(newWorker);
+      // Cleanup worker
+      return () => {
+        newWorker.terminate();
+      };
+    } catch (err) {
+      console.error("Failed to create Pyramid Web Worker:", err);
+    }
+  }, []);
+
+  // Update board when solution changes
+  useEffect(() => {
+    if (solutions[solutionIndex]) {
+      setBoard(solutions[solutionIndex]);
+    }
+  }, [solutions, solutionIndex]);
 
   const addMove = (board, piece) => {
     setMoveStack((prev) => [...prev, { board, piece }]);
@@ -83,11 +108,32 @@ function usePyramidPuzzle() {
   };
 
   const handleSolve = () => {
-    if (!isSolving) {
-      console.log("Placeholder: solve");
-
-      // TODO: Implement solving algorithm
+    if (!worker) {
+      console.error("Worker not initialized");
+      return;
     }
+    // Handler for when the worker sends a solution back here
+    const messageHandler = (e) => {
+      console.log("Worker message received:", e.data);
+      if (e.data.type === "solution") {
+        setSolutions((prev) => [...prev, e.data.data]);
+      }
+      if (e.data.type === "complete") {
+        console.log("Solver completed");
+        setIsSolved(true);
+        setIsSolving(false);
+        // Remove 'onMessage' handler when worker is complete
+        worker.removeEventListener("message", messageHandler);
+      }
+    };
+    setIsSolving(true);
+    // Attach 'onMessage' event listener
+    worker.addEventListener("message", messageHandler);
+    // Send the current board configuration and pieces to the solver
+    console.log("Sending board and pieces to worker:");
+    console.log("Board:", board);
+    console.log("Pieces:", shapes);
+    worker.postMessage({ board, pieces });
   };
 
   const handleMouseEnterCell = (layer, row, col) => {

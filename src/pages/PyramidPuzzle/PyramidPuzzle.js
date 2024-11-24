@@ -13,7 +13,6 @@ function PyramidPuzzle() {
     board,
     highlightedCells,
     selectedShape,
-    setSelectedShape,
     shapes,
     handleRotatePiece,
     handleFlipPiece,
@@ -40,11 +39,12 @@ function PyramidPuzzle() {
       <ProgressBar current={12 - shapes.length} total={12} variant="pyramid" />
       {shapes.length > 0 && (
         <PieceSelector
-          shapes={shapes}
           selectedShape={selectedShape}
-          setSelectedShape={setSelectedShape}
+          handleFlipShape={handleFlipPiece}
+          handlePreviousShape={handlePreviousPiece}
+          handleNextShape={handleNextPiece}
+          handleRotateShape={handleRotatePiece}
         />
-        // TODO: finish refactoring PieceSelector to use new custom hook
       )}
       <div className="pyramid-area">
         <PyramidBoard

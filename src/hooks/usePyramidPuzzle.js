@@ -165,7 +165,6 @@ function usePyramidPuzzle() {
     board,
     highlightedCells,
     selectedShape,
-    setSelectedShape,
     shapes,
     handleRotatePiece,
     handleFlipPiece,

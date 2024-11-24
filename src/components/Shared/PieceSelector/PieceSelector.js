@@ -1,10 +1,5 @@
 import "./PieceSelector.css";
 import PiecePreview from "../PiecePreview/PiecePreview";
-import {
-  flipShapeHorizontal,
-  normaliseShape,
-  rotateShapeCCW,
-} from "../../../lib/utils";
 
 /**
  * A component for selecting and transforming polysphere shape pieces. Allows
@@ -12,62 +7,24 @@ import {
  * the selected shape.
  *
  * @param {Object} props Component properties.
- * @param {Array<Object>} props.shapes Array of shape objects.
- * @param {Object} props.selectedShape The currently selected shape object.
- * @param {function} props.setSelectedShape Callback to update the selected
+ * @param {Object} props.selectedShape The currently selected shape piece.
+ * @param {Function} props.handleFlipShape A function to flip the selected
+ *  shape.
+ * @param {Function} props.handlePreviousShape A function to select the previous
+ *  shape in the carousel.
+ * @param {Function} props.handleNextShape A function to select the next shape
+ *  in the carousel.
+ * @param {Function} props.handleRotateShape A function to rotate the selected
  *  shape.
  * @returns {JSX.Element}
  */
 function PieceSelector({
-  shapes,
   selectedShape,
-  setSelectedShape,
-  variant = "polysphere",
+  handleFlipShape,
+  handlePreviousShape,
+  handleNextShape,
+  handleRotateShape,
 }) {
-  /**
-   * Selects the previous shape in the shapes array. Wraps to the end of the
-   * list if the current shape is the first element.
-   */
-  const handlePreviousShape = () => {
-    const currentIndex = shapes.findIndex(
-      (shape) => shape.symbol === selectedShape.symbol
-    );
-    const newIndex = (currentIndex - 1 + shapes.length) % shapes.length;
-    setSelectedShape(shapes[newIndex]);
-  };
-
-  /**
-   * Selects the next shape in the shapes array. Wraps to the start of the list
-   * if the current shape is the last element.
-   */
-  const handleNextShape = () => {
-    const currentIndex = shapes.findIndex(
-      (shape) => shape.symbol === selectedShape.symbol
-    );
-    const newIndex = (currentIndex + 1) % shapes.length;
-    setSelectedShape(shapes[newIndex]);
-  };
-
-  /**
-   * Rotates the selected shape 90 degrees clockwise and updates the selected
-   * shape's coordinates with the normalized rotated version.
-   */
-  const handleRotateShape = () => {
-    const newShape = { ...selectedShape };
-    newShape.coords = normaliseShape(rotateShapeCCW(newShape.coords));
-    setSelectedShape(newShape);
-  };
-
-  /**
-   * Flips the selected shape horizontally and updates the selected shape's
-   * coordinates with the normalized flipped version.
-   */
-  const handleFlipShape = () => {
-    const newShape = { ...selectedShape };
-    newShape.coords = normaliseShape(flipShapeHorizontal(newShape.coords));
-    setSelectedShape(newShape);
-  };
-
   return (
     <div className="pieceSelector">
       <button onClick={handleFlipShape}>Flip</button>

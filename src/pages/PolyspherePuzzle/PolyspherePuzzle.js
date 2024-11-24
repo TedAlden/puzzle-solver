@@ -1,17 +1,9 @@
 import "./PolyspherePuzzle.css";
-import { useState, useEffect } from "react";
 import PolyBoard from "../../components/PolyBoard/PolyBoard";
 import PieceSelector from "../../components/Shared/PieceSelector/PieceSelector";
 import ProgressBar from "../../components/Shared/ProgressBar/ProgressBar";
 import KeyboardControls from "../../components/Shared/KeyboardControls/KeyboardControls";
-import pieces from "../../lib/pieces";
-import createPolysphereWorker from "../../workers/createPolysphereWorker";
-import { createBoard2D } from "../../lib/utils";
-import {
-  flipShapeHorizontal,
-  normaliseShape,
-  rotateShapeCCW,
-} from "../../lib/utils";
+import usePolyspherePuzzle from "../../hooks/usePolyspherePuzzle";
 
 /**
  * A component displaying the polysphere puzzle solver, including the board,
@@ -20,133 +12,29 @@ import {
  * @returns {React.JSX.Element}
  */
 function PolyspherePuzzle() {
-  const [board, setBoard] = useState(createBoard2D(11, 5, ""));
-  const [shapes, setShapes] = useState(pieces);
-  const [selectedShape, setSelectedShape] = useState(shapes[0]);
-
-  const [isSolving, setIsSolving] = useState(false);
-  const [isSolved, setIsSolved] = useState(false);
-
-  const [worker, setWorker] = useState(null);
-  const [solutions, setSolutions] = useState([]);
-  const [solutionIndex, setSolutionIndex] = useState(0);
-
-  const [moveStack, setMoveStack] = useState([]);
-
-  // Start a background worker (much like a thread) with the polysphere solver,
-  // since it takes a long time to run and will otherwise freeze the React app.
-  useEffect(() => {
-    try {
-      const newWorker = createPolysphereWorker();
-      setWorker(newWorker);
-      // Cleanup worker
-      return () => {
-        newWorker.terminate();
-      };
-    } catch (err) {
-      console.error("Failed to create Web Worker:", err);
-    }
-  }, []);
-
-  // Update board when solution changes
-  useEffect(() => {
-    if (solutions[solutionIndex]) {
-      setBoard(solutions[solutionIndex]);
-    }
-  }, [solutions, solutionIndex]);
-
-  /**
-   * Handle clicking the solve button. Starts the puzzle solver using a
-   * background worker. Updates the solutions array as the worker finds new
-   * solutions.
-   */
-  const handleSolve = () => {
-    if (!worker) return;
-    // Handler for when the worker sends a solution back here
-    const messageHandler = (e) => {
-      if (e.data.type === "solution") {
-        setSolutions((prev) => [...prev, e.data.data]);
-      }
-      if (e.data.type === "complete") {
-        setIsSolved(true);
-        setIsSolving(false);
-        // Remove 'onMessage' handler when worker is complete
-        worker.removeEventListener("message", messageHandler);
-      }
-    };
-    setIsSolving(true);
-    // Attach 'onMessage' event listener
-    worker.addEventListener("message", messageHandler);
-    // Send the current board configuration and pieces to the solver
-    worker.postMessage({ board, pieces });
-  };
-
-  /**
-   * Handle clicking the clear button. Resets the board and game state.
-   */
-  const handleClear = () => {
-    setBoard(createBoard2D(11, 5, ""));
-    setShapes(pieces);
-    setSelectedShape(pieces[0]);
-    setSolutions([]);
-    setSolutionIndex(0);
-    setIsSolved(false);
-    setIsSolving(false);
-    setMoveStack([]);
-  };
-
-  /**
-   * Handle clicking the next solution button. Skips to the next solution in
-   * the solution set.
-   */
-  const handleNextSolution = () => {
-    if (solutionIndex < solutions.length - 1) {
-      setSolutionIndex((prev) => prev + 1);
-      setBoard(solutions[solutionIndex + 1]);
-    }
-  };
-
-  /**
-   * Handle clicking the previous solution button. Returns to the previous
-   * solution in the solution set.
-   */
-  const handlePreviousSolution = () => {
-    if (solutionIndex > 0) {
-      setSolutionIndex((prev) => prev - 1);
-      setBoard(solutions[solutionIndex - 1]);
-    }
-  };
-
-  /**
-   * Handle clicking the undo button. Reverts the board to the previous move
-   * and restores the piece.
-   */
-  const handleUndo = () => {
-    if (moveStack.length > 0) {
-      setMoveStack((prev) => {
-        const newStack = [...prev];
-        const lastMove = newStack.pop();
-        // Restore the board to the previous state
-        setBoard(lastMove.board);
-        // Restore the piece to availabe pieces
-        if (lastMove.piece) {
-          setShapes((prev) => [...prev, lastMove.piece]);
-          setSelectedShape(lastMove.piece);
-        }
-        return newStack;
-      });
-    }
-  };
-
-  /**
-   * Adds a move to the move stack, enabling undo functionality.
-   *
-   * @param {Array<Array<string>>} board The current board state.
-   * @param {Object} piece The current piece being placed.
-   */
-  const addMove = (board, piece) => {
-    setMoveStack((prev) => [...prev, { board, piece }]);
-  };
+  const {
+    board,
+    shapes,
+    selectedShape,
+    highlightedCells,
+    moveStack,
+    isSolved,
+    isSolving,
+    solutions,
+    solutionIndex,
+    handleSolve,
+    handleClear,
+    handleNextSolution,
+    handlePreviousSolution,
+    handleUndo,
+    handleMouseEnterCell,
+    handleMouseLeaveCell,
+    handleMouseClickCell,
+    handlePreviousShape,
+    handleNextShape,
+    handleRotateShape,
+    handleFlipShape,
+  } = usePolyspherePuzzle();
 
   return (
     <div className="puzzleTwo">
@@ -161,20 +49,19 @@ function PolyspherePuzzle() {
       <ProgressBar current={12 - shapes.length} total={12} />
       {shapes.length > 0 && (
         <PieceSelector
-          shapes={shapes}
           selectedShape={selectedShape}
-          setSelectedShape={setSelectedShape}
+          handleFlipShape={handleFlipShape}
+          handlePreviousShape={handlePreviousShape}
+          handleNextShape={handleNextShape}
+          handleRotateShape={handleRotateShape}
         />
       )}
       <PolyBoard
         board={board}
-        setBoard={setBoard}
-        selectedShape={selectedShape}
-        setSelectedShape={setSelectedShape}
-        shapes={shapes}
-        setShapes={setShapes}
-        isSolving={isSolving}
-        addMove={addMove}
+        highlightedCells={highlightedCells}
+        handleMouseEnterCell={handleMouseEnterCell}
+        handleMouseLeaveCell={handleMouseLeaveCell}
+        handleMouseClickCell={handleMouseClickCell}
       />
       <div className="controlsContainer">
         <button onClick={handleSolve} disabled={isSolving}>
@@ -220,88 +107,43 @@ function PolyspherePuzzle() {
             key: "r",
             keyAlias: "R",
             description: "Rotate piece",
-            onClick: () => {
-              if (!isSolving && selectedShape) {
-                const newShape = { ...selectedShape };
-                newShape.coords = normaliseShape(
-                  rotateShapeCCW(newShape.coords)
-                );
-                setSelectedShape(newShape);
-              }
-            },
+            onClick: handleRotateShape,
           },
           {
             key: "f",
             keyAlias: "F",
             description: "Flip piece",
-            onClick: () => {
-              if (!isSolving && selectedShape) {
-                const newShape = { ...selectedShape };
-                newShape.coords = normaliseShape(
-                  flipShapeHorizontal(newShape.coords)
-                );
-                setSelectedShape(newShape);
-              }
-            },
+            onClick: handleFlipShape,
           },
           {
             key: "ArrowLeft",
             keyAlias: "←",
             description: "Previous piece",
-            onClick: () => {
-              if (!isSolving && shapes.length > 0) {
-                const currentIndex = shapes.findIndex(
-                  (shape) => shape.symbol === selectedShape.symbol
-                );
-                const newIndex =
-                  (currentIndex - 1 + shapes.length) % shapes.length;
-                setSelectedShape(shapes[newIndex]);
-              }
-            },
+            onClick: handlePreviousShape,
           },
           {
             key: "ArrowRight",
             keyAlias: "→",
             description: "Next piece",
-            onClick: () => {
-              if (!isSolving && shapes.length > 0) {
-                const currentIndex = shapes.findIndex(
-                  (shape) => shape.symbol === selectedShape.symbol
-                );
-                const newIndex = (currentIndex + 1) % shapes.length;
-                setSelectedShape(shapes[newIndex]);
-              }
-            },
+            onClick: handleNextShape,
           },
           {
             key: "Escape",
             keyAlias: "Esc",
             description: "Clear board",
-            onClick: () => {
-              if (!isSolving) {
-                handleClear();
-              }
-            },
+            onClick: handleClear,
           },
           {
             key: "u",
             keyAlias: "U",
             description: "Undo action",
-            onClick: () => {
-              if (!isSolving) {
-                handleUndo();
-              }
-            },
+            onClick: handleUndo,
           },
           {
             key: "s",
             keyAlias: "S",
             description: "Solve puzzle",
-            onClick: () => {
-              if (!isSolving) {
-                handleSolve();
-              }
-            },
+            onClick: handleSolve,
           },
         ]}
       />

@@ -1,19 +1,7 @@
-import { useState } from "react";
-import QueenBoard from "../../components/QueenBoard/QueenBoard";
-import { solveNQueens } from "../../lib/nqueens";
-import KeyboardControls from "../../components/Shared/KeyboardControls/KeyboardControls";
 import "./NQueenPuzzle.css";
-
-/**
- * Creates an empty chess board.
- *
- * @param {number} size The size (N) of the N x N chess board.
- * @returns {number[][]} A 2-dimensional array filled with zeros.
- */
-const createBoard = (size) =>
-  Array(size)
-    .fill()
-    .map(() => Array(size).fill(0));
+import QueenBoard from "../../components/QueenBoard/QueenBoard";
+import KeyboardControls from "../../components/Shared/KeyboardControls/KeyboardControls";
+import useNQueenPuzzle from "../../hooks/useNQueenPuzzle";
 
 /**
  * A component displaying the N-Queens puzzle solver, including the board and
@@ -22,47 +10,15 @@ const createBoard = (size) =>
  * @returns {React.JSX.Element}
  */
 function NQueenPuzzle() {
-  const [boardSize, setBoardSize] = useState(4);
-  const [board, setBoard] = useState(createBoard(boardSize));
-  const [solved, setSolved] = useState(false);
-
-  /**
-   * Attempts to solve the N-Queens problem using the board.
-   */
-  const solveBoard = () => {
-    // Create a copy of the chess board and attempt to solve
-    const newBoard = [...board];
-    const isSolved = solveNQueens(newBoard);
-    setSolved(isSolved);
-    if (isSolved) {
-      // Show completed board if successful
-      setBoard(newBoard);
-    } else {
-      alert("No possible Solutions found");
-    }
-  };
-
-  /**
-   * Clears the board and resets the solved status to false.
-   */
-  const clearBoard = () => {
-    setBoard(createBoard(boardSize));
-    setSolved(false);
-  };
-
-  /**
-   * Resizes the board based on the board-size input.
-   * @param {*} e Event
-   */
-  const resizeBoard = (e) => {
-    // Update the board size
-    const newSize = Math.max(1, parseInt(e.target.value) || 0);
-    setBoardSize(newSize);
-    // Reset the board
-    setBoard(createBoard(newSize));
-    // Reset solved status
-    setSolved(false);
-  };
+  const {
+    board,
+    isSolved,
+    boardSize,
+    handleSolve,
+    handleClear,
+    handleResizeBoard,
+    handleMouseClickCell,
+  } = useNQueenPuzzle();
 
   return (
     <div className="puzzleOne">
@@ -85,15 +41,18 @@ function NQueenPuzzle() {
           type="number"
           id="board-size"
           value={boardSize}
-          onChange={resizeBoard}
+          onChange={(e) => {
+            const newSize = Math.max(1, parseInt(e.target.value) || 0);
+            handleResizeBoard(newSize);
+          }}
           min={1}
         />
-        <button onClick={solveBoard}>Solve</button>
-        <button onClick={clearBoard}>Clear</button>
+        <button onClick={handleSolve}>Solve</button>
+        <button onClick={handleClear}>Clear</button>
       </div>
-      {solved && <h2>Solution found</h2>}
+      {isSolved && <h2>Solution found</h2>}
       <div className="board-section">
-        <QueenBoard board={board} setBoard={setBoard} />
+        <QueenBoard board={board} handleMouseClickCell={handleMouseClickCell} />
       </div>
       <KeyboardControls
         keyMap={[
@@ -101,13 +60,13 @@ function NQueenPuzzle() {
             key: "Escape",
             keyAlias: "Esc",
             description: "Clear board",
-            onClick: clearBoard,
+            onClick: handleClear,
           },
           {
             key: "s",
             keyAlias: "S",
             description: "Solve puzzle",
-            onClick: solveBoard,
+            onClick: handleSolve,
           },
           {
             key: "ArrowUp",
@@ -115,9 +74,7 @@ function NQueenPuzzle() {
             description: "Increase board size",
             onClick: () => {
               const newSize = Math.max(1, boardSize + 1);
-              setBoardSize(newSize);
-              setBoard(createBoard(newSize));
-              setSolved(false);
+              handleResizeBoard(newSize);
             },
           },
           {
@@ -126,9 +83,7 @@ function NQueenPuzzle() {
             description: "Decrease board size",
             onClick: () => {
               const newSize = Math.max(1, boardSize - 1);
-              setBoardSize(newSize);
-              setBoard(createBoard(newSize));
-              setSolved(false);
+              handleResizeBoard(newSize);
             },
           },
         ]}

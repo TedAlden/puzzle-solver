@@ -7,22 +7,10 @@ import QueenCell from "../QueenCell/QueenCell";
  *
  * @param {Object} props Component properties.
  * @param {number[][]} props.board A 2D array representing the board state.
- * @param {function} props.setBoard A function to update the board state.
+ * @param {function} props.handleMouseClickCell Called when a cell is clicked.
  * @returns {React.JSX.Element}
  */
-function QueenBoard({ board, setBoard }) {
-  /**
-   * Toggle the placement of a queen at a given cell (row, col).
-   */
-  const toggleQueen = (row, col) => {
-    const newValue = board[row][col] === 1 ? 0 : 1;
-    setBoard(
-      board.map((r, i) =>
-        i === row ? r.map((c, j) => (j === col ? newValue : c)) : r
-      )
-    );
-  };
-
+function QueenBoard({ board, handleMouseClickCell }) {
   return (
     <div
       role="grid"
@@ -35,7 +23,9 @@ function QueenBoard({ board, setBoard }) {
             key={`${rowIndex}-${colIndex}`}
             isEven={(rowIndex + colIndex) % 2 === 0}
             isQueen={cell === 1}
-            onMouseClick={() => toggleQueen(rowIndex, colIndex)}
+            onMouseClick={() => {
+              handleMouseClickCell(rowIndex, colIndex);
+            }}
           />
         ))
       )}

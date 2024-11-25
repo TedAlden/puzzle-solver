@@ -198,15 +198,18 @@ function usePyramidPuzzle() {
       y + layer,
       z + row,
     ]);
-    const isInBounds = highlightedCells.every(
-      ([x, y, z]) =>
-        x >= 0 &&
-        x < board[y].length &&
-        y >= 0 &&
-        y < board.length &&
-        z >= 0 &&
-        z < board[y][x].length
-    );
+    const isInBounds = highlightedCells.every(([x, y, z]) => {
+      if (y < 0 || y >= board.length) {
+        return false;
+      }
+      if (x < 0 || x >= board[y].length) {
+        return false;
+      }
+      if (z < 0 || z >= board[y][x].length) {
+        return false;
+      }
+      return true;
+    });
     if (isInBounds) {
       setHighlightedCells(highlightedCells);
     }

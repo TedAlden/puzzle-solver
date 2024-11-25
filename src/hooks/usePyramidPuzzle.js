@@ -31,11 +31,7 @@ function rotateShapeY(coords) {
 }
 
 function rotateShapeZ(coords) {
-  return coords.map(([x, y, z]) => [
-    Math.round(cos60 * x - sin60 * y),
-    Math.round(sin60 * x + cos60 * y),
-    z,
-  ]);
+  return coords.map(([x, y, z]) => [-y, x + y, z]);
 }
 
 // FIXME: shapes grow apart when rotating on X and Z axis
@@ -225,15 +221,18 @@ function usePyramidPuzzle() {
       y + layer,
       z + row,
     ]);
-    const isInBounds = highlightedCells.every(
-      ([x, y, z]) =>
-        x >= 0 &&
-        x < board[y].length &&
-        y >= 0 &&
-        y < board.length &&
-        z >= 0 &&
-        z < board[y][x].length
-    );
+    const isInBounds = highlightedCells.every(([x, y, z]) => {
+      if (y < 0 || y >= board.length) {
+        return false;
+      }
+      if (x < 0 || x >= board[y].length) {
+        return false;
+      }
+      if (z < 0 || z >= board[y][x].length) {
+        return false;
+      }
+      return true;
+    });
     const isUnoccupiedSpace = isInBounds
       ? !highlightedCells.some(([dx, dy, dz]) => board[dy][dx][dz] !== "")
       : false;

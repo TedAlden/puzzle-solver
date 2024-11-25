@@ -2,16 +2,55 @@
 import { useState, useEffect } from "react";
 import createPyramidWorker from "../workers/createPyramidWorker";
 import pieces from "../lib/pieces";
-import {
-  flipShapeHorizontal,
-  normaliseShape,
-  rotateShapeCCW,
-  createBoardPyramid,
-} from "../lib/utils";
+import { createBoardPyramid } from "../lib/utils";
+
+export const normaliseShape = (coords) => {
+  const minX = Math.min(...coords.map(([x, y, z]) => x));
+  const minY = Math.min(...coords.map(([x, y, z]) => y));
+  const minZ = Math.min(...coords.map(([x, y, z]) => z));
+  return coords.map(([x, y, z]) => [x - minX, y - minY, z - minZ]);
+};
+
+export const flipShapeHorizontal = (coords) => {
+  return coords.map(([x, y, z]) => [-x, y, z]);
+};
+
+const cos60 = 0.5;
+const sin60 = Math.sqrt(3) / 2;
+
+function rotateShapeX(coords) {
+  return coords.map(([x, y, z]) => [
+    x,
+    Math.round(cos60 * y - sin60 * z),
+    Math.round(sin60 * y + cos60 * z),
+  ]);
+}
+
+function rotateShapeY(coords) {
+  return coords.map(([x, y, z]) => [z, y, -x]);
+}
+
+function rotateShapeZ(coords) {
+  return coords.map(([x, y, z]) => [
+    Math.round(cos60 * x - sin60 * y),
+    Math.round(sin60 * x + cos60 * y),
+    z,
+  ]);
+}
+
+// FIXME: shapes grow apart when rotating on X and Z axis
+
+// Convert pieces to 3D (having a y coordinate)
+const pieces3D = Array.from(
+  pieces.map((piece) => {
+    const coords = piece.coords.map(([x, z]) => [x, 0, z]);
+    return { ...piece, coords };
+  })
+);
 
 function usePyramidPuzzle() {
   const [board, setBoard] = useState(createBoardPyramid(5, ""));
-  const [shapes, setShapes] = useState(pieces);
+  const [shapes, setShapes] = useState(pieces3D);
   const [selectedShape, setSelectedShape] = useState(shapes[0]);
   const [highlightedCells, setHighlightedCells] = useState([]);
   const [isSolving, setIsSolving] = useState(false);
@@ -45,10 +84,26 @@ function usePyramidPuzzle() {
     setMoveStack((prev) => [...prev, { board, piece }]);
   };
 
-  const handleRotatePiece = () => {
+  const handleRotatePieceX = () => {
     if (!isSolving && selectedShape) {
       const newShape = { ...selectedShape };
-      newShape.coords = normaliseShape(rotateShapeCCW(newShape.coords));
+      newShape.coords = normaliseShape(rotateShapeX(newShape.coords));
+      setSelectedShape(newShape);
+    }
+  };
+
+  const handleRotatePieceY = () => {
+    if (!isSolving && selectedShape) {
+      const newShape = { ...selectedShape };
+      newShape.coords = normaliseShape(rotateShapeY(newShape.coords));
+      setSelectedShape(newShape);
+    }
+  };
+
+  const handleRotatePieceZ = () => {
+    if (!isSolving && selectedShape) {
+      const newShape = { ...selectedShape };
+      newShape.coords = normaliseShape(rotateShapeZ(newShape.coords));
       setSelectedShape(newShape);
     }
   };
@@ -84,7 +139,7 @@ function usePyramidPuzzle() {
   const handleClear = () => {
     if (!isSolving) {
       setBoard(createBoardPyramid(5, ""));
-      setShapes(pieces);
+      setShapes(pieces3D);
       setSelectedShape(shapes[0]);
       setIsSolving(false);
       setMoveStack([]);
@@ -138,9 +193,9 @@ function usePyramidPuzzle() {
   };
 
   const handleMouseEnterCell = (layer, row, col) => {
-    const highlightedCells = selectedShape.coords.map(([x, z]) => [
+    const highlightedCells = selectedShape.coords.map(([x, y, z]) => [
       x + col,
-      0 + layer,
+      y + layer,
       z + row,
     ]);
     const isInBounds = highlightedCells.every(
@@ -162,9 +217,9 @@ function usePyramidPuzzle() {
   };
 
   const handleMouseClickCell = (layer, row, col) => {
-    const highlightedCells = selectedShape.coords.map(([x, z]) => [
+    const highlightedCells = selectedShape.coords.map(([x, y, z]) => [
       x + col,
-      0 + layer,
+      y + layer,
       z + row,
     ]);
     const isInBounds = highlightedCells.every(
@@ -213,7 +268,9 @@ function usePyramidPuzzle() {
     highlightedCells,
     selectedShape,
     shapes,
-    handleRotatePiece,
+    handleRotatePieceX,
+    handleRotatePieceY,
+    handleRotatePieceZ,
     handleFlipPiece,
     handleNextPiece,
     handlePreviousPiece,

@@ -16,7 +16,9 @@ function PyramidPuzzle() {
     handleRotatePieceX,
     handleRotatePieceY,
     handleRotatePieceZ,
-    handleFlipPiece,
+    handleFlipPieceX,
+    handleFlipPieceY,
+    handleFlipPieceZ,
     handleNextPiece,
     handlePreviousPiece,
     handleClear,
@@ -40,7 +42,9 @@ function PyramidPuzzle() {
       <ProgressBar current={12 - shapes.length} total={12} variant="pyramid" />
       {shapes.length > 0 && (
         <div>
-          <button onClick={handleFlipPiece}>Flip</button>
+          <button onClick={handleFlipPieceX}>Flip X</button>
+          <button onClick={handleFlipPieceY}>Flip Y</button>
+          <button onClick={handleFlipPieceZ}>Flip Z</button>
           <button onClick={handlePreviousPiece}>Prev</button>
           <button onClick={handleNextPiece}>Next</button>
           <button onClick={handleRotatePieceX}>Rotate X</button>
@@ -85,8 +89,20 @@ function PyramidPuzzle() {
           {
             key: "f",
             keyAlias: "F",
-            description: "Flip piece",
-            onClick: handleFlipPiece,
+            description: "Flip piece X",
+            onClick: handleFlipPieceX,
+          },
+          {
+            key: "g",
+            keyAlias: "G",
+            description: "Flip piece Y",
+            onClick: handleFlipPieceY,
+          },
+          {
+            key: "h",
+            keyAlias: "H",
+            description: "Flip piece Z",
+            onClick: handleFlipPieceZ,
           },
           {
             key: "ArrowLeft",

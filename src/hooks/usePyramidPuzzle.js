@@ -11,8 +11,16 @@ export const normaliseShape = (coords) => {
   return coords.map(([x, y, z]) => [x - minX, y - minY, z - minZ]);
 };
 
-export const flipShapeHorizontal = (coords) => {
+export const flipShapeX = (coords) => {
   return coords.map(([x, y, z]) => [-x, y, z]);
+};
+
+export const flipShapeY = (coords) => {
+  return coords.map(([x, y, z]) => [x, -y, z]);
+};
+
+export const flipShapeZ = (coords) => {
+  return coords.map(([x, y, z]) => [x, y, -z]);
 };
 
 const cos60 = 0.5;
@@ -104,10 +112,26 @@ function usePyramidPuzzle() {
     }
   };
 
-  const handleFlipPiece = () => {
+  const handleFlipPieceX = () => {
     if (!isSolving && selectedShape) {
       const newShape = { ...selectedShape };
-      newShape.coords = normaliseShape(flipShapeHorizontal(newShape.coords));
+      newShape.coords = normaliseShape(flipShapeX(newShape.coords));
+      setSelectedShape(newShape);
+    }
+  };
+
+  const handleFlipPieceY = () => {
+    if (!isSolving && selectedShape) {
+      const newShape = { ...selectedShape };
+      newShape.coords = normaliseShape(flipShapeY(newShape.coords));
+      setSelectedShape(newShape);
+    }
+  };
+
+  const handleFlipPieceZ = () => {
+    if (!isSolving && selectedShape) {
+      const newShape = { ...selectedShape };
+      newShape.coords = normaliseShape(flipShapeZ(newShape.coords));
       setSelectedShape(newShape);
     }
   };
@@ -273,7 +297,9 @@ function usePyramidPuzzle() {
     handleRotatePieceX,
     handleRotatePieceY,
     handleRotatePieceZ,
-    handleFlipPiece,
+    handleFlipPieceX,
+    handleFlipPieceY,
+    handleFlipPieceZ,
     handleNextPiece,
     handlePreviousPiece,
     handleClear,

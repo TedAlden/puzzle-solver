@@ -22,6 +22,7 @@ function usePolyspherePuzzle() {
 
   const [moveStack, setMoveStack] = useState([]);
 
+  const [highlightedIndex, setHighlightedIndex] = useState([0, 0]);
   const [highlightedCells, setHighlightedCells] = useState([]);
 
   // Start a background worker (much like a thread) with the polysphere solver,
@@ -45,6 +46,25 @@ function usePolyspherePuzzle() {
       setBoard(solutions[solutionIndex]);
     }
   }, [solutions, solutionIndex]);
+
+  useEffect(() => {
+    if (selectedShape && highlightedIndex) {
+      const highlightedCells = selectedShape.coords.map(([x, y]) => [
+        x + highlightedIndex[1],
+        y + highlightedIndex[0],
+      ]);
+      // Check if this highlighted shape is within the boards boundaries
+      const isInBounds = highlightedCells.every(
+        ([x, y]) => x < board[0].length && y < board.length
+      );
+      // Only highlight if within bounds
+      if (isInBounds) {
+        setHighlightedCells(highlightedCells);
+      } else {
+        setHighlightedCells([]);
+      }
+    }
+  }, [selectedShape, board, highlightedIndex]);
 
   /**
    * Handle clicking the solve button. Starts the puzzle solver using a
@@ -152,18 +172,7 @@ function usePolyspherePuzzle() {
   const handleMouseEnterCell = (row, col) => {
     if (isSolving || !selectedShape) return;
     // Highlight the current shape where the mouse is on the board
-    const highlightedCells = selectedShape.coords.map(([x, y]) => [
-      x + col,
-      y + row,
-    ]);
-    // Check if this highlighted shape is within the boards boundaries
-    const isInBounds = highlightedCells.every(
-      ([x, y]) => x < board[0].length && y < board.length
-    );
-    // Only highlight if within bounds
-    if (isInBounds) {
-      setHighlightedCells(highlightedCells);
-    }
+    setHighlightedIndex([row, col]);
   };
 
   /**
@@ -176,7 +185,7 @@ function usePolyspherePuzzle() {
   const handleMouseLeaveCell = (row, col) => {
     if (isSolving) return;
     // Un-highlight all cells when no longer hovering over a cell
-    setHighlightedCells([]);
+    setHighlightedIndex(null);
   };
 
   /**

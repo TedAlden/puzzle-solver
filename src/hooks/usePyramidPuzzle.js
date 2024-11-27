@@ -25,6 +25,7 @@ function usePyramidPuzzle() {
   const [board, setBoard] = useState(createBoardPyramid(5, ""));
   const [shapes, setShapes] = useState(pieces3D);
   const [selectedShape, setSelectedShape] = useState(shapes[0]);
+  const [highlightedIndex, setHighlightedIndex] = useState([-1, -1, -1]);
   const [highlightedCells, setHighlightedCells] = useState([]);
   const [isSolving, setIsSolving] = useState(false);
   const [isSolved, setIsSolved] = useState(false);
@@ -52,6 +53,35 @@ function usePyramidPuzzle() {
       setBoard(solutions[solutionIndex]);
     }
   }, [solutions, solutionIndex]);
+
+  useEffect(() => {
+    if (highlightedIndex.some((i) => i === -1)) {
+      setHighlightedCells([]);
+      return;
+    }
+    const highlightedCells = selectedShape.coords.map(([x, y, z]) => [
+      x + highlightedIndex[2],
+      y + highlightedIndex[0],
+      z + highlightedIndex[1],
+    ]);
+    const isInBounds = highlightedCells.every(([x, y, z]) => {
+      if (y < 0 || y >= board.length) {
+        return false;
+      }
+      if (x < 0 || x >= board[y].length) {
+        return false;
+      }
+      if (z < 0 || z >= board[y][x].length) {
+        return false;
+      }
+      return true;
+    });
+    if (isInBounds) {
+      setHighlightedCells(highlightedCells);
+    } else {
+      setHighlightedCells([]);
+    }
+  }, [selectedShape, board, highlightedIndex]);
 
   const addMove = (board, piece) => {
     setMoveStack((prev) => [...prev, { board, piece }]);
@@ -182,30 +212,11 @@ function usePyramidPuzzle() {
   };
 
   const handleMouseEnterCell = (layer, row, col) => {
-    const highlightedCells = selectedShape.coords.map(([x, y, z]) => [
-      x + col,
-      y + layer,
-      z + row,
-    ]);
-    const isInBounds = highlightedCells.every(([x, y, z]) => {
-      if (y < 0 || y >= board.length) {
-        return false;
-      }
-      if (x < 0 || x >= board[y].length) {
-        return false;
-      }
-      if (z < 0 || z >= board[y][x].length) {
-        return false;
-      }
-      return true;
-    });
-    if (isInBounds) {
-      setHighlightedCells(highlightedCells);
-    }
+    setHighlightedIndex([layer, row, col]);
   };
 
   const handleMouseLeaveCell = (layer, row, col) => {
-    setHighlightedCells([]);
+    setHighlightedIndex([-1, -1, -1]);
   };
 
   const handleMouseClickCell = (layer, row, col) => {

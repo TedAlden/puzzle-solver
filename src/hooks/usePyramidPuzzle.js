@@ -54,6 +54,7 @@ function usePyramidPuzzle() {
     }
   }, [solutions, solutionIndex]);
 
+
   useEffect(() => {
     if (highlightedIndex.some((i) => i === -1)) {
       setHighlightedCells([]);
@@ -187,29 +188,33 @@ function usePyramidPuzzle() {
       console.error("Worker not initialized");
       return;
     }
-    // Handler for when the worker sends a solution back here
+  
+    setSolutions([]); // Reset solutions array
+  
     const messageHandler = (e) => {
-      console.log("Worker message received:", e.data);
+      console.log("Message from worker:", e.data); // Debug incoming messages
       if (e.data.type === "solution") {
         setSolutions((prev) => [...prev, e.data.data]);
       }
       if (e.data.type === "complete") {
         console.log("Solver completed");
-        setIsSolved(true);
         setIsSolving(false);
-        // Remove 'onMessage' handler when worker is complete
         worker.removeEventListener("message", messageHandler);
       }
     };
-    setIsSolving(true);
-    // Attach 'onMessage' event listener
+  
     worker.addEventListener("message", messageHandler);
-    // Send the current board configuration and pieces to the solver
-    console.log("Sending board and pieces to worker:");
-    console.log("Board:", board);
-    console.log("Pieces:", shapes);
-    worker.postMessage({ board, pieces });
+  
+    const remainingPieces = shapes.filter(
+      (shape) => !board.flat(2).includes(shape.symbol)
+    );
+  
+    console.log("Starting solve with shapes:", remainingPieces);
+    console.log("Sending board:", board);
+    worker.postMessage({ board, pieces3D: remainingPieces }); 
+    setIsSolving(true);
   };
+  
 
   const handleMouseEnterCell = (layer, row, col) => {
     setHighlightedIndex([layer, row, col]);

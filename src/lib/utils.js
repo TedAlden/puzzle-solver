@@ -19,11 +19,15 @@ export const normaliseShape = (coords) => {
  * @returns {Array<Array<number>>} The adjusted array of coordinates.
  */
 export const normaliseShape3D = (coords) => {
-  const minX = Math.min(...coords.map(([x, y, z]) => x));
-  const minY = Math.min(...coords.map(([x, y, z]) => y));
-  const minZ = Math.min(...coords.map(([x, y, z]) => z));
-  return coords.map(([x, y, z]) => [x - minX, y - minY, z - minZ]);
+  const minX = Math.min(...coords.map(([x]) => x));
+  const minY = Math.min(...coords.map(([_, y]) => y));
+  const minZ = Math.min(...coords.map(([_, __, z]) => z));
+
+  const normalisedCoords = coords.map(([x, y, z]) => [x - minX, y - minY, z - minZ]);
+  console.log("Normalised coords:", normalisedCoords);
+  return normalisedCoords;
 };
+
 
 /**
  * Rotates an array of shape coordinates 90 degrees counter-clockwise.
@@ -42,7 +46,7 @@ export const rotateShapeCCW = (coords) => {
  * @returns {Array<Array<number>>} The rotated array of coordinates.
  */
 export const rotateShapeX = (coords) => {
-  return coords.map(([x, y, z]) => [x, -z, y + z]);
+  return coords.map(([x, y, z]) => [x, -z, y]);
 };
 
 /**
@@ -149,3 +153,61 @@ export const createBoardPyramid = (size, value) => {
     Array.from({ length: size - i }, () => Array(size - i).fill(value))
   );
 };
+/**
+ * Converts 2D coordinates to 3D by adding a y-coordinate.
+ * Defaults to placing the piece on the y = 0 plane.
+ *
+ * @param {Array<Array<number>>} coords - The 2D coordinates ([x, z]) of a piece.
+ * @param {number|Array<number>} yMapping - The y-coordinate to assign for all points.
+ *    Can be a single number (e.g., 0) or an array of y-levels for each point.
+ * @returns {Array<Array<number>>} The 3D coordinates ([x, y, z]) of the piece.
+ */
+export const convert2Dto3D = (coords, yMapping = 0) => {
+  return coords.map(([x, z], index) => [
+    x,
+    Array.isArray(yMapping) ? yMapping[index] : yMapping, // Use yMapping array if provided
+    z,
+  ]);
+};
+
+/**
+ * Generate all unique orientations for a 3D shape.
+ *
+/**
+ * @param {Array<Array<number>>} coords The 3D coordinates of the piece.
+ * @returns {Array<Array<Array<number>>>} An array of unique orientations.
+ */
+export const generateAllOrientations = (coords) => {
+  const orientations = new Set();
+  const stringifyCoords = (coords) => JSON.stringify(normaliseShape3D(coords));
+
+  const transformations = [
+    (shape) => shape, // No transformation
+    flipShapeX,
+    flipShapeY,
+    flipShapeZ,
+  ];
+
+  for (const flip of transformations) {
+    let flippedCoords = flip(coords); // Apply a flip transformation
+
+    for (let rx = 0; rx < 4; rx++) {
+      for (let ry = 0; ry < 4; ry++) {
+        for (let rz = 0; rz < 4; rz++) {
+          let transformedCoords = flippedCoords;
+          for (let i = 0; i < rx; i++) transformedCoords = rotateShapeX(transformedCoords);
+          for (let i = 0; i < ry; i++) transformedCoords = rotateShapeY(transformedCoords);
+          for (let i = 0; i < rz; i++) transformedCoords = rotateShapeZ(transformedCoords);
+
+          orientations.add(stringifyCoords(transformedCoords));
+        }
+      }
+    }
+  }
+
+  const uniqueOrientations = Array.from(orientations).map((coords) => JSON.parse(coords));
+  console.log("Unique orientations with flips:", uniqueOrientations);
+  return uniqueOrientations;
+};
+
+

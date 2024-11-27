@@ -12,6 +12,20 @@ export const normaliseShape = (coords) => {
 };
 
 /**
+ * Normalizes an array of 3D shape coordinates by shifting them so that the
+ * top-left corner is at (0, 0, 0).
+ *
+ * @param {Array<Array<number>>} coords An array of [row, col] coordinates.
+ * @returns {Array<Array<number>>} The adjusted array of coordinates.
+ */
+export const normaliseShape3D = (coords) => {
+  const minX = Math.min(...coords.map(([x, y, z]) => x));
+  const minY = Math.min(...coords.map(([x, y, z]) => y));
+  const minZ = Math.min(...coords.map(([x, y, z]) => z));
+  return coords.map(([x, y, z]) => [x - minX, y - minY, z - minZ]);
+};
+
+/**
  * Rotates an array of shape coordinates 90 degrees counter-clockwise.
  *
  * @param {Array<Array<number>>} coords An array of [row, col] coordinates.
@@ -22,6 +36,36 @@ export const rotateShapeCCW = (coords) => {
 };
 
 /**
+ * Rotates an array of 3D shape coordinates 60 degrees about the X axis.
+ *
+ * @param {Array<Array<number>>} coords An array of [x, y, z] coordinates.
+ * @returns {Array<Array<number>>} The rotated array of coordinates.
+ */
+export const rotateShapeX = (coords) => {
+  return coords.map(([x, y, z]) => [x, -z, y + z]);
+};
+
+/**
+ * Rotates an array of 3D shape coordinates 90 degrees about the Y axis.
+ *
+ * @param {Array<Array<number>>} coords An array of [x, y, z] coordinates.
+ * @returns {Array<Array<number>>} The rotated array of coordinates.
+ */
+export const rotateShapeY = (coords) => {
+  return coords.map(([x, y, z]) => [z, y, -x]);
+};
+
+/**
+ * Rotates an array of 3D shape coordinates 60 degrees about the Z axis.
+ *
+ * @param {Array<Array<number>>} coords An array of [x, y, z] coordinates.
+ * @returns {Array<Array<number>>} The rotated array of coordinates.
+ */
+export const rotateShapeZ = (coords) => {
+  return coords.map(([x, y, z]) => [-y, x + y, z]);
+};
+
+/**
  * Flips an array of shape coordinates horizontally.
  *
  * @param {Array<Array<number>>} coords An array of [row, col] coordinates.
@@ -29,6 +73,36 @@ export const rotateShapeCCW = (coords) => {
  */
 export const flipShapeHorizontal = (coords) => {
   return coords.map(([r, c]) => [-r, c]);
+};
+
+/**
+ * Flips an array of 3D shape coordinates along the X axis.
+ *
+ * @param {Array<Array<number>>} coords An array of [x, y, z] coordinates.
+ * @returns {Array<Array<number>>} The flipped array of coordinates.
+ */
+export const flipShapeX = (coords) => {
+  return coords.map(([x, y, z]) => [-x, y, z]);
+};
+
+/**
+ * Flips an array of 3D shape coordinates along the Y axis.
+ *
+ * @param {Array<Array<number>>} coords An array of [x, y, z] coordinates.
+ * @returns {Array<Array<number>>} The flipped array of coordinates.
+ */
+export const flipShapeY = (coords) => {
+  return coords.map(([x, y, z]) => [x, -y, z]);
+};
+
+/**
+ * Flips an array of 3D shape coordinates along the Z axis.
+ *
+ * @param {Array<Array<number>>} coords An array of [x, y, z] coordinates.
+ * @returns {Array<Array<number>>} The flipped array of coordinates.
+ */
+export const flipShapeZ = (coords) => {
+  return coords.map(([x, y, z]) => [x, y, -z]);
 };
 
 /**

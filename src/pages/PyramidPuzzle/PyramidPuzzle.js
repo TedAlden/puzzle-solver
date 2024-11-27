@@ -1,6 +1,5 @@
 import "./PyramidPuzzle.css";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
-import PieceSelector from "../../components/PieceSelector/PieceSelector";
 import PyramidBoard from "../../components/PyramidBoard/PyramidBoard";
 import PyramidLayerBoards from "../../components/PyramidLayerBoards/PyramidLayerBoards";
 import KeyboardControls from "../../components/KeyboardControls/KeyboardControls";
@@ -14,8 +13,12 @@ function PyramidPuzzle() {
     highlightedCells,
     selectedShape,
     shapes,
-    handleRotatePiece,
-    handleFlipPiece,
+    handleRotatePieceX,
+    handleRotatePieceY,
+    handleRotatePieceZ,
+    handleFlipPieceX,
+    handleFlipPieceY,
+    handleFlipPieceZ,
     handleNextPiece,
     handlePreviousPiece,
     handleClear,
@@ -38,13 +41,16 @@ function PyramidPuzzle() {
       </p>
       <ProgressBar current={12 - shapes.length} total={12} variant="pyramid" />
       {shapes.length > 0 && (
-        <PieceSelector
-          selectedShape={selectedShape}
-          handleFlipShape={handleFlipPiece}
-          handlePreviousShape={handlePreviousPiece}
-          handleNextShape={handleNextPiece}
-          handleRotateShape={handleRotatePiece}
-        />
+        <div>
+          <button onClick={handleFlipPieceX}>Flip X</button>
+          <button onClick={handleFlipPieceY}>Flip Y</button>
+          <button onClick={handleFlipPieceZ}>Flip Z</button>
+          <button onClick={handlePreviousPiece}>Prev</button>
+          <button onClick={handleNextPiece}>Next</button>
+          <button onClick={handleRotatePieceX}>Rotate X</button>
+          <button onClick={handleRotatePieceY}>Rotate Y</button>
+          <button onClick={handleRotatePieceZ}>Rotate Z</button>
+        </div>
       )}
       <div className="pyramid-area">
         <PyramidBoard
@@ -65,14 +71,38 @@ function PyramidPuzzle() {
           {
             key: "r",
             keyAlias: "R",
-            description: "Rotate piece",
-            onClick: handleRotatePiece,
+            description: "Rotate piece X",
+            onClick: handleRotatePieceX,
+          },
+          {
+            key: "t",
+            keyAlias: "T",
+            description: "Rotate piece Y",
+            onClick: handleRotatePieceY,
+          },
+          {
+            key: "y",
+            keyAlias: "Y",
+            description: "Rotate piece Z",
+            onClick: handleRotatePieceZ,
           },
           {
             key: "f",
             keyAlias: "F",
-            description: "Flip piece",
-            onClick: handleFlipPiece,
+            description: "Flip piece X",
+            onClick: handleFlipPieceX,
+          },
+          {
+            key: "g",
+            keyAlias: "G",
+            description: "Flip piece Y",
+            onClick: handleFlipPieceY,
+          },
+          {
+            key: "h",
+            keyAlias: "H",
+            description: "Flip piece Z",
+            onClick: handleFlipPieceZ,
           },
           {
             key: "ArrowLeft",

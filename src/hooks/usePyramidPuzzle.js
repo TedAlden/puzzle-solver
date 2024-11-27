@@ -3,15 +3,27 @@ import { useState, useEffect } from "react";
 import createPyramidWorker from "../workers/createPyramidWorker";
 import pieces from "../lib/pieces";
 import {
-  flipShapeHorizontal,
-  normaliseShape,
-  rotateShapeCCW,
   createBoardPyramid,
+  normaliseShape3D,
+  rotateShapeX,
+  rotateShapeY,
+  rotateShapeZ,
+  flipShapeX,
+  flipShapeY,
+  flipShapeZ,
 } from "../lib/utils";
+
+// Convert pieces to 3D (having a y coordinate)
+const pieces3D = Array.from(
+  pieces.map((piece) => {
+    const coords = piece.coords.map(([x, z]) => [x, 0, z]);
+    return { ...piece, coords };
+  })
+);
 
 function usePyramidPuzzle() {
   const [board, setBoard] = useState(createBoardPyramid(5, ""));
-  const [shapes, setShapes] = useState(pieces);
+  const [shapes, setShapes] = useState(pieces3D);
   const [selectedShape, setSelectedShape] = useState(shapes[0]);
   const [highlightedCells, setHighlightedCells] = useState([]);
   const [isSolving, setIsSolving] = useState(false);
@@ -45,18 +57,50 @@ function usePyramidPuzzle() {
     setMoveStack((prev) => [...prev, { board, piece }]);
   };
 
-  const handleRotatePiece = () => {
+  const handleRotatePieceX = () => {
     if (!isSolving && selectedShape) {
       const newShape = { ...selectedShape };
-      newShape.coords = normaliseShape(rotateShapeCCW(newShape.coords));
+      newShape.coords = normaliseShape3D(rotateShapeX(newShape.coords));
       setSelectedShape(newShape);
     }
   };
 
-  const handleFlipPiece = () => {
+  const handleRotatePieceY = () => {
     if (!isSolving && selectedShape) {
       const newShape = { ...selectedShape };
-      newShape.coords = normaliseShape(flipShapeHorizontal(newShape.coords));
+      newShape.coords = normaliseShape3D(rotateShapeY(newShape.coords));
+      setSelectedShape(newShape);
+    }
+  };
+
+  const handleRotatePieceZ = () => {
+    if (!isSolving && selectedShape) {
+      const newShape = { ...selectedShape };
+      newShape.coords = normaliseShape3D(rotateShapeZ(newShape.coords));
+      setSelectedShape(newShape);
+    }
+  };
+
+  const handleFlipPieceX = () => {
+    if (!isSolving && selectedShape) {
+      const newShape = { ...selectedShape };
+      newShape.coords = normaliseShape3D(flipShapeX(newShape.coords));
+      setSelectedShape(newShape);
+    }
+  };
+
+  const handleFlipPieceY = () => {
+    if (!isSolving && selectedShape) {
+      const newShape = { ...selectedShape };
+      newShape.coords = normaliseShape3D(flipShapeY(newShape.coords));
+      setSelectedShape(newShape);
+    }
+  };
+
+  const handleFlipPieceZ = () => {
+    if (!isSolving && selectedShape) {
+      const newShape = { ...selectedShape };
+      newShape.coords = normaliseShape3D(flipShapeZ(newShape.coords));
       setSelectedShape(newShape);
     }
   };
@@ -84,7 +128,7 @@ function usePyramidPuzzle() {
   const handleClear = () => {
     if (!isSolving) {
       setBoard(createBoardPyramid(5, ""));
-      setShapes(pieces);
+      setShapes(pieces3D);
       setSelectedShape(shapes[0]);
       setIsSolving(false);
       setMoveStack([]);
@@ -138,20 +182,23 @@ function usePyramidPuzzle() {
   };
 
   const handleMouseEnterCell = (layer, row, col) => {
-    const highlightedCells = selectedShape.coords.map(([x, z]) => [
+    const highlightedCells = selectedShape.coords.map(([x, y, z]) => [
       x + col,
-      0 + layer,
+      y + layer,
       z + row,
     ]);
-    const isInBounds = highlightedCells.every(
-      ([x, y, z]) =>
-        x >= 0 &&
-        x < board[y].length &&
-        y >= 0 &&
-        y < board.length &&
-        z >= 0 &&
-        z < board[y][x].length
-    );
+    const isInBounds = highlightedCells.every(([x, y, z]) => {
+      if (y < 0 || y >= board.length) {
+        return false;
+      }
+      if (x < 0 || x >= board[y].length) {
+        return false;
+      }
+      if (z < 0 || z >= board[y][x].length) {
+        return false;
+      }
+      return true;
+    });
     if (isInBounds) {
       setHighlightedCells(highlightedCells);
     }
@@ -162,20 +209,23 @@ function usePyramidPuzzle() {
   };
 
   const handleMouseClickCell = (layer, row, col) => {
-    const highlightedCells = selectedShape.coords.map(([x, z]) => [
+    const highlightedCells = selectedShape.coords.map(([x, y, z]) => [
       x + col,
-      0 + layer,
+      y + layer,
       z + row,
     ]);
-    const isInBounds = highlightedCells.every(
-      ([x, y, z]) =>
-        x >= 0 &&
-        x < board[y].length &&
-        y >= 0 &&
-        y < board.length &&
-        z >= 0 &&
-        z < board[y][x].length
-    );
+    const isInBounds = highlightedCells.every(([x, y, z]) => {
+      if (y < 0 || y >= board.length) {
+        return false;
+      }
+      if (x < 0 || x >= board[y].length) {
+        return false;
+      }
+      if (z < 0 || z >= board[y][x].length) {
+        return false;
+      }
+      return true;
+    });
     const isUnoccupiedSpace = isInBounds
       ? !highlightedCells.some(([dx, dy, dz]) => board[dy][dx][dz] !== "")
       : false;
@@ -213,8 +263,12 @@ function usePyramidPuzzle() {
     highlightedCells,
     selectedShape,
     shapes,
-    handleRotatePiece,
-    handleFlipPiece,
+    handleRotatePieceX,
+    handleRotatePieceY,
+    handleRotatePieceZ,
+    handleFlipPieceX,
+    handleFlipPieceY,
+    handleFlipPieceZ,
     handleNextPiece,
     handlePreviousPiece,
     handleClear,

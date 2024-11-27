@@ -2,38 +2,16 @@
 import { useState, useEffect } from "react";
 import createPyramidWorker from "../workers/createPyramidWorker";
 import pieces from "../lib/pieces";
-import { createBoardPyramid } from "../lib/utils";
-
-export const normaliseShape = (coords) => {
-  const minX = Math.min(...coords.map(([x, y, z]) => x));
-  const minY = Math.min(...coords.map(([x, y, z]) => y));
-  const minZ = Math.min(...coords.map(([x, y, z]) => z));
-  return coords.map(([x, y, z]) => [x - minX, y - minY, z - minZ]);
-};
-
-export const flipShapeX = (coords) => {
-  return coords.map(([x, y, z]) => [-x, y, z]);
-};
-
-export const flipShapeY = (coords) => {
-  return coords.map(([x, y, z]) => [x, -y, z]);
-};
-
-export const flipShapeZ = (coords) => {
-  return coords.map(([x, y, z]) => [x, y, -z]);
-};
-
-function rotateShapeX(coords) {
-  return coords.map(([x, y, z]) => [x, -z, y + z]);
-}
-
-function rotateShapeY(coords) {
-  return coords.map(([x, y, z]) => [z, y, -x]);
-}
-
-function rotateShapeZ(coords) {
-  return coords.map(([x, y, z]) => [-y, x + y, z]);
-}
+import {
+  createBoardPyramid,
+  normaliseShape3D,
+  rotateShapeX,
+  rotateShapeY,
+  rotateShapeZ,
+  flipShapeX,
+  flipShapeY,
+  flipShapeZ,
+} from "../lib/utils";
 
 // Convert pieces to 3D (having a y coordinate)
 const pieces3D = Array.from(
@@ -82,7 +60,7 @@ function usePyramidPuzzle() {
   const handleRotatePieceX = () => {
     if (!isSolving && selectedShape) {
       const newShape = { ...selectedShape };
-      newShape.coords = normaliseShape(rotateShapeX(newShape.coords));
+      newShape.coords = normaliseShape3D(rotateShapeX(newShape.coords));
       setSelectedShape(newShape);
     }
   };
@@ -90,7 +68,7 @@ function usePyramidPuzzle() {
   const handleRotatePieceY = () => {
     if (!isSolving && selectedShape) {
       const newShape = { ...selectedShape };
-      newShape.coords = normaliseShape(rotateShapeY(newShape.coords));
+      newShape.coords = normaliseShape3D(rotateShapeY(newShape.coords));
       setSelectedShape(newShape);
     }
   };
@@ -98,7 +76,7 @@ function usePyramidPuzzle() {
   const handleRotatePieceZ = () => {
     if (!isSolving && selectedShape) {
       const newShape = { ...selectedShape };
-      newShape.coords = normaliseShape(rotateShapeZ(newShape.coords));
+      newShape.coords = normaliseShape3D(rotateShapeZ(newShape.coords));
       setSelectedShape(newShape);
     }
   };
@@ -106,7 +84,7 @@ function usePyramidPuzzle() {
   const handleFlipPieceX = () => {
     if (!isSolving && selectedShape) {
       const newShape = { ...selectedShape };
-      newShape.coords = normaliseShape(flipShapeX(newShape.coords));
+      newShape.coords = normaliseShape3D(flipShapeX(newShape.coords));
       setSelectedShape(newShape);
     }
   };
@@ -114,7 +92,7 @@ function usePyramidPuzzle() {
   const handleFlipPieceY = () => {
     if (!isSolving && selectedShape) {
       const newShape = { ...selectedShape };
-      newShape.coords = normaliseShape(flipShapeY(newShape.coords));
+      newShape.coords = normaliseShape3D(flipShapeY(newShape.coords));
       setSelectedShape(newShape);
     }
   };
@@ -122,7 +100,7 @@ function usePyramidPuzzle() {
   const handleFlipPieceZ = () => {
     if (!isSolving && selectedShape) {
       const newShape = { ...selectedShape };
-      newShape.coords = normaliseShape(flipShapeZ(newShape.coords));
+      newShape.coords = normaliseShape3D(flipShapeZ(newShape.coords));
       setSelectedShape(newShape);
     }
   };

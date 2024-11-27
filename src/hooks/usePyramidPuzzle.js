@@ -23,15 +23,8 @@ export const flipShapeZ = (coords) => {
   return coords.map(([x, y, z]) => [x, y, -z]);
 };
 
-const cos60 = 0.5;
-const sin60 = Math.sqrt(3) / 2;
-
 function rotateShapeX(coords) {
-  return coords.map(([x, y, z]) => [
-    x,
-    Math.round(cos60 * y - sin60 * z),
-    Math.round(sin60 * y + cos60 * z),
-  ]);
+  return coords.map(([x, y, z]) => [x, -z, y + z]);
 }
 
 function rotateShapeY(coords) {
@@ -41,8 +34,6 @@ function rotateShapeY(coords) {
 function rotateShapeZ(coords) {
   return coords.map(([x, y, z]) => [-y, x + y, z]);
 }
-
-// FIXME: shapes grow apart when rotating on X and Z axis
 
 // Convert pieces to 3D (having a y coordinate)
 const pieces3D = Array.from(

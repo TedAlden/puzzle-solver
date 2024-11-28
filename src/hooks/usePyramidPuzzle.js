@@ -15,7 +15,6 @@ import {
 
 function usePyramidPuzzle() {
   const [board, setBoard] = useState(createBoardPyramid(5, ""));
-  //const [shapes, setShapes] = useState(pieces);
   const [shapes, setShapes] = useState(
     pieces.map((piece) => ({
       ...piece,
@@ -160,6 +159,28 @@ function usePyramidPuzzle() {
     }
   };
 
+  /**
+   * Handle clicking the next solution button. Skips to the next solution in
+   * the solution set.
+   */
+  const handleNextSolution = () => {
+    if (solutionIndex < solutions.length - 1) {
+      setSolutionIndex((prev) => prev + 1);
+      setBoard(solutions[solutionIndex + 1]);
+    }
+  };
+
+  /**
+   * Handle clicking the previous solution button. Returns to the previous
+   * solution in the solution set.
+   */
+  const handlePreviousSolution = () => {
+    if (solutionIndex > 0) {
+      setSolutionIndex((prev) => prev - 1);
+      setBoard(solutions[solutionIndex - 1]);
+    }
+  };
+
   const handleUndo = () => {
     if (!isSolving && moveStack.length > 0) {
       setMoveStack((prev) => {
@@ -180,9 +201,26 @@ function usePyramidPuzzle() {
   const handleSolve = () => {
     if (!worker) return;
     if (isSolving) return;
+
+    console.log("Current board:", board);
+    console.log("Remaining pieces:", shapes);
+
+      // Identify which pieces have already been placed based on the board state
+  const placedSymbols = new Set(
+    board.flat(2).filter((cell) => cell !== "") // Collect all non-empty cells
+  );
+
+  const remainingPieces = shapes.filter(
+    (piece) => !placedSymbols.has(piece.symbol)
+  );
+
+  console.log("Placed pieces:", Array.from(placedSymbols));
+  console.log("Remaining pieces after filtering:", remainingPieces);
+
     // Handler for when the worker sends a solution back here
     const messageHandler = (e) => {
       if (e.data.type === "solution") {
+        console.log("Found solution:", e.data.data);
         setSolutions((prev) => [...prev, e.data.data]);
       }
       if (e.data.type === "complete") {
@@ -196,10 +234,11 @@ function usePyramidPuzzle() {
     // Attach 'onMessage' event listener
     worker.addEventListener("message", messageHandler);
     // Send the current board configuration and pieces to the solver
-    const pieces3D = pieces.map((piece) => ({
-      ...piece,
-      coords: piece.coords.map(([x, z]) => [x, 0, z]),
-    }));
+const pieces3D = remainingPieces.map((piece) => ({
+  ...piece,
+  coords: piece.coords.map(([x, y, z]) => [x, y, z]), // Ensure 3D positions
+}));
+
 
     worker.postMessage({ board, pieces: pieces3D });
   };
@@ -260,9 +299,14 @@ function usePyramidPuzzle() {
 
   return {
     board,
-    highlightedCells,
-    selectedShape,
     shapes,
+    selectedShape,
+    highlightedCells,
+    moveStack,
+    isSolved,
+    isSolving,
+    solutions,
+    solutionIndex,
     handleRotatePieceX,
     handleRotatePieceY,
     handleRotatePieceZ,
@@ -274,6 +318,8 @@ function usePyramidPuzzle() {
     handleClear,
     handleUndo,
     handleSolve,
+    handleNextSolution,
+    handlePreviousSolution,
     handleMouseEnterCell,
     handleMouseLeaveCell,
     handleMouseClickCell,

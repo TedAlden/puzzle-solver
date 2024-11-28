@@ -1,3 +1,6 @@
+
+import pyramidPuzzleSolver from "../lib/pyramidPuzzleSolver";
+
 /**
  * Creates a pyramid solver web-worker. To initialise the worker, a message
  * must be sent containing the pyramid board to be solved. The worker will
@@ -6,7 +9,6 @@
  *
  * @returns {Worker} The Pyramid solver worker.
  */
-import pyramidPuzzleSolver from "../lib/pyramidPuzzleSolver";
 
 export default function createPyramidWorker() {
   const workerCode = `

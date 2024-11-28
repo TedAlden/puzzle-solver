@@ -63,32 +63,25 @@ export default function pyramidPuzzleSolver(board, unusedPieces, onSolution) {
   // Check if orientations for this shape have alread been computed and
   // stored in the cache
   const getAllOrientations = (coords) => {
-    // Cache check
     const cacheKey = coords.map((coord) => coord.join(",")).join("|");
-    if (orientationsCache.has(cacheKey)) {
-      return orientationsCache.get(cacheKey);
-    }
+    if (orientationsCache.has(cacheKey)) return orientationsCache.get(cacheKey);
 
     const orientations = new Set();
     let current = [...coords];
 
-    // 24 unique 3D rotations * 2 reflections
-    for (let flip = 0; flip < 2; flip++) {
-      for (let x = 0; x < 4; x++) {
-        for (let y = 0; y < 4; y++) {
-          for (let z = 0; z < 4; z++) {
-            orientations.add(coordsToString(current));
-            // Z rotation
-            current = current.map(([x, y, z]) => [x, -z, y]);
-          }
-          // Y rotation
-          current = current.map(([x, y, z]) => [z, y, -x]);
-        }
-        // X rotation
-        current = current.map(([x, y, z]) => [-y, x, z]);
+    // Try each axis rotation and reflection
+    const rotations = [
+      (coords) => coords.map(([x, y, z]) => [x, -z, y]), // Z rotation
+      (coords) => coords.map(([x, y, z]) => [z, y, -x]), // Y rotation
+      (coords) => coords.map(([x, y, z]) => [-y, x, z]), // X rotation
+    ];
+
+    for (let r = 0; r < 4; r++) {
+      for (let i = 0; i < rotations.length; i++) {
+        orientations.add(coordsToString(current));
+        orientations.add(coordsToString(current.map(([x, y, z]) => [-x, y, z]))); 
+        current = rotations[i](current);
       }
-      // Reflection
-      current = current.map(([x, y, z]) => [-x, y, z]);
     }
 
     const result = Array.from(orientations).map((str) =>
@@ -97,6 +90,30 @@ export default function pyramidPuzzleSolver(board, unusedPieces, onSolution) {
     orientationsCache.set(cacheKey, result);
     return result;
   };
+
+  /**
+   * Find the next empty position on the board.
+   *
+   * @param {string[][]} board The polysphere board.
+   * @returns {Array<number>|null} The [row, col] of the next empty position,
+   *  or null if the board is full.
+   */
+  const findEmptyPosition = (board) => {
+    for (let layer = 0; layer < board.length; layer++) {
+      const layerSize = board.length - layer;
+      for (let row = 0; row < layerSize; row++) {
+        for (let col = 0; col < layerSize; col++) {
+          if (board[layer][row][col] === "") {
+            //console.log(`Empty position found at [Layer: ${layer}, Row: ${row}, Col: ${col}]`);
+            return [layer, row, col];
+          }
+        }
+      }
+    }
+    console.log("No empty position found.");
+    return null;
+  };
+  
 
   /**
    * Checks if a piece can be placed at a specific position in the pyramid.
@@ -108,30 +125,23 @@ export default function pyramidPuzzleSolver(board, unusedPieces, onSolution) {
    * @param {number} startCol Starting column position.
    * @returns {boolean} Whether the piece can be placed.
    */
-  const canPlacePiece = (board, coords, startLayer, startRow, startCol) => {
-    return coords.every(([x, y, z]) => {
-      const targetLayer = startLayer + y;
-      const targetRow = startRow + x;
-      const targetCol = startCol + z;
+  const canPlacePiece = (board, coords, startLayer, startRow, startCol) =>
+    coords.every(([l, r, c]) => {
+      const targetLayer = startLayer + l;
+      const targetRow = startRow + r;
+      const targetCol = startCol + c;
 
-      // Check pyramid bounds
       if (targetLayer < 0 || targetLayer >= board.length) return false;
 
-      // Check layer size constraints (pyramid shape)
       const layerSize = board.length - targetLayer;
-      if (
-        targetRow < 0 ||
-        targetRow >= layerSize ||
-        targetCol < 0 ||
-        targetCol >= layerSize
-      )
-        return false;
-
-      // Check if position is empty
-      return board[targetLayer][targetRow][targetCol] === "";
+      return (
+        targetRow >= 0 &&
+        targetRow < layerSize &&
+        targetCol >= 0 &&
+        targetCol < layerSize &&
+        board[targetLayer][targetRow][targetCol] === ""
+      );
     });
-  };
-
   /**
    * Places a piece on the pyramid board.
    *
@@ -145,37 +155,10 @@ export default function pyramidPuzzleSolver(board, unusedPieces, onSolution) {
    */
   const placePiece = (board, piece, coords, startLayer, startRow, startCol) => {
     const newBoard = board.map((layer) => layer.map((row) => [...row]));
-
-    coords.forEach(([x, y, z]) => {
-      const targetLayer = startLayer + y;
-      const targetRow = startRow + x;
-      const targetCol = startCol + z;
-      newBoard[targetLayer][targetRow][targetCol] = piece.symbol;
+    coords.forEach(([l, r, c]) => {
+      newBoard[startLayer + l][startRow + r][startCol + c] = piece.symbol;
     });
-
     return newBoard;
-  };
-
-  /**
-   * Find the next empty position on the board.
-   *
-   * @param {string[][]} board The polysphere board.
-   * @returns {Array<number>|null} The [row, col] of the next empty position,
-   *  or null if the board is full.
-   */
-  const findEmptyPosition = (board) => {
-    // Find first empty position in pyramid, scanning layer by layer
-    for (let layer = 0; layer < board.length; layer++) {
-      const layerSize = board.length - layer;
-      for (let row = 0; row < layerSize; row++) {
-        for (let col = 0; col < layerSize; col++) {
-          if (board[layer][row][col] === "") {
-            return [layer, row, col];
-          }
-        }
-      }
-    }
-    return null;
   };
 
   /**
@@ -187,7 +170,6 @@ export default function pyramidPuzzleSolver(board, unusedPieces, onSolution) {
    */
 
   const solveRecursive = (board, unusedPieces, solutions) => {
-    // Base case: no unused pieces means solution found
     if (unusedPieces.length === 0) {
       const solution = board.map((layer) => layer.map((row) => [...row]));
       solutions.push(solution);
@@ -199,7 +181,6 @@ export default function pyramidPuzzleSolver(board, unusedPieces, onSolution) {
     if (!emptyPos) return;
     const [startLayer, startRow, startCol] = emptyPos;
 
-    // Try each piece in each orientation
     for (let i = 0; i < unusedPieces.length; i++) {
       const piece = unusedPieces[i];
       const orientations = getAllOrientations(piece.coords);
@@ -223,5 +204,6 @@ export default function pyramidPuzzleSolver(board, unusedPieces, onSolution) {
       }
     }
   };
+
   solveRecursive(board, unusedPieces, []);
 }

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import "./PyramidPuzzle.css";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import PyramidBoard from "../../components/PyramidBoard/PyramidBoard";
@@ -10,24 +11,36 @@ import usePyramidPuzzle from "../../hooks/usePyramidPuzzle";
 function PyramidPuzzle() {
   const {
     board,
-    highlightedCells,
-    selectedShape,
     shapes,
+    selectedShape,
+    highlightedCells,
+    moveStack,
+    isSolved,
+    isSolving,
+    solutions,
+    solutionIndex,
     handleRotatePieceX,
     handleRotatePieceY,
     handleRotatePieceZ,
     handleFlipPieceX,
     handleFlipPieceY,
     handleFlipPieceZ,
-    handleNextPiece,
-    handlePreviousPiece,
-    handleClear,
-    handleUndo,
     handleSolve,
+    handleClear,
+    handleNextSolution,
+    handlePreviousSolution,
+    handleUndo,
     handleMouseEnterCell,
     handleMouseLeaveCell,
     handleMouseClickCell,
+    handlePreviousPiece,
+    handleNextPiece,
   } = usePyramidPuzzle();
+
+
+  useEffect(() => {
+    console.log(`Number of solutions: ${solutions.length}`);
+  }, [solutions]);
 
   return (
     <div className="puzzleThree">
@@ -65,6 +78,44 @@ function PyramidPuzzle() {
           handleMouseLeaveCell={handleMouseLeaveCell}
           handleMouseClickCell={handleMouseClickCell}
         />
+        </div>
+        <div className="controlsContainer">
+        <button onClick={handleSolve} disabled={isSolving}>
+          {isSolving ? "Solving..." : "Solve Puzzle"}
+        </button>
+        <button onClick={handleClear} disabled={isSolving}>
+          Clear Board
+        </button>
+        <button
+          onClick={handleUndo}
+          disabled={moveStack.length === 0 || isSolving}
+        >
+          Undo
+        </button>
+      </div>
+      <div>
+        {isSolving && <span>Solving ⏳</span>}
+        {isSolved && solutions.length > 0 && <span>Solutions found ✅</span>}
+        {isSolved && solutions.length === 0 && <span>No solutions ⚠️</span>}
+        {solutions.length >= 1 && (
+          <div className="solutionNavigation">
+            <button
+              onClick={handlePreviousSolution}
+              disabled={solutionIndex === 0}
+            >
+              Previous Solution
+            </button>
+            <span>
+              Solution {solutionIndex + 1} of {solutions.length}
+            </span>
+            <button
+              onClick={handleNextSolution}
+              disabled={solutionIndex === solutions.length - 1}
+            >
+              Next Solution
+            </button>
+          </div>
+        )}
       </div>
       <KeyboardControls
         keyMap={[

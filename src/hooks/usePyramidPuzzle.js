@@ -13,17 +13,15 @@ import {
   flipShapeZ,
 } from "../lib/utils";
 
-// Convert pieces to 3D (having a y coordinate)
-const pieces3D = Array.from(
-  pieces.map((piece) => {
-    const coords = piece.coords.map(([x, z]) => [x, 0, z]);
-    return { ...piece, coords };
-  })
-);
-
 function usePyramidPuzzle() {
   const [board, setBoard] = useState(createBoardPyramid(5, ""));
-  const [shapes, setShapes] = useState(pieces3D);
+  //const [shapes, setShapes] = useState(pieces);
+  const [shapes, setShapes] = useState(
+    pieces.map((piece) => ({
+      ...piece,
+      coords: piece.coords.map(([x, z]) => [x, 0, z]),
+    }))
+  );
   const [selectedShape, setSelectedShape] = useState(shapes[0]);
   const [highlightedIndex, setHighlightedIndex] = useState([-1, -1, -1]);
   const [highlightedCells, setHighlightedCells] = useState([]);
@@ -54,29 +52,25 @@ function usePyramidPuzzle() {
     }
   }, [solutions, solutionIndex]);
 
-
   useEffect(() => {
     if (highlightedIndex.some((i) => i === -1)) {
       setHighlightedCells([]);
       return;
     }
     const highlightedCells = selectedShape.coords.map(([x, y, z]) => [
-      x + highlightedIndex[2],
-      y + highlightedIndex[0],
-      z + highlightedIndex[1],
+      x + highlightedIndex[2], // col
+      highlightedIndex[0], // layer
+      z + highlightedIndex[1], // row
     ]);
-    const isInBounds = highlightedCells.every(([x, y, z]) => {
-      if (y < 0 || y >= board.length) {
-        return false;
-      }
-      if (x < 0 || x >= board[y].length) {
-        return false;
-      }
-      if (z < 0 || z >= board[y][x].length) {
-        return false;
-      }
-      return true;
-    });
+    const isInBounds = highlightedCells.every(
+      ([x, y, z]) =>
+        y >= 0 &&
+        y < board.length &&
+        x >= 0 &&
+        x < board[y].length &&
+        z >= 0 &&
+        z < board[y][x].length
+    );
     if (isInBounds) {
       setHighlightedCells(highlightedCells);
     } else {
@@ -159,7 +153,7 @@ function usePyramidPuzzle() {
   const handleClear = () => {
     if (!isSolving) {
       setBoard(createBoardPyramid(5, ""));
-      setShapes(pieces3D);
+      setShapes(pieces);
       setSelectedShape(shapes[0]);
       setIsSolving(false);
       setMoveStack([]);
@@ -184,64 +178,54 @@ function usePyramidPuzzle() {
   };
 
   const handleSolve = () => {
-    if (!worker) {
-      console.error("Worker not initialized");
-      return;
-    }
-  
-    setSolutions([]); // Reset solutions array
-  
+    if (!worker) return;
+    if (isSolving) return;
+    // Handler for when the worker sends a solution back here
     const messageHandler = (e) => {
-      console.log("Message from worker:", e.data); // Debug incoming messages
       if (e.data.type === "solution") {
         setSolutions((prev) => [...prev, e.data.data]);
       }
       if (e.data.type === "complete") {
-        console.log("Solver completed");
+        setIsSolved(true);
         setIsSolving(false);
+        // Remove 'onMessage' handler when worker is complete
         worker.removeEventListener("message", messageHandler);
       }
     };
-  
-    worker.addEventListener("message", messageHandler);
-  
-    const remainingPieces = shapes.filter(
-      (shape) => !board.flat(2).includes(shape.symbol)
-    );
-  
-    console.log("Starting solve with shapes:", remainingPieces);
-    console.log("Sending board:", board);
-    worker.postMessage({ board, pieces3D: remainingPieces }); 
     setIsSolving(true);
+    // Attach 'onMessage' event listener
+    worker.addEventListener("message", messageHandler);
+    // Send the current board configuration and pieces to the solver
+    const pieces3D = pieces.map((piece) => ({
+      ...piece,
+      coords: piece.coords.map(([x, z]) => [x, 0, z]),
+    }));
+
+    worker.postMessage({ board, pieces: pieces3D });
   };
-  
 
   const handleMouseEnterCell = (layer, row, col) => {
     setHighlightedIndex([layer, row, col]);
   };
 
-  const handleMouseLeaveCell = (layer, row, col) => {
+  const handleMouseLeaveCell = () => {
     setHighlightedIndex([-1, -1, -1]);
   };
 
   const handleMouseClickCell = (layer, row, col) => {
-    const highlightedCells = selectedShape.coords.map(([x, y, z]) => [
-      x + col,
-      y + layer,
-      z + row,
-    ]);
-    const isInBounds = highlightedCells.every(([x, y, z]) => {
-      if (y < 0 || y >= board.length) {
-        return false;
-      }
-      if (x < 0 || x >= board[y].length) {
-        return false;
-      }
-      if (z < 0 || z >= board[y][x].length) {
-        return false;
-      }
-      return true;
-    });
+    if (!selectedShape) return;
+    const highlightedCells =
+      selectedShape?.coords.map(([x, y, z]) => [x + col, y + layer, z + row]) ||
+      [];
+    const isInBounds = highlightedCells.every(
+      ([x, y, z]) =>
+        y >= 0 &&
+        y < board.length &&
+        x >= 0 &&
+        x < board[y].length &&
+        z >= 0 &&
+        z < board[y][x].length
+    );
     const isUnoccupiedSpace = isInBounds
       ? !highlightedCells.some(([dx, dy, dz]) => board[dy][dx][dz] !== "")
       : false;

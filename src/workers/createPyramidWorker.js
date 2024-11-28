@@ -7,42 +7,24 @@
  * @returns {Worker} The Pyramid solver worker.
  */
 import pyramidPuzzleSolver from "../lib/pyramidPuzzleSolver";
-import { generateAllOrientations } from "../lib/utils";
 
 export default function createPyramidWorker() {
   const workerCode = `
-    // Worker listener
-    self.addEventListener('message', (e) => {
-      console.log("Worker received message:", e.data);
-
-      const { board, pieces3D } = e.data;
-      const generateAllOrientations = ${generateAllOrientations.toString()};
-
-
-      // Ensure data is valid
-      if (!board || !Array.isArray(board)) {
-        console.error("Invalid board data received:", board);
-        self.postMessage({ type: 'error', message: 'Invalid board data.' });
-        return;
-      }
-      if (!pieces3D || !Array.isArray(pieces3D)) {
-        console.error("Invalid pieces data received:", pieces3D);
-        self.postMessage({ type: 'error', message: 'Invalid pieces data.' });
-        return;
-      }
-
-      // Log the inputs for debugging
-      console.log("Board data in worker:", board);
-      console.log("Pieces data in worker:", pieces3D);
-
-      // Run the pyramid solving algorithm
-      (${pyramidPuzzleSolver.toString()})(board, pieces3D, (solution) => {
+    self.addEventListener('message', e => {
+      // Receive the partial board configuration/placement (from the
+      // front-end) to be solved
+      const { board, pieces } = e.data;
+      // Determine the pieces left over to complete the puzzle
+      const unusedPieces = pieces.filter(piece =>
+        !board.some(row => row.includes(piece.symbol))
+      );
+      // Run the polysphere solving algorithm
+      (${pyramidPuzzleSolver.toString()})(board, unusedPieces, (solution) => {
         console.table(solution);
         // Send each solution back to the React component (front end)
         self.postMessage({ type: 'solution', data: solution });
       });
-
-      // Notify the main thread when solving is complete
+      // Tell the front-end when the solver is complete
       self.postMessage({ type: 'complete' });
     });
   `;

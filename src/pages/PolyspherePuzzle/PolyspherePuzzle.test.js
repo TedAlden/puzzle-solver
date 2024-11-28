@@ -9,7 +9,6 @@ import {
 import "@testing-library/jest-dom";
 import PolyspherePuzzle from "./PolyspherePuzzle";
 import createPolysphereWorker from "../../workers/createPolysphereWorker";
-import pieces from "../../lib/pieces";
 
 // Mock the worker
 jest.mock("../../workers/createPolysphereWorker");
@@ -373,6 +372,21 @@ describe("PolyspherePuzzle Component", () => {
         expect(prevButton).toBeDisabled();
         expect(nextButton).toBeDisabled();
       });
+    });
+
+    test("disables undo button when no moves in stack or solving", () => {
+      render(<PolyspherePuzzle />);
+      // Initially, the undo button should be disabled because the move stack is
+      // empty
+      expect(screen.getByText("Undo")).toBeDisabled();
+      // Click on first cell to place a piece and add it to the move stack
+      fireEvent.click(screen.getAllByTestId("cell")[0]);
+      // Undo should now be enabled since there is a move in the stack
+      expect(screen.getByText("Undo")).not.toBeDisabled();
+      // Simulate solving puzzle
+      fireEvent.click(screen.getByText("Solve Puzzle"));
+      // Undo should now be disabled while solving
+      expect(screen.getByText("Undo")).toBeDisabled();
     });
   });
 

@@ -19,15 +19,11 @@ export const normaliseShape = (coords) => {
  * @returns {Array<Array<number>>} The adjusted array of coordinates.
  */
 export const normaliseShape3D = (coords) => {
-  const minX = Math.min(...coords.map(([x]) => x));
-  const minY = Math.min(...coords.map(([_, y]) => y));
-  const minZ = Math.min(...coords.map(([_, __, z]) => z));
-
-  const normalisedCoords = coords.map(([x, y, z]) => [x - minX, y - minY, z - minZ]);
-  console.log("Normalised coords:", normalisedCoords);
-  return normalisedCoords;
+  const minX = Math.min(...coords.map(([x, y, z]) => x));
+  const minY = Math.min(...coords.map(([x, y, z]) => y));
+  const minZ = Math.min(...coords.map(([x, y, z]) => z));
+  return coords.map(([x, y, z]) => [x - minX, y - minY, z - minZ]);
 };
-
 
 /**
  * Rotates an array of shape coordinates 90 degrees counter-clockwise.
@@ -46,7 +42,7 @@ export const rotateShapeCCW = (coords) => {
  * @returns {Array<Array<number>>} The rotated array of coordinates.
  */
 export const rotateShapeX = (coords) => {
-  return coords.map(([x, y, z]) => [x, -z, y]);
+  return coords.map(([x, y, z]) => [x, -z, y + z]);
 };
 
 /**

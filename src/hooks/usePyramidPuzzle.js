@@ -13,14 +13,17 @@ import {
   flipShapeZ,
 } from "../lib/utils";
 
+// Convert pieces to 3D (having a y coordinate)
+const pieces3D = Array.from(
+  pieces.map((piece) => {
+    const coords = piece.coords.map(([x, z]) => [x, 0, z]);
+    return { ...piece, coords };
+  })
+);
+
 function usePyramidPuzzle() {
   const [board, setBoard] = useState(createBoardPyramid(5, ""));
-  const [shapes, setShapes] = useState(
-    pieces.map((piece) => ({
-      ...piece,
-      coords: piece.coords.map(([x, z]) => [x, 0, z]),
-    }))
-  );
+  const [shapes, setShapes] = useState(pieces3D);
   const [selectedShape, setSelectedShape] = useState(shapes[0]);
   const [highlightedIndex, setHighlightedIndex] = useState([-1, -1, -1]);
   const [highlightedCells, setHighlightedCells] = useState([]);
@@ -152,7 +155,7 @@ function usePyramidPuzzle() {
   const handleClear = () => {
     if (!isSolving) {
       setBoard(createBoardPyramid(5, ""));
-      setShapes(pieces);
+      setShapes(pieces3D);
       setSelectedShape(shapes[0]);
       setIsSolving(false);
       setMoveStack([]);
@@ -205,17 +208,17 @@ function usePyramidPuzzle() {
     console.log("Current board:", board);
     console.log("Remaining pieces:", shapes);
 
-      // Identify which pieces have already been placed based on the board state
-  const placedSymbols = new Set(
-    board.flat(2).filter((cell) => cell !== "") // Collect all non-empty cells
-  );
+    // Identify which pieces have already been placed based on the board state
+    const placedSymbols = new Set(
+      board.flat(2).filter((cell) => cell !== "") // Collect all non-empty cells
+    );
 
-  const remainingPieces = shapes.filter(
-    (piece) => !placedSymbols.has(piece.symbol)
-  );
+    const remainingPieces = shapes.filter(
+      (piece) => !placedSymbols.has(piece.symbol)
+    );
 
-  console.log("Placed pieces:", Array.from(placedSymbols));
-  console.log("Remaining pieces after filtering:", remainingPieces);
+    console.log("Placed pieces:", Array.from(placedSymbols));
+    console.log("Remaining pieces after filtering:", remainingPieces);
 
     // Handler for when the worker sends a solution back here
     const messageHandler = (e) => {
@@ -234,11 +237,10 @@ function usePyramidPuzzle() {
     // Attach 'onMessage' event listener
     worker.addEventListener("message", messageHandler);
     // Send the current board configuration and pieces to the solver
-const pieces3D = remainingPieces.map((piece) => ({
-  ...piece,
-  coords: piece.coords.map(([x, y, z]) => [x, y, z]), // Ensure 3D positions
-}));
-
+    const pieces3D = remainingPieces.map((piece) => ({
+      ...piece,
+      coords: piece.coords.map(([x, y, z]) => [x, y, z]), // Ensure 3D positions
+    }));
 
     worker.postMessage({ board, pieces: pieces3D });
   };

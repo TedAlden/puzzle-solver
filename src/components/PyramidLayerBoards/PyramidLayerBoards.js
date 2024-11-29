@@ -10,8 +10,7 @@ import "./PyramidLayerBoards.css";
  * Layer 3: 3x3
  * Layer 4: 4x4
  * Layer 5 (base): 5x5
-
-/*
+ *
  * @param {Object} props Component properties.
  * @param {Array<Array<Array<string>>>} props.board The 3D pyramid board state.
  * @param {Array<Array<number>>} props.highlightedCells Array of coordinates for

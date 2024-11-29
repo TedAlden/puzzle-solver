@@ -60,19 +60,22 @@ function usePyramidPuzzle() {
       return;
     }
     const highlightedCells = selectedShape.coords.map(([x, y, z]) => [
-      x + highlightedIndex[2], // col
-      highlightedIndex[0], // layer
-      z + highlightedIndex[1], // row
+      x + highlightedIndex[2],
+      y + highlightedIndex[0],
+      z + highlightedIndex[1],
     ]);
-    const isInBounds = highlightedCells.every(
-      ([x, y, z]) =>
-        y >= 0 &&
-        y < board.length &&
-        x >= 0 &&
-        x < board[y].length &&
-        z >= 0 &&
-        z < board[y][x].length
-    );
+    const isInBounds = highlightedCells.every(([x, y, z]) => {
+      if (y < 0 || y >= board.length) {
+        return false;
+      }
+      if (x < 0 || x >= board[y].length) {
+        return false;
+      }
+      if (z < 0 || z >= board[y][x].length) {
+        return false;
+      }
+      return true;
+    });
     if (isInBounds) {
       setHighlightedCells(highlightedCells);
     } else {
@@ -258,15 +261,18 @@ function usePyramidPuzzle() {
     const highlightedCells =
       selectedShape?.coords.map(([x, y, z]) => [x + col, y + layer, z + row]) ||
       [];
-    const isInBounds = highlightedCells.every(
-      ([x, y, z]) =>
-        y >= 0 &&
-        y < board.length &&
-        x >= 0 &&
-        x < board[y].length &&
-        z >= 0 &&
-        z < board[y][x].length
-    );
+    const isInBounds = highlightedCells.every(([x, y, z]) => {
+      if (y < 0 || y >= board.length) {
+        return false;
+      }
+      if (x < 0 || x >= board[y].length) {
+        return false;
+      }
+      if (z < 0 || z >= board[y][x].length) {
+        return false;
+      }
+      return true;
+    });
     const isUnoccupiedSpace = isInBounds
       ? !highlightedCells.some(([dx, dy, dz]) => board[dy][dx][dz] !== "")
       : false;

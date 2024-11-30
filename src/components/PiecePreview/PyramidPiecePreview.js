@@ -1,7 +1,7 @@
-import React, { useRef, useEffect } from "react";
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import "./PyramidPiecePreview.css";
+import { useRef, useEffect } from "react";
+import * as THREE from "three";
+import { OrbitControls } from "@react-three/drei";
 
 /**
  * A component that renders a 3D preview of a polysphere piece using Three.js.
@@ -83,20 +83,16 @@ const PiecePreview3D = ({ selectedShape }) => {
 
     // Create spheres
     const SPHERE_SIZE = 0.48;
-    const SPACING = 0.90;  
+    const SPACING = 0.9;
     const sphereGeometry = new THREE.SphereGeometry(SPHERE_SIZE, 40, 32);
-    const sphereMaterial = new THREE.MeshLambertMaterial({ 
-      color: selectedShape.colour
+    const sphereMaterial = new THREE.MeshLambertMaterial({
+      color: selectedShape.colour,
     });
 
-    selectedShape.coords.forEach(([x, y, z=0]) => {
+    selectedShape.coords.forEach(([x, y, z = 0]) => {
       const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
       // Apply tighter spacing
-      sphere.position.set(
-        x * SPACING, 
-        z * SPACING, 
-        y * SPACING
-      );
+      sphere.position.set(x * SPACING, z * SPACING, y * SPACING);
       sceneRef.current.add(sphere);
     });
 
@@ -109,6 +105,7 @@ const PiecePreview3D = ({ selectedShape }) => {
     <div ref={mountRef} className="mx-auto border rounded-lg overflow-hidden" />
   );
 };
+
 /**
  * A component for selecting and transforming polysphere pieces. Allows
  * users to navigate through a carousel of unused shapes, and flip or rotate
@@ -143,18 +140,15 @@ const PieceSelector3D = ({
         <button onClick={onPrevious}>Prev</button>
         <button onClick={onNext}>Next</button>
       </div>
-      
       <div className="preview-section">
         <div className="flip-controls">
           <button onClick={onFlipX}>Flip X</button>
           <button onClick={onFlipY}>Flip Y</button>
           <button onClick={onFlipZ}>Flip Z</button>
         </div>
-
         <div className="preview-container">
           <PiecePreview3D selectedShape={selectedShape} />
         </div>
-
         <div className="rotate-controls">
           <button onClick={onRotateX}>Rotate X</button>
           <button onClick={onRotateY}>Rotate Y</button>

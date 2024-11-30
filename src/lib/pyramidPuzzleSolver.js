@@ -175,6 +175,15 @@ export default function pyramidPuzzleSolver(board, unusedPieces, onSolution) {
     return newBoard;
   };
 
+  const findAnchorPoints = (startCoords) => {
+    const points = [];
+    const coords = normalize(startCoords);
+    coords.forEach(([x, y, z]) => {
+      points.push(coords.map(([cx, cy, cz]) => [cx - x, cy - y, cz - z]));
+    });
+    return points;
+  };
+
   /**
    * Recursively attempts to solve the pyramid puzzle.
    *
@@ -200,21 +209,23 @@ export default function pyramidPuzzleSolver(board, unusedPieces, onSolution) {
       const orientations = getAllOrientations(piece.coords);
 
       for (const orientation of orientations) {
-        if (canPlacePiece(board, orientation, startLayer, startRow, startCol)) {
-          const newBoard = placePiece(
-            board,
-            piece,
-            orientation,
-            startLayer,
-            startRow,
-            startCol
-          );
-          const remainingPieces = [
-            ...unusedPieces.slice(0, i),
-            ...unusedPieces.slice(i + 1),
-          ];
-          solveRecursive(newBoard, remainingPieces, solutions);
-        }
+        findAnchorPoints(orientation).forEach((anchor) => {
+          if (canPlacePiece(board, anchor, startLayer, startRow, startCol)) {
+            const newBoard = placePiece(
+              board,
+              piece,
+              anchor,
+              startLayer,
+              startRow,
+              startCol
+            );
+            const remainingPieces = [
+              ...unusedPieces.slice(0, i),
+              ...unusedPieces.slice(i + 1),
+            ];
+            solveRecursive(newBoard, remainingPieces, solutions);
+          }
+        });
       }
     }
   };

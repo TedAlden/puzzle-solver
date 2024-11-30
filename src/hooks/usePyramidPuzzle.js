@@ -165,6 +165,28 @@ function usePyramidPuzzle() {
     }
   };
 
+  /**
+   * Handle clicking the next solution button. Skips to the next solution in
+   * the solution set.
+   */
+  const handleNextSolution = () => {
+    if (solutionIndex < solutions.length - 1) {
+      setSolutionIndex((prev) => prev + 1);
+      setBoard(solutions[solutionIndex + 1]);
+    }
+  };
+
+  /**
+   * Handle clicking the previous solution button. Returns to the previous
+   * solution in the solution set.
+   */
+  const handlePreviousSolution = () => {
+    if (solutionIndex > 0) {
+      setSolutionIndex((prev) => prev - 1);
+      setBoard(solutions[solutionIndex - 1]);
+    }
+  };
+
   const handleUndo = () => {
     if (!isSolving && moveStack.length > 0) {
       setMoveStack((prev) => {
@@ -183,18 +205,31 @@ function usePyramidPuzzle() {
   };
 
   const handleSolve = () => {
-    if (!worker) {
-      console.error("Worker not initialized");
-      return;
-    }
+    if (!worker) return;
+    if (isSolving) return;
+
+    console.log("Current board:", board);
+    console.log("Remaining pieces:", shapes);
+
+    // Identify which pieces have already been placed based on the board state
+    const placedSymbols = new Set(
+      board.flat(2).filter((cell) => cell !== "") // Collect all non-empty cells
+    );
+
+    const remainingPieces = shapes.filter(
+      (piece) => !placedSymbols.has(piece.symbol)
+    );
+
+    console.log("Placed pieces:", Array.from(placedSymbols));
+    console.log("Remaining pieces after filtering:", remainingPieces);
+
     // Handler for when the worker sends a solution back here
     const messageHandler = (e) => {
-      console.log("Worker message received:", e.data);
       if (e.data.type === "solution") {
+        console.log("Found solution:", e.data.data);
         setSolutions((prev) => [...prev, e.data.data]);
       }
       if (e.data.type === "complete") {
-        console.log("Solver completed");
         setIsSolved(true);
         setIsSolving(false);
         // Remove 'onMessage' handler when worker is complete
@@ -205,26 +240,27 @@ function usePyramidPuzzle() {
     // Attach 'onMessage' event listener
     worker.addEventListener("message", messageHandler);
     // Send the current board configuration and pieces to the solver
-    console.log("Sending board and pieces to worker:");
-    console.log("Board:", board);
-    console.log("Pieces:", shapes);
-    worker.postMessage({ board, pieces });
+    const pieces3D = remainingPieces.map((piece) => ({
+      ...piece,
+      coords: piece.coords.map(([x, y, z]) => [x, y, z]), // Ensure 3D positions
+    }));
+
+    worker.postMessage({ board, pieces: pieces3D });
   };
 
   const handleMouseEnterCell = (layer, row, col) => {
     setHighlightedIndex([layer, row, col]);
   };
 
-  const handleMouseLeaveCell = (layer, row, col) => {
+  const handleMouseLeaveCell = () => {
     setHighlightedIndex([-1, -1, -1]);
   };
 
   const handleMouseClickCell = (layer, row, col) => {
-    const highlightedCells = selectedShape.coords.map(([x, y, z]) => [
-      x + col,
-      y + layer,
-      z + row,
-    ]);
+    if (!selectedShape) return;
+    const highlightedCells =
+      selectedShape?.coords.map(([x, y, z]) => [x + col, y + layer, z + row]) ||
+      [];
     const isInBounds = highlightedCells.every(([x, y, z]) => {
       if (y < 0 || y >= board.length) {
         return false;
@@ -271,9 +307,14 @@ function usePyramidPuzzle() {
 
   return {
     board,
-    highlightedCells,
-    selectedShape,
     shapes,
+    selectedShape,
+    highlightedCells,
+    moveStack,
+    isSolved,
+    isSolving,
+    solutions,
+    solutionIndex,
     handleRotatePieceX,
     handleRotatePieceY,
     handleRotatePieceZ,
@@ -285,6 +326,8 @@ function usePyramidPuzzle() {
     handleClear,
     handleUndo,
     handleSolve,
+    handleNextSolution,
+    handlePreviousSolution,
     handleMouseEnterCell,
     handleMouseLeaveCell,
     handleMouseClickCell,

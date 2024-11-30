@@ -1,238 +1,234 @@
 /**
- * Solves the pyramid puzzle by attempting to place unused pieces onto the
- * board recursively until all possible solutions are found.
+ * Recursive pyramid puzzle solver.
  *
- * @param {string[][][]} board The 3D pyramid board to be solved
- * @param {Array<Object>} unusedPieces Pieces that haven't been placed yet
- * @param {Function} onSolution Callback function called when a solution is found
- * @returns {void} Solutions provided via onSolution callback
+ * @param {string[][]} board The board to be solved, represented as a
+ *  2D array. Each element is a string representing the symbol of the piece at
+ *  that position, or an empty string if no piece is placed.
+ * @param {Array<Object>} unusedPieces An array of piece objects that have not
+ *  yet been placed on the board.
+ * @param {Function} onSolution A callback function that is called when a valid
+ *  solution is found.
+ * @returns {void} Solutions are not returned; instead solutions are provided
+ *  via the onSolution callback.
+ *
+ * @example
+ * solvePolyspheres(board, unusedPieces, (solution) => {
+ *   console.log("Found a solution:", solution);
+ * });
  */
 export default function pyramidPuzzleSolver(board, unusedPieces, onSolution) {
-  // Cache for piece orientations
+  /**
+   * Normalise coords to be aligned to top left (0, 0).
+   *
+   * @param {Array<Array<number>>} coords The coordinates of the piece's cells.
+   * @returns {Array<Array<number>>} The normalized coordinates.
+   */
+  const normalize = (coords) => {
+    const minLayer = Math.min(...coords.map(([l]) => l));
+    const minRow = Math.min(...coords.map(([, r]) => r));
+    const minCol = Math.min(...coords.map(([, , c]) => c));
+    return coords.map(([l, r, c]) => [l - minLayer, r - minRow, c - minCol]);
+  };
+
+  /**
+   * Turn a list of coordinates into a string x,y|x,y|x,y|.., after normalising
+   * and sorting them in order. Any combination of the same coordinates should
+   * always return the same string.
+   *
+   * @param {Array<Array<number>>} coords The coordinates of the piece's
+   *  cells.
+   * @returns {string} The string representation of the normalized
+   *  coordinates.
+   */
+  const coordsToString = (coords) =>
+    normalize(coords)
+      .sort(([l1, r1, c1], [l2, r2, c2]) => l1 - l2 || r1 - r2 || c1 - c2)
+      .map((coord) => coord.join(","))
+      .join("|");
+
+  // Cache for piece orientations - saves the algorithm needing to re-compute
+  // these every time it can't place a piece and has to try placing the same
+  // piece again
   const orientationsCache = new Map();
 
   /**
-   * Normalize 2D coordinates to top-left origin
-   * @param {Array<Array<number>>} coords 2D coordinates to normalize
-   * @returns {Array<Array<number>>} Normalized coordinates
+   * Compute all the unique orientations for a shape piece, including rotations
+   * (90, 180, 270 degrees) and horizontal flips.
+   *
+   * @param {Array<Array<number>>} coords The coordinates of the piece's cells.
+   * @returns {Array<Array<Array<number>>>} An array of unique orientations,
+   *  each represented as an array of [row, col] coordinate pairs.
    */
-  function normalize(coords) {
-    const minX = Math.min(...coords.map(([x]) => x));
-    const minZ = Math.min(...coords.map(([, z]) => z));
-    return coords.map(([x, z]) => [x - minX, z - minZ]);
-  }
 
-  /**
-   * Convert coordinates to a consistent string representation
-   * @param {Array<Array<number>>} coords Coordinates to convert
-   * @returns {string} String representation of normalized coordinates
-   */
-  function coordsToString(coords) {
-    return normalize(coords)
-      .sort(([x1, z1], [x2, z2]) => x1 - x2 || z1 - z2)
-      .map((coord) => coord.join(","))
-      .join("|");
-  }
-
-  /**
-   * Get all possible orientations for a piece, using cache if available
-   * @param {Object} piece Piece to get orientations for
-   * @returns {Array<Array<Array<number>>>} Array of possible orientations
-   */
-  function getAllOrientations(piece) {
-    const cacheKey = coordsToString(piece.coords);
-    if (orientationsCache.has(cacheKey)) {
-      return orientationsCache.get(cacheKey);
-    }
+  // Check if orientations for this shape have alread been computed and
+  // stored in the cache
+  const getAllOrientations = (coords) => {
+    const cacheKey = coords.map((coord) => coord.join(",")).join("|");
+    if (orientationsCache.has(cacheKey)) return orientationsCache.get(cacheKey);
 
     const orientations = new Set();
-    let current = [...piece.coords];
+    let current = [...coords];
 
-    // Rotations (90 degree increments)
-    for (let rot = 0; rot < 4; rot++) {
-      orientations.add(coordsToString(current));
-      current = current.map(([x, z]) => [-z, x]); // 90-degree rotation
+    // Try each axis rotation and reflection
+    const rotateX = (coords) => coords.map(([x, y, z]) => [-y, x, z]);
+    const rotateY = (coords) => coords.map(([x, y, z]) => [z, y, -x]);
+    const rotateZ = (coords) => coords.map(([x, y, z]) => [x, -z, y]);
+
+    const flipX = (coords) => coords.map(([x, y, z]) => [-x, y, z]);
+    const flipY = (coords) => coords.map(([x, y, z]) => [x, -y, z]);
+    const flipZ = (coords) => coords.map(([x, y, z]) => [x, y, -z]);
+
+    // Try all possibilities for flipping X, Y, Z and rotating around X, Y, Z
+    for (let fx = 0; fx < 2; fx++) {
+      for (let fy = 0; fy < 2; fy++) {
+        for (let fz = 0; fz < 2; fz++) {
+          for (let rx = 0; rx < 4; rx++) {
+            for (let ry = 0; ry < 4; ry++) {
+              for (let rz = 0; rz < 4; rz++) {
+                orientations.add(coordsToString(current));
+                current = rotateZ(current);
+              }
+              current = rotateY(current);
+            }
+            current = rotateX(current);
+          }
+          current = flipZ(current);
+        }
+        current = flipY(current);
+      }
+      current = flipX(current);
     }
 
-    // Convert back to coordinate arrays
     const result = Array.from(orientations).map((str) =>
       str.split("|").map((coord) => coord.split(",").map(Number))
     );
-
     orientationsCache.set(cacheKey, result);
     return result;
-  }
-
-  /*
-   * Print the current state of the board to the console
-   */
-  function printBoard(board) {
-    board.forEach((layer, y) => {
-      layer.forEach((row) => {
-        console.log(row.map((val) => (val ? val : "-")).join(" "));
-      });
-    });
-  }
+  };
 
   /**
-   * Check if a piece can be placed at the specified position
+   * Find the next empty position on the board.
+   *
+   * @param {string[][]} board The polysphere board.
+   * @returns {Array<number>|null} The [row, col] of the next empty position,
+   *  or null if the board is full.
    */
-  function canPlacePiece(board, symbol, coords, startX, startY, startZ) {
-    // Map the 2D shape into 3D coords based on start position
-    const coords3D = coords.map(([x, z]) => [startX + x, startY, startZ + z]);
-    // Check the piece falls inside the pyramid's bounds
-    const isInBounds = coords3D.every(([x, y, z]) => {
-      if (y < 0 || y >= board.length) return false;
-      if (z < 0 || z >= board[y].length) return false;
-      if (x < 0 || x >= board[y][z].length) return false;
-      return true;
-    });
-    // Return false early if piece is out of bounds, to prevent index out of
-    // range errors in the later checks
-    if (!isInBounds) return false;
-    // Check the piece doesn't overlap with existing pieces; space must be empty
-    const isEmptySpace = coords3D.every(([x, y, z]) => {
-      // Check if space is empty
-      if (board[y][z][x] !== "") return false;
-      return true;
-    });
-    // Check the piece is supported unless it is on the bottom layer
-    const isSupported = coords3D.every(([x, y, z]) => {
-      if (y > 0 && board[y - 1][z][x] === "") return false;
-      return true;
-    });
-    // Check if this is the first piece being placed
-    const isFirstPiece = placedPieces.size === 0;
-    // Check the piece is connected to existing pieces
-    const isConnected = coords3D.some(([x, y, z]) => {
-      const neighbors = [
-        [-1, 0, 0],
-        [1, 0, 0],
-        [0, 0, -1],
-        [0, 0, 1],
-        [0, -1, 0],
-        [0, 1, 0],
-      ];
-      return neighbors.some(([nx, ny, nz]) => {
-        const checkX = x + nx;
-        const checkY = y + ny;
-        const checkZ = z + nz;
-
-        if (checkY < 0 || checkY >= board.length) return false;
-        if (checkZ < 0 || checkZ >= board[checkY].length) return false;
-        if (checkX < 0 || checkX >= board[checkY][checkZ].length) return false;
-
-        const cell = board[checkY][checkZ][checkX];
-        return cell !== "" && cell !== symbol;
-      });
-    });
-    // Determine if the piece can be placed. If this is the first piece being
-    // placed, it does not need to be connected to existing pieces
-    return (
-      isInBounds && isEmptySpace && isSupported && (isConnected || isFirstPiece)
-    );
-  }
+  const findEmptyPosition = (board) => {
+    for (let layer = 0; layer < board.length; layer++) {
+      const layerSize = board.length - layer;
+      for (let row = 0; row < layerSize; row++) {
+        for (let col = 0; col < layerSize; col++) {
+          if (board[layer][row][col] === "") {
+            //console.log(`Empty position found at [Layer: ${layer}, Row: ${row}, Col: ${col}]`);
+            return [layer, row, col];
+          }
+        }
+      }
+    }
+    console.log("No empty position found.");
+    return null;
+  };
 
   /**
-   * Place a piece on the board
+   * Checks if a piece can be placed at a specific position in the pyramid.
+   *
+   * @param {string[][][]} board The pyramid board.
+   * @param {Array<Array<number>>} coords The coordinates of the piece's cells.
+   * @param {number} startLayer Starting layer in pyramid.
+   * @param {number} startRow Starting row position.
+   * @param {number} startCol Starting column position.
+   * @returns {boolean} Whether the piece can be placed.
    */
-  function placePiece(board, symbol, coords, startX, startY, startZ) {
-    // Deep copy the board
-    const newBoard = board.map((layer) =>
-      layer.map((row) => row.map((cell) => cell))
-    );
-    // Map the 2D shape into 3D coords based on start position
-    const coords3D = coords.map(([x, z]) => [x, startY, z]);
-    // Place the shape onto the pyramid board
-    coords3D.forEach(([dx, dy, dz]) => {
-      newBoard[dy][startZ + dz][startX + dx] = symbol;
+  const canPlacePiece = (board, coords, startLayer, startRow, startCol) =>
+    coords.every(([l, r, c]) => {
+      const targetLayer = startLayer + l;
+      const targetRow = startRow + r;
+      const targetCol = startCol + c;
+
+      if (targetLayer < 0 || targetLayer >= board.length) return false;
+
+      const layerSize = board.length - targetLayer;
+      return (
+        targetRow >= 0 &&
+        targetRow < layerSize &&
+        targetCol >= 0 &&
+        targetCol < layerSize &&
+        board[targetLayer][targetRow][targetCol] === ""
+      );
+    });
+  /**
+   * Places a piece on the pyramid board.
+   *
+   * @param {string[][][]} board The pyramid board.
+   * @param {Object} piece The piece to be placed.
+   * @param {Array<Array<number>>} coords The coordinates of the piece's cells.
+   * @param {number} startLayer Starting layer in pyramid.
+   * @param {number} startRow Starting row position.
+   * @param {number} startCol Starting column position.
+   * @returns {string[][][]} New board with the piece placed.
+   */
+  const placePiece = (board, piece, coords, startLayer, startRow, startCol) => {
+    const newBoard = board.map((layer) => layer.map((row) => [...row]));
+    coords.forEach(([l, r, c]) => {
+      newBoard[startLayer + l][startRow + r][startCol + c] = piece.symbol;
     });
     return newBoard;
-  }
+  };
+
+  const findAnchorPoints = (startCoords) => {
+    const points = [];
+    const coords = normalize(startCoords);
+    coords.forEach(([x, y, z]) => {
+      points.push(coords.map(([cx, cy, cz]) => [cx - x, cy - y, cz - z]));
+    });
+    return points;
+  };
 
   /**
-   * Recursive solver function that finds all solutions
+   * Recursively attempts to solve the pyramid puzzle.
+   *
+   * @param {string[][][]} board The pyramid board.
+   * @param {Array<Object>} unusedPieces Remaining pieces to place.
+   * @param {Array<string[][][]>} solutions Array to store solutions.
    */
-  function solveRecursive(board, remainingPieces, solutions = []) {
-    if (remainingPieces.length === 0) {
-      console.log("Found solution!", solutions.length + 1);
+
+  const solveRecursive = (board, unusedPieces, solutions) => {
+    if (unusedPieces.length === 0) {
       const solution = board.map((layer) => layer.map((row) => [...row]));
       solutions.push(solution);
       onSolution(solution);
       return;
     }
 
-    for (let i = 0; i < remainingPieces.length; i++) {
-      const piece = remainingPieces[i];
-      const symbol = piece.symbol;
-      const orientations = getAllOrientations(piece);
+    const emptyPos = findEmptyPosition(board);
+    if (!emptyPos) return;
+    const [startLayer, startRow, startCol] = emptyPos;
+
+    for (let i = 0; i < unusedPieces.length; i++) {
+      const piece = unusedPieces[i];
+      const orientations = getAllOrientations(piece.coords);
 
       for (const orientation of orientations) {
-        for (let y = 0; y < board.length; y++) {
-          for (let z = 0; z < board[y].length; z++) {
-            for (let x = 0; x < board[y][z].length; x++) {
-              if (canPlacePiece(board, symbol, orientation, x, y, z)) {
-                // Place piece on the board
-                const newBoard = placePiece(
-                  board,
-                  symbol,
-                  orientation,
-                  x,
-                  y,
-                  z
-                );
-                printBoard(newBoard);
-                // Remove the placed piece from our remaining pieces
-                const newPieces = [
-                  ...remainingPieces.slice(0, i),
-                  ...remainingPieces.slice(i + 1),
-                ];
-                // Continue solving recursively
-                solveRecursive(newBoard, newPieces, solutions);
-              }
-            }
+        findAnchorPoints(orientation).forEach((anchor) => {
+          if (canPlacePiece(board, anchor, startLayer, startRow, startCol)) {
+            const newBoard = placePiece(
+              board,
+              piece,
+              anchor,
+              startLayer,
+              startRow,
+              startCol
+            );
+            const remainingPieces = [
+              ...unusedPieces.slice(0, i),
+              ...unusedPieces.slice(i + 1),
+            ];
+            solveRecursive(newBoard, remainingPieces, solutions);
           }
-        }
+        });
       }
     }
-    return solutions;
-  }
+  };
 
-  //
-  // Startup code
-  //
-
-  console.log("=== Pyramid Solver Starting ===");
-
-  // Find all pieces that have already been placed
-  const placedPieces = new Set();
-  board.forEach((layer, y) => {
-    layer.forEach((row, z) => {
-      row.forEach((cell) => {
-        if (cell !== "") {
-          placedPieces.add(cell);
-        }
-      });
-    });
-  });
-  console.log("Found pieces:", Array.from(placedPieces).join(", "));
-
-  // Get remaining pieces and start solving
-  const remainingPieces = unusedPieces.filter(
-    (piece) => !placedPieces.has(piece.symbol)
-  );
-  console.log(
-    "Remaining pieces:",
-    remainingPieces.map((p) => p.symbol).join(", ")
-  );
-
-  // Start solver
-  const solutions = solveRecursive(board, remainingPieces);
-
-  // Output solutions when finished
-  if (solutions.length === 0) {
-    console.log("No solutions found!");
-  } else {
-    console.log(`Found ${solutions.length} solutions!`);
-  }
+  solveRecursive(board, unusedPieces, []);
 }

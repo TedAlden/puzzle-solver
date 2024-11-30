@@ -1,7 +1,6 @@
 import "./PyramidPiecePreview.css";
-import { useRef, useEffect } from "react";
-import * as THREE from "three";
-import { OrbitControls } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, Sphere } from "@react-three/drei";
 
 /**
  * A component that renders a 3D preview of a polysphere piece using Three.js.
@@ -11,98 +10,30 @@ import { OrbitControls } from "@react-three/drei";
  * @returns {JSX.Element}
  */
 const PiecePreview3D = ({ selectedShape }) => {
-  const mountRef = useRef(null);
-  const sceneRef = useRef(null);
-  const cameraRef = useRef(null);
-  const rendererRef = useRef(null);
-  const controlsRef = useRef(null);
-
-  useEffect(() => {
-    if (!mountRef.current) return;
-
-    // Set up scene
-    const scene = new THREE.Scene();
-    sceneRef.current = scene;
-    scene.background = new THREE.Color(0x374151);
-
-    // Set up camera
-    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-    cameraRef.current = camera;
-    camera.position.set(4, 4, 4);
-    camera.lookAt(0, 0, 0);
-
-    // Set up renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    rendererRef.current = renderer;
-    renderer.setSize(300, 300);
-    mountRef.current.appendChild(renderer.domElement);
-
-    // Add orbit controls
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controlsRef.current = controls;
-    controls.enableDamping = true;
-
-    // Simple lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-    scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    directionalLight.position.set(5, 5, 5);
-    scene.add(directionalLight);
-
-    // Animation loop
-    const animate = () => {
-      requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene, camera);
-    };
-    animate();
-
-    return () => {
-      renderer.dispose();
-      mountRef.current?.removeChild(renderer.domElement);
-    };
-  }, []);
-
-  // Update piece visualisation when selectedShape changes
-  useEffect(() => {
-    if (!selectedShape || !sceneRef.current) return;
-
-    // Clear existing meshes
-    while (sceneRef.current.children.length > 0) {
-      sceneRef.current.remove(sceneRef.current.children[0]);
-    }
-
-    // Simple lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-    sceneRef.current.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    directionalLight.position.set(5, 5, 5);
-    sceneRef.current.add(directionalLight);
-
-    // Create spheres
-    const SPHERE_SIZE = 0.48;
-    const SPACING = 0.9;
-    const sphereGeometry = new THREE.SphereGeometry(SPHERE_SIZE, 40, 32);
-    const sphereMaterial = new THREE.MeshLambertMaterial({
-      color: selectedShape.colour,
-    });
-
-    selectedShape.coords.forEach(([x, y, z = 0]) => {
-      const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-      // Apply tighter spacing
-      sphere.position.set(x * SPACING, z * SPACING, y * SPACING);
-      sceneRef.current.add(sphere);
-    });
-
-    // Add coordinate axes helper
-    const axesHelper = new THREE.AxesHelper(2);
-    sceneRef.current.add(axesHelper);
-  }, [selectedShape]);
-
   return (
-    <div ref={mountRef} className="mx-auto border rounded-lg overflow-hidden" />
+    <Canvas camera={{ position: [4, 4, 4], fov: 75 }}>
+      <OrbitControls
+        enablePan={false}
+        enableDamping={true}
+        dampingFactor={0.1}
+      />
+      <ambientLight intensity={0.8} />
+      <directionalLight position={[5, 5, 5]} intensity={0.5} />
+      {selectedShape &&
+        selectedShape.coords.map(([x, y, z], index) => (
+          <Sphere
+            key={index}
+            args={[0.48, 40, 32]}
+            position={[x * 0.9, y * 0.9, z * 0.9]}
+          >
+            <meshLambertMaterial
+              attach="material"
+              color={selectedShape.colour}
+            />
+          </Sphere>
+        ))}
+      <axesHelper args={[2]} />
+    </Canvas>
   );
 };
 

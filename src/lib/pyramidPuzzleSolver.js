@@ -70,18 +70,33 @@ export default function pyramidPuzzleSolver(board, unusedPieces, onSolution) {
     let current = [...coords];
 
     // Try each axis rotation and reflection
-    const rotations = [
-      (coords) => coords.map(([x, y, z]) => [x, -z, y]), // Z rotation
-      (coords) => coords.map(([x, y, z]) => [z, y, -x]), // Y rotation
-      (coords) => coords.map(([x, y, z]) => [-y, x, z]), // X rotation
-    ];
+    const rotateX = (coords) => coords.map(([x, y, z]) => [-y, x, z]);
+    const rotateY = (coords) => coords.map(([x, y, z]) => [z, y, -x]);
+    const rotateZ = (coords) => coords.map(([x, y, z]) => [x, -z, y]);
 
-    for (let r = 0; r < 4; r++) {
-      for (let i = 0; i < rotations.length; i++) {
-        orientations.add(coordsToString(current));
-        orientations.add(coordsToString(current.map(([x, y, z]) => [-x, y, z]))); 
-        current = rotations[i](current);
+    const flipX = (coords) => coords.map(([x, y, z]) => [-x, y, z]);
+    const flipY = (coords) => coords.map(([x, y, z]) => [x, -y, z]);
+    const flipZ = (coords) => coords.map(([x, y, z]) => [x, y, -z]);
+
+    // Try all possibilities for flipping X, Y, Z and rotating around X, Y, Z
+    for (let fx = 0; fx < 2; fx++) {
+      for (let fy = 0; fy < 2; fy++) {
+        for (let fz = 0; fz < 2; fz++) {
+          for (let rx = 0; rx < 4; rx++) {
+            for (let ry = 0; ry < 4; ry++) {
+              for (let rz = 0; rz < 4; rz++) {
+                orientations.add(coordsToString(current));
+                current = rotateZ(current);
+              }
+              current = rotateY(current);
+            }
+            current = rotateX(current);
+          }
+          current = flipZ(current);
+        }
+        current = flipY(current);
       }
+      current = flipX(current);
     }
 
     const result = Array.from(orientations).map((str) =>
@@ -113,7 +128,6 @@ export default function pyramidPuzzleSolver(board, unusedPieces, onSolution) {
     console.log("No empty position found.");
     return null;
   };
-  
 
   /**
    * Checks if a piece can be placed at a specific position in the pyramid.

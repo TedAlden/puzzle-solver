@@ -1,6 +1,6 @@
 import "./PyramidPiecePreview.css";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Sphere } from "@react-three/drei";
+import { OrbitControls } from "@react-three/drei";
 
 /**
  * A component that renders a 3D preview of a polysphere piece using Three.js.
@@ -10,6 +10,15 @@ import { OrbitControls, Sphere } from "@react-three/drei";
  * @returns {JSX.Element}
  */
 const PiecePreview3D = ({ selectedShape }) => {
+  /**
+   * Transform a shape coordinate into a 3D pyramid coordinate.
+   *
+   * @param {number} x The shape X coordinate.
+   * @param {number} y The shape Y coordinate.
+   * @param {number} z The shape Z coordinate.
+   * @returns {Array<number>} The 3D pyramid coordinate of the shape piece.
+   */
+  const calcPosition = (x, y, z) => [x + 0.5 * y, y * 0.8, z + 0.5 * y];
   return (
     <Canvas camera={{ position: [4, 4, 4], fov: 75 }}>
       <OrbitControls
@@ -20,19 +29,13 @@ const PiecePreview3D = ({ selectedShape }) => {
       <ambientLight intensity={0.8} />
       <directionalLight position={[5, 5, 5]} intensity={0.5} />
       {selectedShape &&
-        selectedShape.coords.map(([x, y, z], index) => (
-          <Sphere
-            key={index}
-            args={[0.48, 40, 32]}
-            position={[x * 0.9, y * 0.9, z * 0.9]}
-          >
-            <meshLambertMaterial
-              attach="material"
-              color={selectedShape.colour}
-            />
-          </Sphere>
+        selectedShape.coords.map(([x, y, z]) => (
+          <mesh position={calcPosition(x, y, z)} key={`${x}-${y}-${z}`}>
+            <sphereGeometry args={[0.5]} />
+            <meshStandardMaterial color={selectedShape.colour} />
+          </mesh>
         ))}
-      <axesHelper args={[2]} />
+      <axesHelper args={[3]} />
     </Canvas>
   );
 };

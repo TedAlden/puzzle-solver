@@ -144,6 +144,26 @@ export default function solvePolyspheres(board, unusedPieces, onSolution) {
   };
 
   /**
+   * Find the coordinates of the anchor points for a piece, given the starting
+   * coordinates.
+   *
+   * Similar to the normalize function, but instead of only aligning the top
+   * left piece to (0,0), it will return a list of pieces with each different
+   * tile aligned to (0,0).
+   *
+   * @param {*} startCoords
+   * @returns
+   */
+  const findAnchorPoints = (startCoords) => {
+    const points = [];
+    const coords = normalize(startCoords);
+    coords.forEach(([x, z]) => {
+      points.push(coords.map(([cx, cz]) => [cx - x, cz - z]));
+    });
+    return points;
+  };
+
+  /**
    * Recursively attempts to solve the polysphere puzzle.
    *
    * @param {string[][]} board The polysphere board.
@@ -168,26 +188,28 @@ export default function solvePolyspheres(board, unusedPieces, onSolution) {
     // For each unused piece...
     for (let i = 0; i < unusedPieces.length; i++) {
       const piece = unusedPieces[i];
-      const orientations = getAllOrientations(piece.coords);
       // ...For each orientation (rotation or flip) of this piece...
-      for (const orientation of orientations) {
-        if (canPlacePiece(board, orientation, startRow, startCol)) {
-          // ...Place the piece
-          const newBoard = placePiece(
-            board,
-            piece,
-            orientation,
-            startRow,
-            startCol
-          );
-          const remainingPieces = [
-            ...unusedPieces.slice(0, i),
-            ...unusedPieces.slice(i + 1),
-          ];
-          // ...Attempt to solve the board with this piece placed
-          solveRecursive(newBoard, remainingPieces, solutions);
-        }
-      }
+      getAllOrientations(piece.coords).forEach((orientation) => {
+        // ...And for each anchor point of this piece...
+        findAnchorPoints(orientation).forEach((anchor) => {
+          if (canPlacePiece(board, anchor, startRow, startCol)) {
+            // ...Place the piece
+            const newBoard = placePiece(
+              board,
+              piece,
+              anchor,
+              startRow,
+              startCol
+            );
+            const remainingPieces = [
+              ...unusedPieces.slice(0, i),
+              ...unusedPieces.slice(i + 1),
+            ];
+            // ...Attempt to solve the board with this piece placed
+            solveRecursive(newBoard, remainingPieces, solutions);
+          }
+        });
+      });
     }
   };
   solveRecursive(board, unusedPieces, []);

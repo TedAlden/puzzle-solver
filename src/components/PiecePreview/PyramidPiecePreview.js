@@ -7,7 +7,7 @@ import { OrbitControls } from "@react-three/drei";
  *
  * @param {Object} props Component properties.
  * @param {Object} props.selectedShape The currently selected shape piece.
- * @returns {JSX.Element}
+ * @returns {React.JSX.Element}
  */
 const PiecePreview3D = ({ selectedShape }) => {
   /**
@@ -19,6 +19,7 @@ const PiecePreview3D = ({ selectedShape }) => {
    * @returns {Array<number>} The 3D pyramid coordinate of the shape piece.
    */
   const calcPosition = (x, y, z) => [x + 0.5 * y, y * 0.8, z + 0.5 * y];
+
   return (
     <Canvas camera={{ position: [4, 4, 4], fov: 75 }}>
       <OrbitControls
@@ -45,17 +46,17 @@ const PiecePreview3D = ({ selectedShape }) => {
  * users to navigate through a carousel of unused shapes, and flip or rotate
  * the selected shape.
  *
- * @param {Object} props Component properties
- * @param {Object} props.selectedShape The currently selected shape piece
- * @param {Function} props.onFlipX Function to flip the selected shape
- * @param {Function} props.onFlipY Function to flip the selected shape
- * @param {Function} props.onFlipZ Function to flip the selected shape
- * @param {Function} props.onRotateX Function to rotate the selected shape
- * @param {Function} props.onRotateY Function to rotate the selected shape
- * @param {Function} props.onRotateZ Function to rotate the selected shape
- * @param {Function} props.onPrevious Function to select the previous shape
- * @param {Function} props.onNext Function to select the next shape
- * @returns {JSX.Element}
+ * @param {Object} props Component properties.
+ * @param {Object} props.selectedShape The currently selected shape piece.
+ * @param {Function} props.onFlipX Function to flip the selected shape.
+ * @param {Function} props.onFlipY Function to flip the selected shape.
+ * @param {Function} props.onFlipZ Function to flip the selected shape.
+ * @param {Function} props.onRotateX Function to rotate the selected shape.
+ * @param {Function} props.onRotateY Function to rotate the selected shape.
+ * @param {Function} props.onRotateZ Function to rotate the selected shape.
+ * @param {Function} props.onPrevious Function to select the previous shape.
+ * @param {Function} props.onNext Function to select the next shape.
+ * @returns {React.JSX.Element}
  */
 const PieceSelector3D = ({
   selectedShape,

@@ -27,6 +27,7 @@ function PyramidLayerBoards({
 }) {
   return (
     <div className="layer-boards-container">
+      <div className="layer-title">Layer Views</div>
       {board
         .slice()
         .reverse()
@@ -36,31 +37,31 @@ function PyramidLayerBoards({
           return (
             // Draw each layer...
             <div key={layerIndex} className="layer-section">
+              <div className="layer-label">Layer {layerSize}</div>
               <div
                 className="layer-grid"
+                role="grid"
                 style={{
                   gridTemplateColumns: `repeat(${layerSize}, 1fr)`,
-                  width: `${layerSize * 30}px`,
+                  width: `${layerSize * 40}px`,
                 }}
               >
                 {layer.map((row, rowIndex) =>
                   row.map((cell, colIndex) => {
-                    // Check if this cell is highlighted from being hovered over
                     const highlighted = highlightedCells.some(
                       ([x, y, z]) =>
                         x === colIndex && y === layerIndex && z === rowIndex
                     )
                       ? "highlighted"
                       : "";
-                    // Get the value of the cell (the symbol of the shape piece
-                    // i.e, "A", "B", "C", etc.) or an empty string if there is
-                    // no piece
-                    const value = layer[colIndex][rowIndex] || "";
-                    // Construct the cell element
+                    const value = cell || "";
+
                     return (
                       <div
                         key={`${rowIndex}-${colIndex}`}
-                        className={`layer-cell ${highlighted} ${value}`}
+                        role="gridcell"
+                        data-index={`${rowIndex}-${colIndex}-${layerIndex}`}
+                        className={`polyboard-cell ${highlighted} ${value}`}
                         onMouseEnter={() =>
                           handleMouseEnterCell(layerIndex, rowIndex, colIndex)
                         }

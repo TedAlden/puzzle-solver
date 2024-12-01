@@ -1,6 +1,70 @@
 import "./PyramidPiecePreview.css";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
+import {
+  CSS2DRenderer,
+  CSS2DObject,
+} from "three/examples/jsm/renderers/CSS2DRenderer";
+import * as THREE from "three";
+import React, { useEffect, useRef } from "react";
+
+// Helper component to manage CSS2D labels
+const AxisLabels = () => {
+  const { scene, camera, gl } = useThree();
+  const labelRendererRef = useRef();
+
+  useEffect(() => {
+    // Set up CSS2D renderer
+    const labelRenderer = new CSS2DRenderer();
+    labelRenderer.setSize(
+      gl.domElement.clientWidth,
+      gl.domElement.clientHeight
+    );
+    labelRenderer.domElement.style.position = "absolute";
+    labelRenderer.domElement.style.top = "0";
+    labelRenderer.domElement.style.pointerEvents = "none";
+    gl.domElement.parentElement.appendChild(labelRenderer.domElement);
+    labelRendererRef.current = labelRenderer;
+
+    // Create axis labels
+    const createAxisLabel = (text, position) => {
+      const div = document.createElement("div");
+      div.className = "axis-label";
+      div.textContent = text;
+      div.style.color =
+        text === "X" ? "#ff0000" : text === "Y" ? "#00ff00" : "#0000ff";
+      const label = new CSS2DObject(div);
+      label.position.copy(position);
+      return label;
+    };
+
+    // Add labels to scene
+    const labels = [
+      createAxisLabel("X", new THREE.Vector3(2.2, 0, 0)),
+      createAxisLabel("Y", new THREE.Vector3(0, 2.2, 0)),
+      createAxisLabel("Z", new THREE.Vector3(0, 0, 2.2)),
+    ];
+    labels.forEach((label) => scene.add(label));
+
+    // Animation loop for labels
+    const animate = () => {
+      labelRenderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    };
+    animate();
+
+    return () => {
+      labels.forEach((label) => scene.remove(label));
+      if (labelRenderer.domElement.parentNode) {
+        labelRenderer.domElement.parentNode.removeChild(
+          labelRenderer.domElement
+        );
+      }
+    };
+  }, [scene, camera, gl]);
+
+  return null;
+};
 
 /**
  * A component that renders a 3D preview of a polysphere piece using Three.js.
@@ -37,6 +101,7 @@ const PiecePreview3D = ({ selectedShape }) => {
           </mesh>
         ))}
       <axesHelper args={[3]} />
+      <AxisLabels />
     </Canvas>
   );
 };

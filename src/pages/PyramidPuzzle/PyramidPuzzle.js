@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import "./PyramidPuzzle.css";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import PyramidBoard from "../../components/PyramidBoard/PyramidBoard";

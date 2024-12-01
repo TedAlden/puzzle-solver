@@ -2,9 +2,10 @@
 .keyboardControls {
   background: #37415180;
   border-radius: 8px;
-  padding: 1.5rem;
-  max-width: 300px;
+  padding: 1rem;
   color: white;
+  width: 100%;
+  box-sizing: border-box;
 }
 .keyboardControls p {
   margin: 0 0 0.5rem 0;

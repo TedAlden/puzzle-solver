@@ -52,22 +52,24 @@ function PyramidBoard({ board, highlightedCells, selectedShape }) {
   };
 
   return (
-    <Canvas
-      camera={{
-        position: [35, 15, 35],
-        fov: 50,
-      }}
-    >
-      <ambientLight intensity={Math.PI / 2} />
-      <pointLight position={[0, 20, 0]} decay={0} intensity={Math.PI} />
-      <OrbitControls
-        enablePan={false}
-        target={[0, 0, 0]}
-        enableDamping={true}
-        dampingFactor={0.1}
-      />
-      {renderPyramid(board)}
-    </Canvas>
+    <div className="pyramid-board">
+      <Canvas
+        camera={{
+          position: [35, 15, 35],
+          fov: 50,
+        }}
+      >
+        <ambientLight intensity={Math.PI / 2} />
+        <pointLight position={[0, 20, 0]} decay={0} intensity={Math.PI} />
+        <OrbitControls
+          enablePan={false}
+          target={[0, 0, 0]}
+          enableDamping={true}
+          dampingFactor={0.1}
+        />
+        {renderPyramid(board)}
+      </Canvas>
+    </div>
   );
 }
 

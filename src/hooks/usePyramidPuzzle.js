@@ -166,24 +166,14 @@ function usePyramidPuzzle() {
   };
 
   /**
-   * Handle clicking the next solution button. Skips to the next solution in
-   * the solution set.
+   * Handle setting the solution index.
+   *
+   * @param {number} index The index of the solution to display.
    */
-  const handleNextSolution = () => {
-    if (solutionIndex < solutions.length - 1) {
-      setSolutionIndex((prev) => prev + 1);
-      setBoard(solutions[solutionIndex + 1]);
-    }
-  };
-
-  /**
-   * Handle clicking the previous solution button. Returns to the previous
-   * solution in the solution set.
-   */
-  const handlePreviousSolution = () => {
-    if (solutionIndex > 0) {
-      setSolutionIndex((prev) => prev - 1);
-      setBoard(solutions[solutionIndex - 1]);
+  const handleSetSolutionIndex = (index) => {
+    if (0 <= solutionIndex && solutionIndex < solutions.length) {
+      setSolutionIndex(index);
+      setBoard(solutions[index]);
     }
   };
 
@@ -326,8 +316,7 @@ function usePyramidPuzzle() {
     handleClear,
     handleUndo,
     handleSolve,
-    handleNextSolution,
-    handlePreviousSolution,
+    handleSetSolutionIndex,
     handleMouseEnterCell,
     handleMouseLeaveCell,
     handleMouseClickCell,

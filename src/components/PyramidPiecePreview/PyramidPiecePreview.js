@@ -32,7 +32,7 @@ const AxisLabels = () => {
       div.className = "axis-label";
       div.textContent = text;
       div.style.color =
-        text === "X" ? "#ff0000" : text === "Y" ? "#00ff00" : "#0000ff";
+        text === "X" ? "#ff0000" : text === "Y" ? "#00ff00" : "#0088ff";
       const label = new CSS2DObject(div);
       label.position.copy(position);
       return label;
@@ -40,9 +40,9 @@ const AxisLabels = () => {
 
     // Add labels to scene
     const labels = [
-      createAxisLabel("X", new THREE.Vector3(2.2, 0, 0)),
-      createAxisLabel("Y", new THREE.Vector3(0, 2.2, 0)),
-      createAxisLabel("Z", new THREE.Vector3(0, 0, 2.2)),
+      createAxisLabel("X", new THREE.Vector3(3.5, 0, 0)),
+      createAxisLabel("Y", new THREE.Vector3(0, 3.5, 0)),
+      createAxisLabel("Z", new THREE.Vector3(0, 0, 3.5)),
     ];
     labels.forEach((label) => scene.add(label));
 

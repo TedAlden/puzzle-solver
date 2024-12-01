@@ -2,8 +2,8 @@
   background-color: #37415180;
   border-radius: 8px;
   padding: 1rem;
-  width: fit-content;
-  max-width: 300px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .layer-section {

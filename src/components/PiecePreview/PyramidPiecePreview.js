@@ -71,11 +71,8 @@ const PieceSelector3D = ({
 }) => {
   return (
     <div className="pieceSelector3D">
-      <div className="nav-controls">
-        <button onClick={onPrevious}>Prev</button>
-        <button onClick={onNext}>Next</button>
-      </div>
       <div className="preview-section">
+        <button onClick={onPrevious}>Prev</button>
         <div className="flip-controls">
           <button onClick={onFlipX}>Flip X</button>
           <button onClick={onFlipY}>Flip Y</button>
@@ -89,6 +86,7 @@ const PieceSelector3D = ({
           <button onClick={onRotateY}>Rotate Y</button>
           <button onClick={onRotateZ}>Rotate Z</button>
         </div>
+        <button onClick={onNext}>Next</button>
       </div>
     </div>
   );

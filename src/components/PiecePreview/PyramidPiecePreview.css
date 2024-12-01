@@ -1,15 +1,15 @@
 .pieceSelector3D {
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   align-items: center;
   padding: 1rem;
-  background-color: #2d3748;
-  border-radius: 1rem;
+  background: #37415180;
+  border-radius: 8px;
   width: 100%;
-  max-width: 800px;
+  max-width: 100%;
   margin: 0 auto;
-  margin-bottom: 0.5rem;
   position: relative;
+  box-sizing: border-box;
 }
 
 /* Top navigation buttons */
@@ -22,19 +22,20 @@
 /* Container for preview and side buttons */
 .preview-section {
   display: grid;
-  grid-template-columns: auto 300px auto;
+  grid-template-columns: auto auto 150px auto auto;
   gap: 1rem;
   align-items: center;
 }
 
 /* Side button columns */
-.flip-controls, .rotate-controls {
+.flip-controls,
+.rotate-controls {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.rotate-controls button, .flip-controls button, .nav-controls button {
+.pieceSelector3D button {
   padding: 0.5rem 1rem;
   border-radius: 0.25rem;
   background-color: #2563eb;
@@ -43,14 +44,16 @@
   cursor: pointer;
 }
 
-.rotate-controls button:hover, .flip-controls button:hover, .nav-controls button:hover {
+.rotate-controls button:hover,
+.flip-controls button:hover,
+.nav-controls button:hover {
   background-color: #1d4ed8;
 }
 
 .preview-container {
   border-radius: 0.5rem;
   overflow: hidden;
-  width: 300px;
-  height: 300px;
+  width: 150px;
+  height: 150px;
   background-color: #374151;
 }

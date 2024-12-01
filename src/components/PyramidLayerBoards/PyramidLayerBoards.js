@@ -27,7 +27,6 @@ function PyramidLayerBoards({
 }) {
   return (
     <div className="layer-boards-container">
-      <div className="layer-title">Layer Views</div>
       {board
         .slice()
         .reverse()
@@ -37,12 +36,11 @@ function PyramidLayerBoards({
           return (
             // Draw each layer...
             <div key={layerIndex} className="layer-section">
-              <div className="layer-label">Layer {layerSize}</div>
               <div
                 className="layer-grid"
                 style={{
                   gridTemplateColumns: `repeat(${layerSize}, 1fr)`,
-                  width: `${layerSize * 40}px`,
+                  width: `${layerSize * 30}px`,
                 }}
               >
                 {layer.map((row, rowIndex) =>
@@ -62,7 +60,7 @@ function PyramidLayerBoards({
                     return (
                       <div
                         key={`${rowIndex}-${colIndex}`}
-                        className={`polyboard-cell ${highlighted} ${value}`}
+                        className={`layer-cell ${highlighted} ${value}`}
                         onMouseEnter={() =>
                           handleMouseEnterCell(layerIndex, rowIndex, colIndex)
                         }

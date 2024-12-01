@@ -22,7 +22,11 @@ function SolutionNavigator({
 
   return (
     <div className="solutionNavigation">
-      <button onClick={handlePreviousSolution} disabled={solutionIndex === 0}>
+      <button
+        data-testid="prev-sol"
+        onClick={handlePreviousSolution}
+        disabled={solutionIndex === 0}
+      >
         Previous Solution
       </button>
       <span>
@@ -30,7 +34,8 @@ function SolutionNavigator({
         <input
           style={{ width: 60 }}
           type="number"
-          id="board-size"
+          id="solution-index"
+          data-testid="solution-index"
           value={solutionIndex + 1}
           onChange={(e) => {
             handleSetSolution(parseInt(e.target.value) || 1);
@@ -40,6 +45,7 @@ function SolutionNavigator({
         of {solutionsLength}
       </span>
       <button
+        data-testid="next-sol"
         onClick={handleNextSolution}
         disabled={solutionIndex === solutionsLength - 1}
       >

@@ -4,6 +4,7 @@ import PieceSelector from "../../components/PieceSelector/PieceSelector";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import KeyboardControls from "../../components/KeyboardControls/KeyboardControls";
 import usePolyspherePuzzle from "../../hooks/usePolyspherePuzzle";
+import SolutionNavigator from "../../components/SolutionNavigator/SolutionNavigator";
 
 /**
  * A component displaying the polysphere puzzle solver, including the board,
@@ -24,8 +25,7 @@ function PolyspherePuzzle() {
     solutionIndex,
     handleSolve,
     handleClear,
-    handleNextSolution,
-    handlePreviousSolution,
+    handleSetSolutionIndex,
     handleUndo,
     handleMouseEnterCell,
     handleMouseLeaveCell,
@@ -82,23 +82,11 @@ function PolyspherePuzzle() {
         {isSolved && solutions.length > 0 && <span>Solutions found ✅</span>}
         {isSolved && solutions.length === 0 && <span>No solutions ⚠️</span>}
         {solutions.length >= 1 && (
-          <div className="solutionNavigation">
-            <button
-              onClick={handlePreviousSolution}
-              disabled={solutionIndex === 0}
-            >
-              Previous Solution
-            </button>
-            <span>
-              Solution {solutionIndex + 1} of {solutions.length}
-            </span>
-            <button
-              onClick={handleNextSolution}
-              disabled={solutionIndex === solutions.length - 1}
-            >
-              Next Solution
-            </button>
-          </div>
+          <SolutionNavigator
+            solutionIndex={solutionIndex}
+            solutionsLength={solutions.length}
+            handleSetSolutionIndex={handleSetSolutionIndex}
+          />
         )}
       </div>
       <KeyboardControls

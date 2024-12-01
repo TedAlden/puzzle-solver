@@ -28,7 +28,7 @@ function SolutionNavigator({
       <span>
         Solution{" "}
         <input
-          style={{ width: 40 }}
+          style={{ width: 60 }}
           type="number"
           id="board-size"
           value={solutionIndex + 1}

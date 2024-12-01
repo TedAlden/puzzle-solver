@@ -1,69 +1,25 @@
 import "./PyramidPiecePreview.css";
-import { Canvas, useThree } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import {
-  CSS2DRenderer,
-  CSS2DObject,
-} from "three/examples/jsm/renderers/CSS2DRenderer";
+import { useRef } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
-import React, { useEffect, useRef } from "react";
 
-// Helper component to manage CSS2D labels
-const AxisLabels = () => {
-  const { scene, camera, gl } = useThree();
-  const labelRendererRef = useRef();
+const AxisLabel = ({ text, position }) => {
+  const color = text === "X" ? "#ff0000" : text === "Y" ? "#00ff00" : "#0088ff";
+  const labelRef = useRef();
 
-  useEffect(() => {
-    // Set up CSS2D renderer
-    const labelRenderer = new CSS2DRenderer();
-    labelRenderer.setSize(
-      gl.domElement.clientWidth,
-      gl.domElement.clientHeight
-    );
-    labelRenderer.domElement.style.position = "absolute";
-    labelRenderer.domElement.style.top = "0";
-    labelRenderer.domElement.style.pointerEvents = "none";
-    gl.domElement.parentElement.appendChild(labelRenderer.domElement);
-    labelRendererRef.current = labelRenderer;
+  // Make the label face the camera
+  useFrame(({ camera }) => {
+    if (labelRef.current) {
+      labelRef.current.quaternion.copy(camera.quaternion);
+    }
+  });
 
-    // Create axis labels
-    const createAxisLabel = (text, position) => {
-      const div = document.createElement("div");
-      div.className = "axis-label";
-      div.textContent = text;
-      div.style.color =
-        text === "X" ? "#ff0000" : text === "Y" ? "#00ff00" : "#0088ff";
-      const label = new CSS2DObject(div);
-      label.position.copy(position);
-      return label;
-    };
-
-    // Add labels to scene
-    const labels = [
-      createAxisLabel("X", new THREE.Vector3(3.5, 0, 0)),
-      createAxisLabel("Y", new THREE.Vector3(0, 3.5, 0)),
-      createAxisLabel("Z", new THREE.Vector3(0, 0, 3.5)),
-    ];
-    labels.forEach((label) => scene.add(label));
-
-    // Animation loop for labels
-    const animate = () => {
-      labelRenderer.render(scene, camera);
-      requestAnimationFrame(animate);
-    };
-    animate();
-
-    return () => {
-      labels.forEach((label) => scene.remove(label));
-      if (labelRenderer.domElement.parentNode) {
-        labelRenderer.domElement.parentNode.removeChild(
-          labelRenderer.domElement
-        );
-      }
-    };
-  }, [scene, camera, gl]);
-
-  return null;
+  return (
+    <mesh position={position} ref={labelRef}>
+      <Text text={text} fontSize={0.7} color={color} />
+    </mesh>
+  );
 };
 
 /**
@@ -101,7 +57,9 @@ const PiecePreview3D = ({ selectedShape }) => {
           </mesh>
         ))}
       <axesHelper args={[3]} />
-      <AxisLabels />
+      <AxisLabel text="X" position={new THREE.Vector3(3.5, 0, 0)} />
+      <AxisLabel text="Y" position={new THREE.Vector3(0, 3.5, 0)} />
+      <AxisLabel text="Z" position={new THREE.Vector3(0, 0, 3.5)} />
     </Canvas>
   );
 };

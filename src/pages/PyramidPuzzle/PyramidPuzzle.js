@@ -4,7 +4,7 @@ import PyramidBoard from "../../components/PyramidBoard/PyramidBoard";
 import PyramidLayerBoards from "../../components/PyramidLayerBoards/PyramidLayerBoards";
 import KeyboardControls from "../../components/KeyboardControls/KeyboardControls";
 import usePyramidPuzzle from "../../hooks/usePyramidPuzzle";
-import PieceSelector3D from "../../components/PyramidPiecePreview/PyramidPiecePreview";
+import PyramidPieceSelector from "../../components/PyramidPieceSelector/PyramidPieceSelector";
 import SolutionNavigator from "../../components/SolutionNavigator/SolutionNavigator";
 
 // TODO: add x,y,z guide lines
@@ -126,7 +126,7 @@ function PyramidPuzzle() {
           <KeyboardControls keyMap={keyMap} />
         </div>
         <div className="column middleColumn">
-          <PieceSelector3D
+          <PyramidPieceSelector
             selectedShape={selectedShape}
             onFlipX={handleFlipPieceX}
             onFlipY={handleFlipPieceY}

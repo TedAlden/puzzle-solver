@@ -61,6 +61,7 @@ function PyramidLayerBoards({
                       <div
                         key={`${rowIndex}-${colIndex}`}
                         className={`layer-cell ${highlighted} ${value}`}
+                        role="cell"
                         onMouseEnter={() =>
                           handleMouseEnterCell(layerIndex, rowIndex, colIndex)
                         }

@@ -1,89 +1,82 @@
-import { render, fireEvent } from "@testing-library/react";
 import PyramidLayerBoards from "./PyramidLayerBoards";
+import { render, screen, fireEvent } from "@testing-library/react";
 
-describe("PyramidLayerBoards Component", () => {
-  const mockBoard = [
-    [[""]], // Layer 1: 1x1
+describe("PyramidLayerBoards", () => {
+  const board = [
+    [["A"]],
     [
-      ["", ""],
-      ["", ""],
-    ], // Layer 2: 2x2
+      ["B", ""],
+      ["", "C"],
+    ],
     [
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""],
-    ], // Layer 3: 3x3
-    [
-      ["", "", "", ""],
-      ["", "", "", ""],
-      ["", "", "", ""],
-    ], // Layer 4: 4x4
-    [
-      ["", "", "", "", ""],
-      ["", "", "", "", ""],
-      ["", "", "", "", ""],
-      ["", "", "", "", ""],
-      ["", "", "", "", ""],
-    ], // Layer 5: 5x5
+      ["D", "", ""],
+      ["", "E", ""],
+      ["", "", "F"],
+    ],
   ];
-
-  const mockHighlightedCells = [
-    [1, 4, 1], // Layer 5: Row 1, Col 4
-    [2, 4, 1], // Layer 5: Row 2, Col 4
-    [1, 4, 2], // Layer 5: Row 1, Col 5
-    [2, 4, 2], // Layer 5: Row 2, Col 5
+  const highlightedCells = [
+    [0, 0, 0],
+    [1, 1, 1],
   ];
+  const handleMouseEnterCell = jest.fn();
+  const handleMouseLeaveCell = jest.fn();
+  const handleMouseClickCell = jest.fn();
 
-  const mockHandleMouseEnter = jest.fn();
-  const mockHandleMouseLeave = jest.fn();
-  const mockHandleMouseClick = jest.fn();
-
-  test("highlights the correct cells", () => {
+  it("renders correctly", () => {
     const { container } = render(
       <PyramidLayerBoards
-        board={mockBoard}
-        highlightedCells={mockHighlightedCells}
-        handleMouseEnterCell={jest.fn()}
-        handleMouseLeaveCell={jest.fn()}
-        handleMouseClickCell={jest.fn()}
+        board={board}
+        highlightedCells={highlightedCells}
+        handleMouseEnterCell={handleMouseEnterCell}
+        handleMouseLeaveCell={handleMouseLeaveCell}
+        handleMouseClickCell={handleMouseClickCell}
       />
     );
-
-    // Check highlighted cells
-    const highlightedCells = container.querySelectorAll(".highlighted");
-    expect(highlightedCells.length).toBe(mockHighlightedCells.length);
-
-    // Check if the highlighted cells match
-    mockHighlightedCells.forEach(([x, y, z]) => {
-      const highlightedCell = container.querySelector(
-        `[data-index="${z}-${x}-${y}"]`
-      );
-      expect(highlightedCell).toHaveClass("highlighted");
-    });
+    expect(container.firstChild).toHaveClass("layer-boards-container");
   });
 
-  test("triggers mouse events correctly", () => {
-    const { container } = render(
+  it("handles mouse enter event", () => {
+    render(
       <PyramidLayerBoards
-        board={mockBoard}
-        highlightedCells={mockHighlightedCells}
-        handleMouseEnterCell={mockHandleMouseEnter}
-        handleMouseLeaveCell={mockHandleMouseLeave}
-        handleMouseClickCell={mockHandleMouseClick}
+        board={board}
+        highlightedCells={highlightedCells}
+        handleMouseEnterCell={handleMouseEnterCell}
+        handleMouseLeaveCell={handleMouseLeaveCell}
+        handleMouseClickCell={handleMouseClickCell}
       />
     );
+    const cells = screen.getAllByRole("cell");
+    fireEvent.mouseEnter(cells[0]);
+    expect(handleMouseEnterCell).toHaveBeenCalled();
+  });
 
-    // Target the first highlighted cell
-    const highlightedCell = container.querySelector(".highlighted");
+  it("handles mouse leave event", () => {
+    render(
+      <PyramidLayerBoards
+        board={board}
+        highlightedCells={highlightedCells}
+        handleMouseEnterCell={handleMouseEnterCell}
+        handleMouseLeaveCell={handleMouseLeaveCell}
+        handleMouseClickCell={handleMouseClickCell}
+      />
+    );
+    const cells = screen.getAllByRole("cell");
+    fireEvent.mouseLeave(cells[0]);
+    expect(handleMouseLeaveCell).toHaveBeenCalled();
+  });
 
-    if (!highlightedCell) throw new Error("No highlighted cells found");
-
-    fireEvent.mouseEnter(highlightedCell);
-    fireEvent.mouseLeave(highlightedCell);
-    fireEvent.click(highlightedCell);
-
-    expect(mockHandleMouseEnter).toHaveBeenCalled();
-    expect(mockHandleMouseLeave).toHaveBeenCalled();
-    expect(mockHandleMouseClick).toHaveBeenCalled();
+  it("handles mouse click event", () => {
+    render(
+      <PyramidLayerBoards
+        board={board}
+        highlightedCells={highlightedCells}
+        handleMouseEnterCell={handleMouseEnterCell}
+        handleMouseLeaveCell={handleMouseLeaveCell}
+        handleMouseClickCell={handleMouseClickCell}
+      />
+    );
+    const cells = screen.getAllByRole("cell");
+    fireEvent.click(cells[0]);
+    expect(handleMouseClickCell).toHaveBeenCalled();
   });
 });

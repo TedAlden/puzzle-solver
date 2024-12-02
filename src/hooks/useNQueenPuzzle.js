@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createBoard2D } from "../lib/utils";
-import { solveNQueens } from "../lib/nqueens";
+import { solveNQueens } from "../lib/nqueensSolver";
 
 function useNQueenPuzzle() {
   const [boardSize, setBoardSize] = useState(4);

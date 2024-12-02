@@ -1,19 +1,41 @@
+/**
+ * SolutionNavigator component. Renders the solution navigation buttons and a
+ * numerical input to allow the user to quickly navigate between large numbers
+ * of solutions.
+ *
+ * @param {Object} props Component properties.
+ * @param {number} props.solutionIndex The current solution index.
+ * @param {number} props.solutionsLength The total number of solutions.
+ * @param {Function} props.handleSetSolutionIndex Function to set the solution
+ *  index.
+ * @returns {React.JSX.Element}
+ */
 function SolutionNavigator({
   solutionIndex,
   solutionsLength,
   handleSetSolutionIndex,
 }) {
+  /**
+   * Handles the previous solution button click.
+   */
   const handlePreviousSolution = () => {
     if (solutionIndex > 0) {
       handleSetSolutionIndex(solutionIndex - 1);
     }
   };
 
+  /**
+   * Handles setting the solution index.
+   * @param {number} index The new solution index.
+   */
   const handleSetSolution = (index) => {
     const newIndex = Math.min(Math.max(1, index), solutionsLength);
     handleSetSolutionIndex(newIndex - 1);
   };
 
+  /**
+   * Handles the next solution button click.
+   */
   const handleNextSolution = () => {
     if (solutionIndex < solutionsLength - 1) {
       handleSetSolutionIndex(solutionIndex + 1);

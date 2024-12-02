@@ -104,8 +104,36 @@ describe("SolutionNavigator", () => {
     expect(handleSetSolutionIndex).not.toHaveBeenCalled();
   });
 
+  it("does not call handleSetSolutionIndex on previous button click when solutionIndex is -1", () => {
+    solutionIndex = -1;
+    render(
+      <SolutionNavigator
+        solutionIndex={solutionIndex}
+        solutionsLength={solutionsLength}
+        handleSetSolutionIndex={handleSetSolutionIndex}
+      />
+    );
+
+    fireEvent.click(screen.getByTestId("prev-sol"));
+    expect(handleSetSolutionIndex).not.toHaveBeenCalled();
+  });
+
   it("does not call handleSetSolutionIndex on next button click when solutionIndex is the last solution", () => {
     solutionIndex = solutionsLength - 1;
+    render(
+      <SolutionNavigator
+        solutionIndex={solutionIndex}
+        solutionsLength={solutionsLength}
+        handleSetSolutionIndex={handleSetSolutionIndex}
+      />
+    );
+
+    fireEvent.click(screen.getByTestId("next-sol"));
+    expect(handleSetSolutionIndex).not.toHaveBeenCalled();
+  });
+
+  it("does not call handleSetSolutionIndex on next button click when solutionIndex is past the last solution", () => {
+    solutionIndex = solutionsLength;
     render(
       <SolutionNavigator
         solutionIndex={solutionIndex}

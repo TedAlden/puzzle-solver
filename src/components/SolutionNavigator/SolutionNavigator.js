@@ -21,7 +21,7 @@ function SolutionNavigator({
   };
 
   return (
-    <div className="solutionNavigation">
+    <div className="solutionNavigation" data-testid="solution-navigation">
       <button
         data-testid="prev-sol"
         onClick={handlePreviousSolution}

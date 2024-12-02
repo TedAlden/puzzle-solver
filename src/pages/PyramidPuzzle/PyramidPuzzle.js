@@ -144,13 +144,22 @@ function PyramidPuzzle() {
           />
           <div>
             <div className="controlsContainer">
-              <button onClick={handleSolve} disabled={isSolving}>
+              <button
+                data-testid="solve-button"
+                onClick={handleSolve}
+                disabled={isSolving}
+              >
                 {isSolving ? "Solving..." : "Solve Puzzle"}
               </button>
-              <button onClick={handleClear} disabled={isSolving}>
+              <button
+                data-testid="clear-button"
+                onClick={handleClear}
+                disabled={isSolving}
+              >
                 Clear Board
               </button>
               <button
+                data-testid="undo-button"
                 onClick={handleUndo}
                 disabled={moveStack.length === 0 || isSolving}
               >

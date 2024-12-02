@@ -94,7 +94,7 @@
 }
 
 /* Keyboard Controls */
-.keyboard-controls {
+.puzzleThree .keyboard-controls {
   background-color: #2d3748;
   border-radius: 0.5rem;
   padding: 1rem;
@@ -102,33 +102,32 @@
 }
 
 /* Status Messages */
-.status-messages {
+.puzzleThree .status-messages {
   text-align: center;
   margin: 1rem 0;
 }
 
-.wrapper {
+.puzzleThree .wrapper {
   display: flex;
-  /* flex-direction: row; */
   justify-content: space-around;
   gap: 1rem;
   margin: 0 1rem;
   height: calc(100vh - 158px);
 }
 
-.leftColumn {
+.puzzleThree .leftColumn {
   flex: 2;
 }
 
-.middleColumn {
+.puzzleThree .middleColumn {
   flex: 3;
 }
 
-.rightColumn {
+.puzzleThree .rightColumn {
   flex: 2;
 }
 
-.column {
+.puzzleThree .column {
   flex-direction: column;
   align-items: center;
   display: flex;

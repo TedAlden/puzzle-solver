@@ -101,7 +101,7 @@ function PyramidPuzzle() {
     {
       key: "s",
       keyAlias: "S",
-      description: "Solve (placeholder)",
+      description: "Solve puzzle",
       onClick: handleSolve,
     },
   ];

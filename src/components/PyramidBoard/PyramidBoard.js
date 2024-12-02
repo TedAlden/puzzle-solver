@@ -2,40 +2,52 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import pieces from "../../lib/pieces";
 
+/**
+ * PyramidBoard component renders the 3D pyramid board using Three.js.
+ *
+ * @param {Object} props Component properties.
+ * @param {string[][][]} props.board A 3D array representing the board state.
+ * @param {number[][]} props.highlightedCells A list of highlighted cells.
+ * @param {Object} props.selectedShape The selected shape piece.
+ * @returns {React.JSX.Element}
+ */
 function PyramidBoard({ board, highlightedCells, selectedShape }) {
-  const renderPyramid = (pyramid) => {
-    const size = pyramid.length;
-    // Offset y coordinate to center the pyramid at (0, 0, 0)
-    const heightOffset = (size - 1) * 2;
-    const spheres = [];
-    for (let i = 0; i < size; i++) {
-      const layerSize = size - i; // i.e. 5 for the first 5x5 layer
-      const y = i * 4 - heightOffset;
-      for (let j = 0; j < layerSize; j++) {
-        for (let k = 0; k < layerSize; k++) {
-          const x = (j - (layerSize - 1) / 2) * 5;
-          const z = (k - (layerSize - 1) / 2) * 5;
-          const hasShapePlaced = pyramid[i][j][k] !== "";
+  // Create a map of piece symbols to the corresponding colour, e.g. A:#ff0000
+  const pieceColours = pieces.map((piece) => piece.colour);
+
+  /**
+   * Renders the 3D pyramid board.
+   *
+   * @param {string[][][]} board The 3D array representing the board state.
+   * @returns {React.JSX.Element[]}
+   */
+  const renderPyramid = (board) =>
+    board.map((layer, layerIndex) =>
+      layer.map((row, rowIndex) =>
+        row.map((cell, cellIndex) => {
+          // Calculuate 3D pyramid coordinates for the cell
+          const x = (rowIndex - (row.length - 1) / 2) * 5;
+          const z = (cellIndex - (row.length - 1) / 2) * 5;
+          const y = layerIndex * 4 - (board.length - 1) * 2;
+          // Check if cell has a shape piece placed in it
+          const hasShapePlaced = cell !== "";
+          // Check if cell is highlighted (hovered over)
           const isHighlighted = highlightedCells.some(
-            (cell) => cell[0] === j && cell[1] === i && cell[2] === k
+            (cell) =>
+              cell[0] === rowIndex &&
+              cell[1] === layerIndex &&
+              cell[2] === cellIndex
           );
           // Determine cell opacity
           const opacity = hasShapePlaced ? 0.9 : 0.5;
           // Determine cell colour
-          let colour = "#ffffff";
-          if (hasShapePlaced) {
-            // If there is a shape piece placed in the cell, look up the colour
-            const piece = pieces.find(
-              (piece) => piece.symbol === pyramid[i][j][k]
-            );
-            colour = piece.colour;
-          } else if (isHighlighted) {
-            // Otherwise, if the cell is highlighted (being hovered over), use
-            // the current selected shape's colour
-            colour = selectedShape.colour;
-          }
-          // Add the sphere mesh to the list
-          spheres.push(
+          const colour = hasShapePlaced
+            ? pieceColours[cell]
+            : isHighlighted
+            ? selectedShape.colour
+            : "#ffffff";
+          // Generate the cell sphere mesh
+          return (
             <mesh position={[x, y, z]} key={`${x}-${y}-${z}`}>
               <sphereGeometry args={[2.5]} />
               <meshStandardMaterial
@@ -45,20 +57,13 @@ function PyramidBoard({ board, highlightedCells, selectedShape }) {
               />
             </mesh>
           );
-        }
-      }
-    }
-    return spheres;
-  };
+        })
+      )
+    );
 
   return (
     <div className="pyramid-board">
-      <Canvas
-        camera={{
-          position: [35, 15, 35],
-          fov: 50,
-        }}
-      >
+      <Canvas camera={{ position: [35, 15, 35], fov: 50 }}>
         <ambientLight intensity={Math.PI / 2} />
         <pointLight position={[0, 20, 0]} decay={0} intensity={Math.PI} />
         <OrbitControls

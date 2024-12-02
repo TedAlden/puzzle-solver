@@ -57,7 +57,7 @@ function NQueenPuzzle() {
     <div className="puzzleOne">
       <h2>The N-Queens Puzzle</h2>
       <div className="wrapper">
-        <div className="column middleColumn">
+        <div className="column leftColumn">
           <div className="input-section">
             <label htmlFor="board-size">Board Size:</label>
             <input

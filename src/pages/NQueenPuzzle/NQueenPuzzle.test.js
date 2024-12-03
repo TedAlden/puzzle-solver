@@ -1,9 +1,9 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import NQueenPuzzle from "./NQueenPuzzle";
-import { solveNQueens } from "../../lib/nqueens";
+import { solveNQueens } from "../../lib/nqueensSolver";
 
 // Mock the NQueens solver algorithm
-jest.mock("../../lib/nqueens", () => ({
+jest.mock("../../lib/nqueensSolver", () => ({
   solveNQueens: jest.fn(),
 }));
 

@@ -1,4 +1,4 @@
-const { isValid, isSafe, solveNQueens } = require("./nqueens");
+import { isValid, isSafe, solveNQueens } from "./nqueensSolver";
 
 describe("Test isValid function", () => {
   test("Horizontal line of sight is invalid #1", () => {

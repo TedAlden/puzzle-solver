@@ -1,23 +1,71 @@
-/* PyramidLayerBoards.css */
 .layer-boards-container {
   background-color: #37415180;
-  border-radius: 0.5rem;
+  border-radius: 8px;
   padding: 1rem;
-  max-width: 300px;
-
-}
-
-.layer-title {
-  color: rgb(234, 179, 8);
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .layer-section {
-  margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.layer-cell {
+  background: #1f2937;
+  border-radius: 4px;
+}
+
+.layer-cell:hover {
+  background: #1f2937;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.layer-cell.highlighted {
+  background: #8b5cf680;
+  transform: scale(0.95);
+}
+.layer-cell.A {
+  background-color: #ff0000;
+}
+.layer-cell.B {
+  background-color: #dd4080;
+}
+.layer-cell.C {
+  background-color: #ee8fbf;
+}
+.layer-cell.D {
+  background-color: #1046bb;
+}
+.layer-cell.E {
+  background-color: #ffff00;
+}
+.layer-cell.F {
+  background-color: #a934cc;
+}
+.layer-cell.G {
+  background-color: #5c00a7;
+}
+.layer-cell.H {
+  background-color: #2ca350;
+}
+.layer-cell.I {
+  background-color: #b64816;
+}
+.layer-cell.J {
+  background-color: #005a1e;
+}
+.layer-cell.K {
+  background-color: #e78e3a;
+}
+.layer-cell.L {
+  background-color: #0091d4;
+}
+
+.layer-section:not(:last-child) {
+  margin-bottom: 0.5rem;
 }
 
 .layer-label {
@@ -27,8 +75,7 @@
 
 .layer-grid {
   display: grid;
-  gap: 1px;
-  padding: 1px;
+  padding: 2px;
   background-color: rgb(75, 85, 99);
   border-radius: 0.25rem;
 }

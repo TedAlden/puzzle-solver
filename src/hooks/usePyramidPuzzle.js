@@ -55,7 +55,7 @@ function usePyramidPuzzle() {
   }, [solutions, solutionIndex]);
 
   useEffect(() => {
-    if (highlightedIndex.some((i) => i === -1)) {
+    if (highlightedIndex.some((i) => i === -1) || !selectedShape) { 
       setHighlightedCells([]);
       return;
     }
@@ -82,7 +82,6 @@ function usePyramidPuzzle() {
       setHighlightedCells([]);
     }
   }, [selectedShape, board, highlightedIndex]);
-
   const addMove = (board, piece) => {
     setMoveStack((prev) => [...prev, { board, piece }]);
   };
@@ -160,30 +159,23 @@ function usePyramidPuzzle() {
       setBoard(createBoardPyramid(5, ""));
       setShapes(pieces3D);
       setSelectedShape(shapes[0]);
+      setSolutions([]);
       setIsSolving(false);
+      setSolutionIndex(0);
+      setIsSolved(false);
       setMoveStack([]);
     }
   };
 
   /**
-   * Handle clicking the next solution button. Skips to the next solution in
-   * the solution set.
+   * Handle setting the solution index.
+   *
+   * @param {number} index The index of the solution to display.
    */
-  const handleNextSolution = () => {
-    if (solutionIndex < solutions.length - 1) {
-      setSolutionIndex((prev) => prev + 1);
-      setBoard(solutions[solutionIndex + 1]);
-    }
-  };
-
-  /**
-   * Handle clicking the previous solution button. Returns to the previous
-   * solution in the solution set.
-   */
-  const handlePreviousSolution = () => {
-    if (solutionIndex > 0) {
-      setSolutionIndex((prev) => prev - 1);
-      setBoard(solutions[solutionIndex - 1]);
+  const handleSetSolutionIndex = (index) => {
+    if (0 <= index && index < solutions.length) {  
+      setSolutionIndex(index);
+      setBoard(solutions[index]);
     }
   };
 
@@ -208,9 +200,6 @@ function usePyramidPuzzle() {
     if (!worker) return;
     if (isSolving) return;
 
-    console.log("Current board:", board);
-    console.log("Remaining pieces:", shapes);
-
     // Identify which pieces have already been placed based on the board state
     const placedSymbols = new Set(
       board.flat(2).filter((cell) => cell !== "") // Collect all non-empty cells
@@ -220,8 +209,8 @@ function usePyramidPuzzle() {
       (piece) => !placedSymbols.has(piece.symbol)
     );
 
-    console.log("Placed pieces:", Array.from(placedSymbols));
-    console.log("Remaining pieces after filtering:", remainingPieces);
+    //console.log("Placed pieces:", Array.from(placedSymbols));
+    //console.log("Remaining pieces after filtering:", remainingPieces);
 
     // Handler for when the worker sends a solution back here
     const messageHandler = (e) => {
@@ -326,8 +315,7 @@ function usePyramidPuzzle() {
     handleClear,
     handleUndo,
     handleSolve,
-    handleNextSolution,
-    handlePreviousSolution,
+    handleSetSolutionIndex,
     handleMouseEnterCell,
     handleMouseLeaveCell,
     handleMouseClickCell,

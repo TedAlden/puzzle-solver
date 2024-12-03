@@ -66,20 +66,20 @@ describe("PolyspherePuzzle Component", () => {
         messageHandler({ data: { type: "complete" } });
       });
 
+      const solutionIndex = screen.getByTestId("solution-index");
+
       await waitFor(() => {
-        expect(screen.getByText("Solution 1 of 1")).toBeInTheDocument();
+        expect(solutionIndex).toHaveValue(1);
       });
 
-      // Force navigation to test bounds
-      const prevButton = screen.getByText("Previous Solution");
-      const nextButton = screen.getByText("Next Solution");
-
       // Test bounds
+      const prevButton = screen.getByTestId("prev-sol");
+      const nextButton = screen.getByTestId("next-sol");
       fireEvent.click(prevButton);
       fireEvent.click(nextButton);
 
-      // Should still be on solution 1
-      expect(screen.getByText("Solution 1 of 1")).toBeInTheDocument();
+      // solutionIndex should still be 1
+      expect(solutionIndex).toHaveValue(1);
     });
   });
 
@@ -103,16 +103,20 @@ describe("PolyspherePuzzle Component", () => {
         messageHandler({ data: { type: "complete" } });
       });
 
+      const solutionIndex = screen.getByTestId("solution-index");
+
       await waitFor(() => {
-        expect(screen.getByText("Solution 1 of 2")).toBeInTheDocument();
+        expect(solutionIndex).toHaveValue(1);
       });
 
       // Navigate through solutions and verify board updates
-      fireEvent.click(screen.getByText("Next Solution"));
-      fireEvent.click(screen.getByText("Previous Solution"));
+      const prevButton = screen.getByTestId("prev-sol");
+      const nextButton = screen.getByTestId("next-sol");
+      fireEvent.click(nextButton);
+      fireEvent.click(prevButton);
 
       // Verify we're back at solution 1
-      expect(screen.getByText("Solution 1 of 2")).toBeInTheDocument();
+      expect(solutionIndex).toHaveValue(1);
     });
   });
 
@@ -236,16 +240,21 @@ describe("PolyspherePuzzle Component", () => {
         messageHandler({ data: { type: "complete" } });
       });
 
+      const solutionIndex = screen.getByTestId("solution-index");
+
       await waitFor(() => {
-        expect(screen.getByText("Solution 1 of 2")).toBeInTheDocument();
+        expect(solutionIndex).toHaveValue(1);
       });
 
-      // Test navigation
-      fireEvent.click(screen.getByText("Next Solution"));
-      expect(screen.getByText("Solution 2 of 2")).toBeInTheDocument();
+      const prevButton = screen.getByTestId("prev-sol");
+      const nextButton = screen.getByTestId("next-sol");
 
-      fireEvent.click(screen.getByText("Previous Solution"));
-      expect(screen.getByText("Solution 1 of 2")).toBeInTheDocument();
+      // Test navigation
+      fireEvent.click(nextButton);
+      expect(solutionIndex).toHaveValue(2);
+
+      fireEvent.click(prevButton);
+      expect(solutionIndex).toHaveValue(1);
     });
 
     test("handles no solutions case", async () => {
@@ -267,50 +276,48 @@ describe("PolyspherePuzzle Component", () => {
     test("handleNextSolution when at last solution", async () => {
       render(<PolyspherePuzzle />);
       fireEvent.click(screen.getByText("Solve Puzzle"));
-
       const messageHandler = worker.addEventListener.mock.calls[0][1];
-
       // Create exactly two solutions
       act(() => {
         messageHandler({ data: { type: "solution", data: mockBoard } });
         messageHandler({ data: { type: "solution", data: mockBoard } });
         messageHandler({ data: { type: "complete" } });
       });
+      const solutionIndex = screen.getByTestId("solution-index");
 
       await waitFor(() => {
-        expect(screen.getByText("Solution 1 of 2")).toBeInTheDocument();
+        expect(solutionIndex).toHaveValue(1);
       });
 
+      const nextButton = screen.getByTestId("next-sol");
       // Navigate to last solution
-      fireEvent.click(screen.getByText("Next Solution"));
-      expect(screen.getByText("Solution 2 of 2")).toBeInTheDocument();
-
+      fireEvent.click(nextButton);
+      expect(solutionIndex).toHaveValue(2);
       // Try to go beyond last solution
-      fireEvent.click(screen.getByText("Next Solution"));
+      fireEvent.click(nextButton);
       // Should still be on solution 2
-      expect(screen.getByText("Solution 2 of 2")).toBeInTheDocument();
+      expect(solutionIndex).toHaveValue(2);
     });
 
     test("handlePreviousSolution when at first solution", async () => {
       render(<PolyspherePuzzle />);
       fireEvent.click(screen.getByText("Solve Puzzle"));
-
       const messageHandler = worker.addEventListener.mock.calls[0][1];
-
       act(() => {
         messageHandler({ data: { type: "solution", data: mockBoard } });
         messageHandler({ data: { type: "solution", data: mockBoard } });
         messageHandler({ data: { type: "complete" } });
       });
+      const solutionIndex = screen.getByTestId("solution-index");
 
       await waitFor(() => {
-        expect(screen.getByText("Solution 1 of 2")).toBeInTheDocument();
+        expect(solutionIndex).toHaveValue(1);
       });
-
       // Try to go before first solution
-      fireEvent.click(screen.getByText("Previous Solution"));
+      const prevButton = screen.getByTestId("prev-sol");
+      fireEvent.click(prevButton);
       // Should still be on solution 1
-      expect(screen.getByText("Solution 1 of 2")).toBeInTheDocument();
+      expect(solutionIndex).toHaveValue(1);
     });
   });
 

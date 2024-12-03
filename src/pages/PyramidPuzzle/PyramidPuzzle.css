@@ -1,18 +1,12 @@
-canvas {
-  height: calc(75vh);
-}
-
 .puzzleThree {
-  max-width: 1200px;
   margin: 0 auto;
-  padding: 0.5rem;
   color: #ffffff;
 }
 
 .puzzleThree h2 {
   font-size: 2.5rem;
   text-align: center;
-  margin-bottom: 2rem;
+  margin: 2rem 0;
   background: linear-gradient(to right, #ffd700, #ff6600);
   background-clip: text;
   -webkit-background-clip: text;
@@ -20,14 +14,14 @@ canvas {
   font-weight: bold;
 }
 
-.puzzleThree p {
+.puzzleThree .description {
+  background-color: #37415180;
+  border-radius: 8px;
+  padding: 1rem;
   text-align: center;
-  line-height: 1.8;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  line-height: 1.5;
+  margin: 0;
+  font-size: 1rem;
 }
 
 .puzzleThree b {
@@ -100,7 +94,7 @@ canvas {
 }
 
 /* Keyboard Controls */
-.keyboard-controls {
+.puzzleThree .keyboard-controls {
   background-color: #2d3748;
   border-radius: 0.5rem;
   padding: 1rem;
@@ -108,7 +102,43 @@ canvas {
 }
 
 /* Status Messages */
-.status-messages {
+.puzzleThree .status-messages {
   text-align: center;
   margin: 1rem 0;
+}
+
+.puzzleThree .wrapper {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+  margin: 0 1rem;
+  height: calc(100vh - 158px);
+}
+
+.puzzleThree .leftColumn {
+  flex: 2;
+}
+
+.puzzleThree .middleColumn {
+  flex: 3;
+}
+
+.puzzleThree .rightColumn {
+  flex: 2;
+}
+
+.puzzleThree .column {
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+}
+
+canvas {
+  height: 300px;
+}
+
+.pyramid-board {
+  background-color: #37415180;
+  border-radius: 8px;
 }

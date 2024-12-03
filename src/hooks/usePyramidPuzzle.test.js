@@ -114,20 +114,22 @@ jest.mock("../lib/pieces", () => [
   {
     symbol: "A",
     coords: [
-      [0, 0, 0],
-      [0, 1, 0],
-      [0, 0, 1],
+      [0, 0],
+      [0, 1],
+      [1, 1],
+      [2, 1],
+      [2, 0],
     ],
-    name: "Piece A",
+    colour: "#ff0000",
   },
   {
-    symbol: "B",
+    symbol: "K",
     coords: [
-      [0, 0, 0],
-      [0, 1, 0],
-      [1, 0, 0],
+      [0, 0],
+      [0, 1],
+      [1, 1],
     ],
-    name: "Piece B",
+    colour: "#e78e3a",
   },
 ]);
 
@@ -279,7 +281,7 @@ describe("PyramidPuzzle Hook", () => {
     expect(screen.getByText("Esc : Clear Board")).toBeInTheDocument();
   });
 
-  describe("usePyramidPuzzle - Rotations X", () => {
+  describe("Shape rotations", () => {
     test("rotates selected shape on the X axis", () => {
       const { result } = renderHook(() => usePyramidPuzzle());
       const initialCoords = [...result.current.selectedShape.coords];
@@ -292,9 +294,7 @@ describe("PyramidPuzzle Hook", () => {
 
       expect(updatedCoords).not.toEqual(initialCoords);
     });
-  });
 
-  describe("usePyramidPuzzle - Rotations Y", () => {
     test("rotates selected shape on the Y axis", () => {
       const { result } = renderHook(() => usePyramidPuzzle());
       const initialCoords = [...result.current.selectedShape.coords];
@@ -307,7 +307,240 @@ describe("PyramidPuzzle Hook", () => {
 
       expect(updatedCoords).not.toEqual(initialCoords);
     });
+
+    test("rotates selected shape on the Z axis", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const initialCoords = [...result.current.selectedShape.coords];
+
+      act(() => {
+        result.current.handleRotatePieceZ();
+      });
+
+      const updatedCoords = result.current.selectedShape.coords;
+
+      expect(updatedCoords).not.toEqual(initialCoords);
+    });
+
+    test("handleRotatePieceX does not run if isSolving is true", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const initialCoords = [...result.current.selectedShape.coords];
+
+      act(() => {
+        result.current.handleSolve(); // Set isSolving to true
+      });
+
+      act(() => {
+        result.current.handleRotatePieceX();
+      });
+
+      const updatedCoords = result.current.selectedShape.coords;
+
+      expect(updatedCoords).toEqual(initialCoords);
+    });
+
+    test("handleRotatePieceY does not run if isSolving is true", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const initialCoords = [...result.current.selectedShape.coords];
+
+      act(() => {
+        result.current.handleSolve(); // Set isSolving to true
+      });
+
+      act(() => {
+        result.current.handleRotatePieceY();
+      });
+
+      const updatedCoords = result.current.selectedShape.coords;
+
+      expect(updatedCoords).toEqual(initialCoords);
+    });
+
+    test("handleRotatePieceZ does not run if isSolving is true", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const initialCoords = [...result.current.selectedShape.coords];
+
+      act(() => {
+        result.current.handleSolve(); // Set isSolving to true
+      });
+
+      act(() => {
+        result.current.handleRotatePieceZ();
+      });
+
+      const updatedCoords = result.current.selectedShape.coords;
+
+      expect(updatedCoords).toEqual(initialCoords);
+    });
   });
+
+  describe("Shape flips", () => {
+    test("flips selected shape on the X axis", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const initialCoords = [...result.current.selectedShape.coords];
+
+      act(() => {
+        result.current.handleFlipPieceX();
+      });
+
+      const updatedCoords = result.current.selectedShape.coords;
+
+      expect(updatedCoords).not.toEqual(initialCoords);
+    });
+
+    test("flips selected shape on the Y axis", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const initialCoords = [...result.current.selectedShape.coords];
+
+      act(() => {
+        result.current.handleRotatePieceX();
+      });
+
+      act(() => {
+        result.current.handleFlipPieceY();
+      });
+
+      const updatedCoords = result.current.selectedShape.coords;
+
+      expect(updatedCoords).not.toEqual(initialCoords);
+    });
+
+    test("flips selected shape on the Z axis", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const initialCoords = [...result.current.selectedShape.coords];
+
+      act(() => {
+        result.current.handleFlipPieceZ();
+      });
+
+      const updatedCoords = result.current.selectedShape.coords;
+
+      expect(updatedCoords).not.toEqual(initialCoords);
+    });
+
+    test("handleFlipPieceX does not run if isSolving is true", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const initialCoords = [...result.current.selectedShape.coords];
+
+      act(() => {
+        result.current.handleSolve(); // Set isSolving to true
+      });
+
+      act(() => {
+        result.current.handleFlipPieceX();
+      });
+
+      const updatedCoords = result.current.selectedShape.coords;
+
+      expect(updatedCoords).toEqual(initialCoords);
+    });
+
+    test("handleFlipPieceY does not run if isSolving is true", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const initialCoords = [...result.current.selectedShape.coords];
+
+      act(() => {
+        result.current.handleSolve(); // Set isSolving to true
+      });
+
+      act(() => {
+        result.current.handleFlipPieceY();
+      });
+
+      const updatedCoords = result.current.selectedShape.coords;
+
+      expect(updatedCoords).toEqual(initialCoords);
+    });
+
+    test("handleFlipPieceZ does not run if isSolving is true", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const initialCoords = [...result.current.selectedShape.coords];
+
+      act(() => {
+        result.current.handleSolve(); // Set isSolving to true
+      });
+
+      act(() => {
+        result.current.handleFlipPieceZ();
+      });
+
+      const updatedCoords = result.current.selectedShape.coords;
+
+      expect(updatedCoords).toEqual(initialCoords);
+    });
+  });
+
+  describe("Shape navigation", () => {
+    test("handlePreviousPiece does not run if isSolving is true", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const initialShape = result.current.selectedShape;
+
+      act(() => {
+        result.current.handleSolve(); // Set isSolving to true
+      });
+
+      act(() => {
+        result.current.handlePreviousPiece();
+      });
+
+      const updatedShape = result.current.selectedShape;
+
+      expect(updatedShape).toEqual(initialShape);
+    });
+
+    test("handleNextPiece does not run if isSolving is true", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const initialShape = result.current.selectedShape;
+
+      act(() => {
+        result.current.handleSolve(); // Set isSolving to true
+      });
+
+      act(() => {
+        result.current.handleNextPiece();
+      });
+
+      const updatedShape = result.current.selectedShape;
+
+      expect(updatedShape).toEqual(initialShape);
+    });
+  });
+
+  describe("Board actions", () => {
+    test("handleClear does not run if isSolving is true", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const initialBoard = [...result.current.board];
+
+      act(() => {
+        result.current.handleSolve(); // Set isSolving to true
+      });
+
+      act(() => {
+        result.current.handleClear();
+      });
+
+      const updatedBoard = result.current.board;
+
+      expect(updatedBoard).toEqual(initialBoard);
+    });
+
+    test("handleUndo does not run if isSolving is true", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const initialBoard = [...result.current.board];
+
+      act(() => {
+        result.current.handleSolve(); // Set isSolving to true
+      });
+
+      act(() => {
+        result.current.handleUndo();
+      });
+
+      const updatedBoard = result.current.board;
+
+      expect(updatedBoard).toEqual(initialBoard);
+    });
+  });
+
   // Solution and Worker Tests
   describe("Solution Handling", () => {
     test("handles solution messages from worker", async () => {
@@ -411,10 +644,10 @@ describe("PyramidPuzzle Hook", () => {
 
     test("disables undo button when no moves in stack or solving", () => {
       render(<TestComponent />);
-     
+
       expect(screen.getByText("Undo")).toBeDisabled();
       fireEvent.click(screen.getAllByTestId("cell")[0]);
-    
+
       expect(screen.getByText("Undo")).not.toBeDisabled();
       fireEvent.click(screen.getByText("Solve Puzzle"));
       expect(screen.getByText("Undo")).toBeDisabled();
@@ -425,7 +658,7 @@ describe("PyramidPuzzle Hook", () => {
     const { result } = renderHook(() => usePyramidPuzzle());
 
     act(() => {
-      result.current.handleMouseClickCell(0, 0, 0); 
+      result.current.handleMouseClickCell(0, 0, 0);
     });
 
     act(() => {
@@ -457,7 +690,7 @@ describe("PyramidPuzzle Hook", () => {
     const initialShape = result.current.selectedShape;
 
     act(() => {
-      result.current.handlePreviousPiece(); 
+      result.current.handlePreviousPiece();
     });
 
     const previousShape = result.current.selectedShape;
@@ -509,21 +742,29 @@ describe("PyramidPuzzle Hook", () => {
     expect(result.current.highlightedCells).toEqual(expectedHighlightedCells);
 
     act(() => {
-      result.current.handleMouseEnterCell(10, 10, 10); 
+      result.current.handleMouseEnterCell(10, 10, 10);
     });
-    expect(result.current.highlightedCells).toEqual([]); 
+    expect(result.current.highlightedCells).toEqual([]);
     act(() => {
-      result.current.handleClear(); 
+      result.current.handleClear();
     });
-    expect(result.current.highlightedCells).toEqual([]); 
-    expect(result.current.selectedShape).toEqual(result.current.shapes[0]); 
+    expect(result.current.highlightedCells).toEqual([]);
+    expect(result.current.selectedShape).toEqual(result.current.shapes[0]);
   });
 
   describe("Highlighted Cells Functionality", () => {
     test.each([
-      { description: "valid position", index: [0, 0, 0], expectedLength: 3 },
-      { description: "out of bounds", index: [999, 999, 999], expectedLength: 0 },
-      { description: "negative indices", index: [-1, -1, -1], expectedLength: 0 },
+      { description: "valid position", index: [0, 0, 0], expectedLength: 5 },
+      {
+        description: "out of bounds",
+        index: [999, 999, 999],
+        expectedLength: 0,
+      },
+      {
+        description: "negative indices",
+        index: [-1, -1, -1],
+        expectedLength: 0,
+      },
     ])(
       "updates highlightedCells correctly for $description",
       ({ index, expectedLength }) => {
@@ -534,7 +775,7 @@ describe("PyramidPuzzle Hook", () => {
         expect(result.current.highlightedCells.length).toBe(expectedLength);
       }
     );
-    
+
     test("clears highlighted cells when piece would exceed board dimensions", () => {
       render(<TestComponent />);
 
@@ -579,25 +820,128 @@ describe("PyramidPuzzle Hook", () => {
       const state = JSON.parse(screen.getByTestId("puzzle-state").textContent);
       expect(state.highlightedCells).toHaveLength(0);
     });
+
+    test("clears highlighted cells when x-coordinate is out of bounds", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+
+      // Set highlighted index with x-coordinate out of bounds
+      act(() => {
+        result.current.handleMouseEnterCell(
+          0,
+          result.current.board[0].length,
+          0
+        );
+      });
+
+      // Expect highlighted cells to be cleared
+      expect(result.current.highlightedCells).toHaveLength(0);
+    });
+
+    test("clears highlighted cells when y-coordinate is out of bounds", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+
+      // Set highlighted index with y-coordinate out of bounds
+      act(() => {
+        result.current.handleMouseEnterCell(result.current.board.length, 0, 0);
+      });
+
+      // Expect highlighted cells to be cleared
+      expect(result.current.highlightedCells).toHaveLength(0);
+    });
+
+    test("clears highlighted cells when z-coordinate is out of bounds", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+
+      // Set highlighted index with z-coordinate out of bounds
+      act(() => {
+        result.current.handleMouseEnterCell(
+          0,
+          0,
+          result.current.board[0].length
+        );
+      });
+
+      // Expect highlighted cells to be cleared
+      expect(result.current.highlightedCells).toHaveLength(0);
+    });
   });
 
-  test("handleMouseClickCell does nothing for out-of-bounds cell", () => {
-    const { result } = renderHook(() => usePyramidPuzzle());
-    act(() => {
-      result.current.handleMouseClickCell(10, 10, 10); 
-    });
-    expect(result.current.board.flat(2).every((cell) => cell === "")).toBe(
-      true
-    ); 
-  });
+  describe("Shape placement", () => {
+    // test("handleMouseClickCell does nothing when no shape is selected", () => {
+    //   const { result } = renderHook(() => usePyramidPuzzle());
+    //   // initial board with no selected shape
+    //   const initialBoard = [...result.current.board];
+    //   // remove selected shape
 
-  test("handleMouseClickCell places shape correctly", () => {
-    const { result } = renderHook(() => usePyramidPuzzle());
-    const initialBoard = [...result.current.board];
-    act(() => {
-      result.current.handleMouseClickCell(0, 0, 0); 
+    //   act(() => {
+    //     result.current.handleMouseClickCell(0, 0, 0);
+    //   });
+    //   expect(result.current.board).toEqual(initialBoard);
+    // });
+
+    test("handleMouseClickCell does nothing for X-out-of-bounds cell", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      act(() => {
+        result.current.handleMouseClickCell(0, -1, 0);
+      });
+      expect(result.current.board.flat(2).every((cell) => cell === "")).toBe(
+        true
+      );
     });
-    expect(result.current.board).not.toEqual(initialBoard); 
+
+    test("handleMouseClickCell does nothing for Y-out-of-bounds cell", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      act(() => {
+        result.current.handleMouseClickCell(-1, 0, 0);
+      });
+      expect(result.current.board.flat(2).every((cell) => cell === "")).toBe(
+        true
+      );
+    });
+
+    test("handleMouseClickCell does nothing for Z-out-of-bounds cell", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      act(() => {
+        result.current.handleMouseClickCell(0, 0, -1);
+      });
+      expect(result.current.board.flat(2).every((cell) => cell === "")).toBe(
+        true
+      );
+    });
+
+    test("handleMouseClickCell places shape correctly", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const initialBoard = [...result.current.board];
+      act(() => {
+        result.current.handleMouseClickCell(0, 0, 0);
+      });
+      expect(result.current.board).not.toEqual(initialBoard);
+    });
+
+    test("handleMouseClickCell sets selectedShape to null when no shapes are left", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+
+      // Place all shapes on the board
+      act(() => {
+        result.current.handleMouseClickCell(0, 0, 0);
+      });
+
+      act(() => {
+        result.current.handleMouseClickCell(1, 0, 0);
+      });
+
+      // Ensure selectedShape is set to null when no shapes are left
+      expect(result.current.selectedShape).toBeNull();
+
+      const boardAfterPlacement = result.current.board;
+
+      act(() => {
+        result.current.handleMouseClickCell(1, 0, 0);
+      });
+
+      // Ensure board state does not change when no shapes are left
+      expect(result.current.board).toEqual(boardAfterPlacement);
+    });
   });
 
   // Error Handling Tests

@@ -6,6 +6,7 @@ import KeyboardControls from "../../components/KeyboardControls/KeyboardControls
 import usePyramidPuzzle from "../../hooks/usePyramidPuzzle";
 import PyramidPieceSelector from "../../components/PyramidPieceSelector/PyramidPieceSelector";
 import SolutionNavigator from "../../components/SolutionNavigator/SolutionNavigator";
+import BoardSave from '../../components/BoardSave/BoardSave';
 
 // TODO: add x,y,z guide lines
 
@@ -142,6 +143,9 @@ function PyramidPuzzle() {
             highlightedCells={highlightedCells}
             selectedShape={selectedShape}
           />
+                  <div className="saveAction">
+      <BoardSave board={board} />
+    </div>
           <div>
             <div className="controlsContainer">
               <button
@@ -193,6 +197,7 @@ function PyramidPuzzle() {
             handleMouseClickCell={handleMouseClickCell}
           />
         </div>
+
       </div>
     </div>
   );

@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import createPyramidWorker from "../workers/createPyramidWorker";
-import solveRecursive from "../lib/pyramidPuzzleSolver";
 import pieces from "../lib/pieces";
 import {
   createBoardPyramid,
@@ -13,13 +12,6 @@ import {
   flipShapeY,
   flipShapeZ,
 } from "../lib/utils";
-import {
-  findEmptyPosition,
-  getAllOrientations,
-  findAnchorPoints,
-  canPlacePiece,
-  placePiece,
-} from "../lib/solverUtils";
 
 // Convert pieces to 3D (having a y coordinate)
 const pieces3D = Array.from(
@@ -41,6 +33,20 @@ function usePyramidPuzzle() {
   const [solutions, setSolutions] = useState([]);
   const [solutionIndex, setSolutionIndex] = useState(0);
   const [worker, setWorker] = useState(null);
+  const [isChallengeMode, setIsChallengeMode] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [isGeneratingChallenge, setIsGeneratingChallenge] = useState(false);
+
+  // Add timer effect
+  useEffect(() => {
+    let interval;
+    if (isChallengeMode) {
+      interval = setInterval(() => setTimer((prev) => prev + 1), 1000);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isChallengeMode]);
 
   useEffect(() => {
     try {
@@ -63,7 +69,7 @@ function usePyramidPuzzle() {
   }, [solutions, solutionIndex]);
 
   useEffect(() => {
-    if (highlightedIndex.some((i) => i === -1) || !selectedShape) { 
+    if (highlightedIndex.some((i) => i === -1) || !selectedShape) {
       setHighlightedCells([]);
       return;
     }
@@ -181,7 +187,7 @@ function usePyramidPuzzle() {
    * @param {number} index The index of the solution to display.
    */
   const handleSetSolutionIndex = (index) => {
-    if (0 <= index && index < solutions.length) {  
+    if (0 <= index && index < solutions.length) {
       setSolutionIndex(index);
       setBoard(solutions[index]);
     }
@@ -245,7 +251,6 @@ function usePyramidPuzzle() {
     worker.postMessage({ board, pieces: pieces3D });
   };
 
-
   const handleMouseEnterCell = (layer, row, col) => {
     setHighlightedIndex([layer, row, col]);
   };
@@ -303,77 +308,72 @@ function usePyramidPuzzle() {
     }
   };
 
+  const startChallengeMode = () => {
+    handleClear(); // Clear current state
+    setIsChallengeMode(true);
+    setTimer(0);
+    handleChallengeMode();
+  };
+
+  const endChallengeMode = () => {
+    handleClear();
+    setIsChallengeMode(false);
+    setTimer(0);
+  };
+
   const handleChallengeMode = () => {
     console.log("Challenge Mode Started");
-  
-    const maxPieces = Math.floor(Math.random() * 3) + 1; // Randomly place 1–3 pieces
-    const remainingPieces = shapes.filter(
-      (piece) => !board.flat(2).includes(piece.symbol)
-    );
-  
-    // Initialise variables
-    let updatedBoard = board.map((layer) => layer.map((row) => [...row])); // Deep copy of the board
-    const placedPieces = []; // Array to track placed pieces
-  
-    // Recursive function to place pieces
-    const placePieceRecursive = (board, unusedPieces, placedPiecesCount = 0) => {
-      if (placedPiecesCount >= maxPieces || unusedPieces.length === 0) {
-        return;
-      }
-  
-      const emptyPos = findEmptyPosition(board);
-      if (!emptyPos) return;
-  
-      const [startLayer, startRow, startCol] = emptyPos;
-  
-      for (let i = 0; i < unusedPieces.length; i++) {
-        const piece = unusedPieces[i];
-        const orientations = getAllOrientations(piece.coords);
-  
-        for (const orientation of orientations) {
-          const anchorPoints = findAnchorPoints(orientation);
-  
-          for (const anchor of anchorPoints) {
-            if (canPlacePiece(board, anchor, startLayer, startRow, startCol)) {
-              const newBoard = placePiece(
-                board,
-                piece,
-                anchor,
-                startLayer,
-                startRow,
-                startCol
-              );
-  
-              placedPieces.push({ piece, anchor });
-              updatedBoard = newBoard; // Update the board state
-  
-              // Continue placing pieces
-              const remainingPieces = [
-                ...unusedPieces.slice(0, i),
-                ...unusedPieces.slice(i + 1),
-              ];
-              placePieceRecursive(newBoard, remainingPieces, placedPiecesCount + 1);
-  
-              // Stop once we've placed enough pieces
-              if (placedPieces.length >= maxPieces) {
-                return;
+    setIsGeneratingChallenge(true);
+    if (!worker) return;
+
+    const messageHandler = (e) => {
+      if (e.data.type === "solution") {
+        console.log("Found first solution, extracting random pieces");
+        const completeSolution = e.data.data;
+        const numPiecesToShow = Math.floor(Math.random() * 3) + 1;
+
+        // Get all unique pieces from first solution
+        const uniqueSymbols = new Set();
+        completeSolution.forEach((layer) =>
+          layer.forEach((row) =>
+            row.forEach((symbol) => {
+              if (symbol !== "") uniqueSymbols.add(symbol);
+            })
+          )
+        );
+
+        const selectedSymbols = Array.from(uniqueSymbols)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, numPiecesToShow);
+
+        const newBoard = createBoardPyramid(5, "");
+        completeSolution.forEach((layer, layerIndex) => {
+          layer.forEach((row, rowIndex) => {
+            row.forEach((symbol, colIndex) => {
+              if (selectedSymbols.includes(symbol)) {
+                newBoard[layerIndex][rowIndex][colIndex] = symbol;
               }
-            }
-          }
-        }
+            });
+          });
+        });
+
+        setBoard(newBoard);
+        setShapes(
+          pieces3D.filter((piece) => !selectedSymbols.includes(piece.symbol))
+        );
+        worker.removeEventListener("message", messageHandler);
+        worker.terminate(); // Stop the worker entirely
+        setIsGeneratingChallenge(false);
+
+        // Create new worker for future solves
+        const newWorker = createPyramidWorker();
+        setWorker(newWorker);
       }
     };
-  
-    // Start placing pieces
-    placePieceRecursive(updatedBoard, remainingPieces);
-  
-    // Update state after challenge mode setup
-    setBoard(updatedBoard);
-    setShapes(remainingPieces.filter((piece) => !placedPieces.some((p) => p.piece.symbol === piece.symbol)));
-    console.log("Challenge Mode Completed:", placedPieces);
+
+    worker.addEventListener("message", messageHandler);
+    worker.postMessage({ board, pieces: pieces3D, stopAfterFirst: true });
   };
-  
-  
 
   return {
     board,
@@ -385,6 +385,10 @@ function usePyramidPuzzle() {
     isSolving,
     solutions,
     solutionIndex,
+    isChallengeMode,
+    timer,
+    startChallengeMode,
+    endChallengeMode,
     handleRotatePieceX,
     handleRotatePieceY,
     handleRotatePieceZ,

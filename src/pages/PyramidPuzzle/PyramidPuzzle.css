@@ -142,3 +142,36 @@ canvas {
   background-color: #37415180;
   border-radius: 8px;
 }
+
+.challengeControls {
+  margin: 1rem 0;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.timer {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 0.5rem;
+  background: #f0f0f0;
+  border-radius: 4px;
+}
+
+.challengeButton {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.challengeButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.challengeButton:hover:not(:disabled) {
+  background: #357abd;
+} 

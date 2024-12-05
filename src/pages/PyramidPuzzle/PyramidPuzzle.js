@@ -18,8 +18,13 @@ function PyramidPuzzle() {
     moveStack,
     isSolved,
     isSolving,
+    isChallengeMode,
     solutions,
     solutionIndex,
+    timer,
+    isGeneratingChallenge,
+    startChallengeMode,
+    endChallengeMode,
     handleRotatePieceX,
     handleRotatePieceY,
     handleRotatePieceZ,
@@ -150,6 +155,31 @@ function PyramidPuzzle() {
             selectedShape={selectedShape}
           />
           <div>
+            <div className="challengeControls">
+              {isChallengeMode && (
+                <div className="timer">
+                  Time: {Math.floor(timer / 60)}:
+                  {(timer % 60).toString().padStart(2, "0")}
+                </div>
+              )}
+              <button
+                onClick={startChallengeMode}
+                disabled={isSolving}
+                className="challengeButton"
+              >
+                Start Challenge Mode
+              </button>
+              {isChallengeMode && (
+                <button
+                  onClick={endChallengeMode}
+                  disabled={isSolving}
+                  className="challengeButton"
+                >
+                  End Challenge Mode
+                </button>
+              )}
+            </div>
+
             <div className="controlsContainer">
               <button
                 data-testid="solve-button"

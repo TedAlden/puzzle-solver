@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import createPyramidWorker from "../workers/createPyramidWorker";
+import solveRecursive from "../lib/pyramidPuzzleSolver";
 import pieces from "../lib/pieces";
 import {
   createBoardPyramid,
@@ -12,6 +13,13 @@ import {
   flipShapeY,
   flipShapeZ,
 } from "../lib/utils";
+import {
+  findEmptyPosition,
+  getAllOrientations,
+  findAnchorPoints,
+  canPlacePiece,
+  placePiece,
+} from "../lib/solverUtils";
 
 // Convert pieces to 3D (having a y coordinate)
 const pieces3D = Array.from(
@@ -237,6 +245,7 @@ function usePyramidPuzzle() {
     worker.postMessage({ board, pieces: pieces3D });
   };
 
+
   const handleMouseEnterCell = (layer, row, col) => {
     setHighlightedIndex([layer, row, col]);
   };
@@ -294,6 +303,78 @@ function usePyramidPuzzle() {
     }
   };
 
+  const handleChallengeMode = () => {
+    console.log("Challenge Mode Started");
+  
+    const maxPieces = Math.floor(Math.random() * 3) + 1; // Randomly place 1–3 pieces
+    const remainingPieces = shapes.filter(
+      (piece) => !board.flat(2).includes(piece.symbol)
+    );
+  
+    // Initialise variables
+    let updatedBoard = board.map((layer) => layer.map((row) => [...row])); // Deep copy of the board
+    const placedPieces = []; // Array to track placed pieces
+  
+    // Recursive function to place pieces
+    const placePieceRecursive = (board, unusedPieces, placedPiecesCount = 0) => {
+      if (placedPiecesCount >= maxPieces || unusedPieces.length === 0) {
+        return;
+      }
+  
+      const emptyPos = findEmptyPosition(board);
+      if (!emptyPos) return;
+  
+      const [startLayer, startRow, startCol] = emptyPos;
+  
+      for (let i = 0; i < unusedPieces.length; i++) {
+        const piece = unusedPieces[i];
+        const orientations = getAllOrientations(piece.coords);
+  
+        for (const orientation of orientations) {
+          const anchorPoints = findAnchorPoints(orientation);
+  
+          for (const anchor of anchorPoints) {
+            if (canPlacePiece(board, anchor, startLayer, startRow, startCol)) {
+              const newBoard = placePiece(
+                board,
+                piece,
+                anchor,
+                startLayer,
+                startRow,
+                startCol
+              );
+  
+              placedPieces.push({ piece, anchor });
+              updatedBoard = newBoard; // Update the board state
+  
+              // Continue placing pieces
+              const remainingPieces = [
+                ...unusedPieces.slice(0, i),
+                ...unusedPieces.slice(i + 1),
+              ];
+              placePieceRecursive(newBoard, remainingPieces, placedPiecesCount + 1);
+  
+              // Stop once we've placed enough pieces
+              if (placedPieces.length >= maxPieces) {
+                return;
+              }
+            }
+          }
+        }
+      }
+    };
+  
+    // Start placing pieces
+    placePieceRecursive(updatedBoard, remainingPieces);
+  
+    // Update state after challenge mode setup
+    setBoard(updatedBoard);
+    setShapes(remainingPieces.filter((piece) => !placedPieces.some((p) => p.piece.symbol === piece.symbol)));
+    console.log("Challenge Mode Completed:", placedPieces);
+  };
+  
+  
+
   return {
     board,
     shapes,
@@ -319,6 +400,7 @@ function usePyramidPuzzle() {
     handleMouseEnterCell,
     handleMouseLeaveCell,
     handleMouseClickCell,
+    handleChallengeMode,
   };
 }
 

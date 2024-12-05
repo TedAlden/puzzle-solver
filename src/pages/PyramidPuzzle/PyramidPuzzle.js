@@ -35,6 +35,7 @@ function PyramidPuzzle() {
     handleMouseClickCell,
     handlePreviousPiece,
     handleNextPiece,
+    handleChallengeMode,
   } = usePyramidPuzzle();
 
   const keyMap = [
@@ -103,6 +104,12 @@ function PyramidPuzzle() {
       keyAlias: "S",
       description: "Solve puzzle",
       onClick: handleSolve,
+    },
+    {
+      key: "c",
+      keyAlias: "C",
+      description: "Challenge Mode",
+      onClick: handleChallengeMode,
     },
   ];
 

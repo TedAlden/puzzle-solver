@@ -7,6 +7,7 @@ import usePyramidPuzzle from "../../hooks/usePyramidPuzzle";
 import PyramidPieceSelector from "../../components/PyramidPieceSelector/PyramidPieceSelector";
 import SolutionNavigator from "../../components/SolutionNavigator/SolutionNavigator";
 import BoardSave from "../../components/BoardSave/BoardSave";
+import BoardLoader from "../../components/BoardLoader/BoardLoader";
 
 // TODO: add x,y,z guide lines
 
@@ -36,6 +37,8 @@ function PyramidPuzzle() {
     handleMouseClickCell,
     handlePreviousPiece,
     handleNextPiece,
+    handleImport,
+    handleExport,
   } = usePyramidPuzzle();
 
   const keyMap = [
@@ -119,12 +122,11 @@ function PyramidPuzzle() {
             made from a different configuration of spheres, and you can use the
             <b> Solve </b> button to find the best way to complete the board.
           </p>
-          <ProgressBar
-            current={12 - shapes.length}
-            total={12}
-            variant="pyramid"
-          />
           <KeyboardControls keyMap={keyMap} />
+          <BoardLoader
+            handleImport={handleImport}
+            handleExport={handleExport}
+          />
         </div>
         <div className="column middleColumn">
           <PyramidPieceSelector
@@ -189,6 +191,11 @@ function PyramidPuzzle() {
           </div>
         </div>
         <div className="column rightColumn">
+          <ProgressBar
+            current={12 - shapes.length}
+            total={12}
+            variant="pyramid"
+          />
           <PyramidLayerBoards
             board={board}
             highlightedCells={highlightedCells}

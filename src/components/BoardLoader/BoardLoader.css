@@ -1,0 +1,65 @@
+.boardLoader {
+  background: #37415180;
+  border-radius: 8px;
+  padding: 1rem;
+  color: white;
+  width: 100%;
+  box-sizing: border-box;
+  height: 100%;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.boardLoader .panelHeader {
+  font-size: 1rem;
+  font-weight: bold;
+  display: block;
+}
+
+.boardLoader .snapshotsList {
+  border: 1px solid black;
+  height: calc(100% - 44px);
+  max-height: 100%;
+}
+
+.snapshotsTableWrapper {
+  height: calc(100% - 44px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.snapshotsTable {
+  display: table;
+  width: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0 6px;
+}
+
+.snapshotRow {
+  display: table-row;
+  margin: 5px 0;
+}
+
+.snapshotColumn {
+  display: table-cell;
+  padding: 2px;
+  text-align: left;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.snapshotColumn.controls {
+  width: fit-content;
+  white-space: nowrap;
+}
+
+.snapshotTitle {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}

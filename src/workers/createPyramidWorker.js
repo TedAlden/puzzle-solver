@@ -1,4 +1,3 @@
-
 import pyramidPuzzleSolver from "../lib/pyramidPuzzleSolver";
 
 /**
@@ -9,7 +8,6 @@ import pyramidPuzzleSolver from "../lib/pyramidPuzzleSolver";
  *
  * @returns {Worker} The Pyramid solver worker.
  */
-
 export default function createPyramidWorker() {
   const workerCode = `
     self.addEventListener('message', e => {

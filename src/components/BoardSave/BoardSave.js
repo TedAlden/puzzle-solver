@@ -1,5 +1,3 @@
-import React from "react";
-
 /**
  * Buttons to save the current board as a JSON or CSV file.
  *
@@ -68,8 +66,12 @@ const BoardSave = ({ board }) => {
 
   return (
     <div className="saveAction">
-      <button onClick={handleExportAsJSON}>Export JSON</button>
-      <button onClick={handleExportAsCSV}>Export CSV</button>
+      <button data-testid="export-json" onClick={handleExportAsJSON}>
+        Export JSON
+      </button>
+      <button data-testid="export-csv" onClick={handleExportAsCSV}>
+        Export CSV
+      </button>
     </div>
   );
 };

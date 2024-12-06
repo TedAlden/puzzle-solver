@@ -1,6 +1,6 @@
 {
   "name": "puzzle-solver",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "homepage": "https://tedalden.github.io/puzzle-solver",
   "private": true,
   "dependencies": {

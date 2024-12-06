@@ -171,7 +171,7 @@ function PyramidPuzzle() {
               )}
               <button
                 onClick={startChallengeMode}
-                disabled={isSolving || isGeneratingChallenge}
+                disabled={isSolving || isGeneratingChallenge || isChallengeMode}
                 className="challengeButton"
               >
                 {isGeneratingChallenge

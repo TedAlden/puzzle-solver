@@ -1,3 +1,5 @@
+import "./BoardSave.css";
+
 /**
  * Buttons to save the current board as a JSON or CSV file.
  *

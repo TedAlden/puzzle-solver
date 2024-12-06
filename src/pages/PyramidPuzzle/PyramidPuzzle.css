@@ -137,31 +137,3 @@
 canvas {
   height: 300px;
 }
-
-.saveActions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 1rem;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: -60px;
-}
-.saveAction button {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.saveAction button:hover {
-  background-color: #1d4ed8;
-}
-
-.saveAction button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}

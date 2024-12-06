@@ -145,9 +145,7 @@ function PyramidPuzzle() {
             highlightedCells={highlightedCells}
             selectedShape={selectedShape}
           />
-          <div className="saveAction">
-            <BoardSave board={board} />
-          </div>
+          <BoardSave board={board} />
           <div>
             <div className="controlsContainer">
               <button

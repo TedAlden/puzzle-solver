@@ -40,7 +40,7 @@ function BoardLoader({ handleImport, handleExport }) {
 
   const handleRenameSnapshot = (index) => {
     const snapshot = document.getElementsByClassName("snapshot")[index];
-    const span = snapshot.querySelector(".snapshotColumn.title");
+    const span = snapshot.querySelector(".snapshotTitle");
     // Handle keyup event for input element
     const onKeyUp = (event) => {
       event.preventDefault();
@@ -92,39 +92,43 @@ function BoardLoader({ handleImport, handleExport }) {
 
   const renderSnapshots = () => {
     return boards.map((board, index) => (
-      <div className="snapshotRow snapshot" key={index}>
-        <div className="snapshotColumn title">
-          <span className="snapshotTitle">{board.name}</span>
+      <div className="snapshot" key={index}>
+        <div className="snapshotTitle">
+          <span>{board.name}</span>
         </div>
-        <div className="snapshotColumn controls">
-          <button
+        <div className="snapshotControls">
+          <span
+            className="controlsButton"
             data-testid="load-button"
             title="Load board"
             onClick={() => handleLoadSnapshot(index)}
           >
             ⬆️
-          </button>
-          <button
+          </span>
+          <span
+            className="controlsButton"
             data-testid="rename-button"
             title="Rename board"
             onClick={() => handleRenameSnapshot(index)}
           >
             ✏️
-          </button>
-          <button
+          </span>
+          <span
+            className="controlsButton"
             data-testid="save-button"
             title="Save board to desktop"
             onClick={() => handleDownloadSnapshot(index)}
           >
             💾
-          </button>
-          <button
+          </span>
+          <span
+            className="controlsButton"
             data-testid="delete-button"
             title="Delete board from local storage"
             onClick={() => handleDeleteSnapshot(index)}
           >
             🗑️
-          </button>
+          </span>
         </div>
       </div>
     ));
@@ -133,18 +137,18 @@ function BoardLoader({ handleImport, handleExport }) {
   return (
     <div className="boardLoader">
       <span className="panelHeader">Saved Boards</span>
-      <button data-testid="save-snapshot-button" onClick={handleSaveSnapshot}>
-        Save Current Board
-      </button>
-      <button
-        data-testid="clear-snapshots-button"
-        onClick={handleClearSnapshots}
-      >
-        Clear Saved Boards
-      </button>
-      <div className="snapshotsTableWrapper">
-        <div className="snapshotsTable">{renderSnapshots()}</div>
+      <div className="buttonWrapper">
+        <button data-testid="save-snapshot-button" onClick={handleSaveSnapshot}>
+          Save
+        </button>
+        <button
+          data-testid="clear-snapshots-button"
+          onClick={handleClearSnapshots}
+        >
+          Clear
+        </button>
       </div>
+      <div className="snapshotsList">{renderSnapshots()}</div>
     </div>
   );
 }

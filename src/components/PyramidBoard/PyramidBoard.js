@@ -1,3 +1,4 @@
+import "./PyramidBoard.css";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import pieces from "../../lib/pieces";

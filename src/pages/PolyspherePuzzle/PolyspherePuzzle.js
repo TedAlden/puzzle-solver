@@ -102,33 +102,37 @@ function PolyspherePuzzle() {
             handleMouseLeaveCell={handleMouseLeaveCell}
             handleMouseClickCell={handleMouseClickCell}
           />
-          <div className="controlsContainer">
-            <button onClick={handleSolve} disabled={isSolving}>
-              {isSolving ? "Solving..." : "Solve Puzzle"}
-            </button>
-            <button onClick={handleClear} disabled={isSolving}>
-              Clear Board
-            </button>
-            <button
-              onClick={handleUndo}
-              disabled={moveStack.length === 0 || isSolving}
-            >
-              Undo
-            </button>
-          </div>
           <div>
-            {isSolving && <span>Solving ⏳</span>}
-            {isSolved && solutions.length > 0 && (
-              <span>Solutions found ✅</span>
-            )}
-            {isSolved && solutions.length === 0 && <span>No solutions ⚠️</span>}
-            {solutions.length >= 1 && (
-              <SolutionNavigator
-                solutionIndex={solutionIndex}
-                solutionsLength={solutions.length}
-                handleSetSolutionIndex={handleSetSolutionIndex}
-              />
-            )}
+            <div className="controlsContainer">
+              <button onClick={handleSolve} disabled={isSolving}>
+                {isSolving ? "Solving..." : "Solve Puzzle"}
+              </button>
+              <button onClick={handleClear} disabled={isSolving}>
+                Clear Board
+              </button>
+              <button
+                onClick={handleUndo}
+                disabled={moveStack.length === 0 || isSolving}
+              >
+                Undo
+              </button>
+            </div>
+            <div className="solutionsText">
+              {isSolving && <span>Solving ⏳</span>}
+              {isSolved && solutions.length > 0 && (
+                <span>Solutions found ✅</span>
+              )}
+              {isSolved && solutions.length === 0 && (
+                <span>No solutions ⚠️</span>
+              )}
+              {solutions.length >= 1 && (
+                <SolutionNavigator
+                  solutionIndex={solutionIndex}
+                  solutionsLength={solutions.length}
+                  handleSetSolutionIndex={handleSetSolutionIndex}
+                />
+              )}
+            </div>
           </div>
         </div>
         <div className="column rightColumn">

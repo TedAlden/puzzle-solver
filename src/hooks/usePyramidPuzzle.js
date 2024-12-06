@@ -55,7 +55,7 @@ function usePyramidPuzzle() {
   }, [solutions, solutionIndex]);
 
   useEffect(() => {
-    if (highlightedIndex.some((i) => i === -1) || !selectedShape) { 
+    if (highlightedIndex.some((i) => i === -1) || !selectedShape) {
       setHighlightedCells([]);
       return;
     }
@@ -173,7 +173,7 @@ function usePyramidPuzzle() {
    * @param {number} index The index of the solution to display.
    */
   const handleSetSolutionIndex = (index) => {
-    if (0 <= index && index < solutions.length) {  
+    if (0 <= index && index < solutions.length) {
       setSolutionIndex(index);
       setBoard(solutions[index]);
     }
@@ -294,6 +294,24 @@ function usePyramidPuzzle() {
     }
   };
 
+  const handleExport = () => {
+    return {
+      board,
+      shapes,
+    };
+  };
+
+  const handleImport = ({ board, shapes }) => {
+    setBoard(board);
+    setShapes(shapes);
+    setSelectedShape(shapes[0]);
+    setSolutions([]);
+    setIsSolving(false);
+    setSolutionIndex(0);
+    setIsSolved(false);
+    setMoveStack([]);
+  };
+
   return {
     board,
     shapes,
@@ -319,6 +337,8 @@ function usePyramidPuzzle() {
     handleMouseEnterCell,
     handleMouseLeaveCell,
     handleMouseClickCell,
+    handleExport,
+    handleImport,
   };
 }
 

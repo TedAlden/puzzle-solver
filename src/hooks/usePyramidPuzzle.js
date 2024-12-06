@@ -33,6 +33,20 @@ function usePyramidPuzzle() {
   const [solutions, setSolutions] = useState([]);
   const [solutionIndex, setSolutionIndex] = useState(0);
   const [worker, setWorker] = useState(null);
+  const [isChallengeMode, setIsChallengeMode] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [isGeneratingChallenge, setIsGeneratingChallenge] = useState(false);
+
+  // Add timer effect
+  useEffect(() => {
+    let interval;
+    if (isChallengeMode && !isGeneratingChallenge) {
+      interval = setInterval(() => setTimer((prev) => prev + 1), 1000);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isChallengeMode, isGeneratingChallenge]);
 
   useEffect(() => {
     try {
@@ -247,6 +261,7 @@ function usePyramidPuzzle() {
 
   const handleMouseClickCell = (layer, row, col) => {
     if (!selectedShape) return;
+    if (isGeneratingChallenge) return;
     const highlightedCells =
       selectedShape?.coords.map(([x, y, z]) => [x + col, y + layer, z + row]) ||
       [];
@@ -294,6 +309,74 @@ function usePyramidPuzzle() {
     }
   };
 
+  const startChallengeMode = () => {
+    handleClear();
+    setIsChallengeMode(true);
+    setTimer(0);
+    handleChallengeMode();
+  };
+
+  const endChallengeMode = () => {
+    handleClear();
+    setIsChallengeMode(false);
+    setIsGeneratingChallenge(false);
+    setTimer(0);
+  };
+
+  const handleChallengeMode = () => {
+    console.log("Challenge Mode Started");
+    setIsGeneratingChallenge(true);
+    if (!worker) return;
+
+    const messageHandler = (e) => {
+      if (e.data.type === "solution") {
+        console.log("Found first solution, extracting random pieces");
+        const completeSolution = e.data.data;
+        const numPiecesToShow = Math.floor(Math.random() * 3) + 1;
+
+        // Get all unique pieces from first solution
+        const uniqueSymbols = new Set();
+        completeSolution.forEach((layer) =>
+          layer.forEach((row) =>
+            row.forEach((symbol) => {
+              if (symbol !== "") uniqueSymbols.add(symbol);
+            })
+          )
+        );
+
+        const selectedSymbols = Array.from(uniqueSymbols)
+          .sort(() => Math.random() - 0.5)
+          .slice(0, numPiecesToShow);
+
+        const newBoard = createBoardPyramid(5, "");
+        completeSolution.forEach((layer, layerIndex) => {
+          layer.forEach((row, rowIndex) => {
+            row.forEach((symbol, colIndex) => {
+              if (selectedSymbols.includes(symbol)) {
+                newBoard[layerIndex][rowIndex][colIndex] = symbol;
+              }
+            });
+          });
+        });
+
+        setBoard(newBoard);
+        setShapes(
+          pieces3D.filter((piece) => !selectedSymbols.includes(piece.symbol))
+        );
+        worker.removeEventListener("message", messageHandler);
+        worker.terminate(); // Stop the worker entirely
+        setIsGeneratingChallenge(false);
+
+        // Create new worker for future solves
+        const newWorker = createPyramidWorker();
+        setWorker(newWorker);
+      }
+    };
+
+    worker.addEventListener("message", messageHandler);
+    worker.postMessage({ board, pieces: pieces3D, stopAfterFirst: true });
+  };
+
   const handleExport = () => {
     return {
       board,
@@ -322,6 +405,11 @@ function usePyramidPuzzle() {
     isSolving,
     solutions,
     solutionIndex,
+    isChallengeMode,
+    timer,
+    isGeneratingChallenge,
+    startChallengeMode,
+    endChallengeMode,
     handleRotatePieceX,
     handleRotatePieceY,
     handleRotatePieceZ,
@@ -337,6 +425,7 @@ function usePyramidPuzzle() {
     handleMouseEnterCell,
     handleMouseLeaveCell,
     handleMouseClickCell,
+    handleChallengeMode,
     handleExport,
     handleImport,
   };

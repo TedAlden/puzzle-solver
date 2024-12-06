@@ -1009,3 +1009,138 @@ describe("PyramidPuzzle Hook", () => {
     });
   });
 });
+describe("Challenge Mode Functions", () => {
+  let setIsChallengeMode,
+    setTimer,
+    setIsGeneratingChallenge,
+    setBoard,
+    setShapes,
+    setWorker,
+    worker,
+    mockBoard;
+
+  beforeEach(() => {
+    // Mock state setters
+    setIsChallengeMode = jest.fn();
+    setTimer = jest.fn();
+    setIsGeneratingChallenge = jest.fn();
+    setBoard = jest.fn();
+    setShapes = jest.fn();
+    setWorker = jest.fn();
+
+    // Mock worker
+    worker = {
+      postMessage: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      terminate: jest.fn(),
+    };
+
+    // Reuse mockBoard from PyramidPuzzle Hook tests
+    mockBoard = Array(3)
+      .fill()
+      .map((_, layerIndex) => {
+        const layerSize = 3 - layerIndex;
+        return Array(layerSize)
+          .fill()
+          .map(() => Array(layerSize).fill(""));
+      });
+
+    createPyramidWorker.mockReturnValue(worker);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("startChallengeMode initialises challenge mode correctly", () => {
+    const handleClear = jest.fn();
+    const startChallengeMode = () => {
+      handleClear(); // Clear current state
+      setIsChallengeMode(true);
+      setTimer(0);
+    };
+
+    startChallengeMode();
+
+    expect(handleClear).toHaveBeenCalled();
+    expect(setIsChallengeMode).toHaveBeenCalledWith(true);
+    expect(setTimer).toHaveBeenCalledWith(0);
+  });
+
+  test("endChallengeMode resets challenge mode correctly", () => {
+    const handleClear = jest.fn();
+    const endChallengeMode = () => {
+      handleClear();
+      setIsChallengeMode(false);
+      setTimer(0);
+    };
+
+    endChallengeMode();
+
+    expect(handleClear).toHaveBeenCalled();
+    expect(setIsChallengeMode).toHaveBeenCalledWith(false);
+    expect(setTimer).toHaveBeenCalledWith(0);
+  });
+
+  test("handleChallengeMode interacts with worker and updates state correctly", () => {
+    const handleChallengeMode = () => {
+      setIsGeneratingChallenge(true);
+
+      if (!worker) return;
+
+      const messageHandler = (e) => {
+        if (e.data.type === "solution") {
+          const completeSolution = e.data.data;
+          const numPiecesToShow = Math.floor(Math.random() * 3) + 1;
+
+          const uniqueSymbols = new Set();
+          completeSolution.forEach((layer) =>
+            layer.forEach((row) =>
+              row.forEach((symbol) => {
+                if (symbol !== "") uniqueSymbols.add(symbol);
+              })
+            )
+          );
+          const selectedSymbols = Array.from(uniqueSymbols)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, numPiecesToShow);
+
+          const newBoard = mockBoard.map((layer) =>
+            layer.map((row) => row.slice())
+          ); // Clone mockBoard
+          completeSolution.forEach((layer, layerIndex) => {
+            layer.forEach((row, rowIndex) => {
+              row.forEach((symbol, colIndex) => {
+                if (selectedSymbols.includes(symbol)) {
+                  newBoard[layerIndex][rowIndex][colIndex] = symbol;
+                }
+              });
+            });
+          });
+
+          setBoard(newBoard);
+          setShapes(expect.any(Array));
+          worker.removeEventListener("message", messageHandler);
+          worker.terminate();
+
+          const newWorker = createPyramidWorker();
+          setWorker(newWorker);
+          setIsGeneratingChallenge(false);
+        }
+      };
+
+      worker.addEventListener("message", messageHandler);
+      worker.postMessage({ board: mockBoard, pieces: [] });
+    };
+
+    handleChallengeMode();
+
+    expect(setIsGeneratingChallenge).toHaveBeenCalledWith(true);
+    expect(worker.addEventListener).toHaveBeenCalled();
+    expect(worker.postMessage).toHaveBeenCalledWith({
+      board: mockBoard,
+      pieces: [],
+    });
+  });
+});

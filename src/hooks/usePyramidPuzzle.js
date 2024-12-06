@@ -309,7 +309,7 @@ function usePyramidPuzzle() {
   };
 
   const startChallengeMode = () => {
-    handleClear(); // Clear current state
+    handleClear(); 
     setIsChallengeMode(true);
     setTimer(0);
     handleChallengeMode();
@@ -318,6 +318,7 @@ function usePyramidPuzzle() {
   const endChallengeMode = () => {
     handleClear();
     setIsChallengeMode(false);
+    setIsGeneratingChallenge(false);
     setTimer(0);
   };
 
@@ -405,6 +406,7 @@ function usePyramidPuzzle() {
     solutionIndex,
     isChallengeMode,
     timer,
+    isGeneratingChallenge,
     startChallengeMode,
     endChallengeMode,
     handleRotatePieceX,

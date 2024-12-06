@@ -148,22 +148,38 @@ canvas {
 .timer {
   font-size: 1.2rem;
   font-weight: bold;
-  padding: 0.5rem;
-  background: #f0f0f0;
-  border-radius: 4px;
-}
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease;
+ }
+ 
+ /* Timer colors based on duration */
+ .timer.early {
+  background: #4ade80; /* Green */
+  color: #064e3b;
+ }
+ 
+ .timer.middle {
+  background: #fbbf24; /* Yellow */
+  color: #92400e;
+ }
+ 
+ .timer.late {
+  background: #f87171; /* Red */
+  color: #991b1b;
+ }
 
 .challengeButton {
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  background: #4a90e2;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  background-color: #2563eb;
   color: white;
   border: none;
   cursor: pointer;
-}
+ }
 
 .challengeButton:disabled {
-  background: #ccc;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 

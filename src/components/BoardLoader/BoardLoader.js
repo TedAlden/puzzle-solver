@@ -134,13 +134,13 @@ function BoardLoader({ handleImport, handleExport }) {
     <div className="boardLoader">
       <span className="panelHeader">Saved Boards</span>
       <button data-testid="save-snapshot-button" onClick={handleSaveSnapshot}>
-        Save Board
+        Save Current Board
       </button>
       <button
         data-testid="clear-snapshots-button"
         onClick={handleClearSnapshots}
       >
-        Clear Boards
+        Clear Saved Boards
       </button>
       <div className="snapshotsTableWrapper">
         <div className="snapshotsTable">{renderSnapshots()}</div>

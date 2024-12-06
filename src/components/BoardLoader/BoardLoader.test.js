@@ -39,7 +39,7 @@ describe("BoardLoader", () => {
     render(
       <BoardLoader handleImport={handleImport} handleExport={handleExport} />
     );
-    fireEvent.click(screen.getByText("Clear Boards"));
+    fireEvent.click(screen.getByTestId("clear-snapshots-button"));
     expect(localStorage.getItem("boards")).toBeNull();
   });
 

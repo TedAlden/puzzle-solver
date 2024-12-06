@@ -159,34 +159,36 @@ function PyramidPuzzle() {
           />
           <BoardSave board={board} />
           <div>
-          <div className="challengeControls">
-        {isChallengeMode && (
-      <div className={`timer ${
-        timer < 60 ? 'early' : 
-        timer < 120 ? 'middle' : 
-        'late'
-      }`}>
-        Time: {Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, "0")}
-      </div>
-        )}
-        <button
-          onClick={startChallengeMode}
-          disabled={isSolving || isGeneratingChallenge}
-          className="challengeButton"
-        >
-          {isGeneratingChallenge ? 'Generating...' : 'Start Challenge Mode'}
-        </button>
-        {isChallengeMode && (
-          <button
-            onClick={endChallengeMode}
-            disabled={isSolving}
-            className="challengeButton"
-          >
-            End Challenge Mode
-          </button>
-        )}
-      </div>
-
+            <div className="challengeControls">
+              {isChallengeMode && (
+                <div
+                  className={`timer ${
+                    timer < 60 ? "early" : timer < 120 ? "middle" : "late"
+                  }`}
+                >
+                  Time: {Math.floor(timer / 60)}:
+                  {(timer % 60).toString().padStart(2, "0")}
+                </div>
+              )}
+              <button
+                onClick={startChallengeMode}
+                disabled={isSolving || isGeneratingChallenge}
+                className="challengeButton"
+              >
+                {isGeneratingChallenge
+                  ? "Generating..."
+                  : "Start Challenge Mode"}
+              </button>
+              {isChallengeMode && (
+                <button
+                  onClick={endChallengeMode}
+                  disabled={isSolving}
+                  className="challengeButton"
+                >
+                  End Challenge Mode
+                </button>
+              )}
+            </div>
             <div className="controlsContainer">
               <button
                 data-testid="solve-button"
@@ -211,7 +213,7 @@ function PyramidPuzzle() {
               </button>
             </div>
             <div className="solutionsText">
-            {isGeneratingChallenge && <span>Generating challenge ⏳</span>}
+              {isGeneratingChallenge && <span>Generating challenge ⏳</span>}
               {isSolving && <span>Solving ⏳</span>}
               {isSolved && solutions.length > 0 && (
                 <span>Solutions found ✅</span>

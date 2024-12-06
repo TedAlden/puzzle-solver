@@ -2,7 +2,6 @@
   margin: 0 auto;
   color: #ffffff;
 }
-
 .puzzleThree h2 {
   font-size: 2.5rem;
   text-align: center;
@@ -13,7 +12,6 @@
   -webkit-text-fill-color: transparent;
   font-weight: bold;
 }
-
 .puzzleThree .description {
   background-color: #37415180;
   border-radius: 8px;
@@ -23,20 +21,16 @@
   margin: 0;
   font-size: 1rem;
 }
-
 .puzzleThree b {
   color: #ff6600;
   font-weight: 600;
 }
-
 /* Controls Container */
 .controlsContainer {
   display: flex;
   justify-content: center;
   gap: 1rem;
-  margin: 0 0 1rem 0;
 }
-
 .controlsContainer button {
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
@@ -45,68 +39,21 @@
   border: none;
   cursor: pointer;
 }
-
 .controlsContainer button:hover {
   background-color: #1d4ed8;
 }
-
 .controlsContainer button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
 /* Solution Navigation */
 .solutionNavigation {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
   margin: 1rem 0;
-  text-align: center;
 }
-
-.solutionNavigation button {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.solutionNavigation button:hover {
-  background-color: #1d4ed8;
-}
-
-.solutionNavigation button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Main Game Area */
-.pyramid-area {
-  display: flex;
-  align-items: flex-start;
-  gap: 2rem;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-}
-
-/* Keyboard Controls */
-.puzzleThree .keyboard-controls {
-  background-color: #2d3748;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin-top: 1rem;
-}
-
-/* Status Messages */
 .puzzleThree .status-messages {
   text-align: center;
   margin: 1rem 0;
 }
-
 .puzzleThree .wrapper {
   display: flex;
   justify-content: space-around;
@@ -114,61 +61,50 @@
   margin: 0 1rem;
   height: calc(100vh - 158px);
 }
-
 .puzzleThree .leftColumn {
   flex: 2;
 }
-
 .puzzleThree .middleColumn {
   flex: 3;
 }
-
 .puzzleThree .rightColumn {
   flex: 2;
 }
-
 .puzzleThree .column {
   flex-direction: column;
   align-items: center;
   display: flex;
   gap: 1rem;
 }
-
 canvas {
   height: 300px;
 }
-
 .challengeControls {
-  margin: 1rem 0;
+  margin-bottom: 1rem;
   display: flex;
+  justify-content: center;
   gap: 1rem;
-  align-items: center;
 }
-
 .timer {
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: bold;
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1.5rem;
   border-radius: 0.5rem;
   transition: background-color 0.3s ease;
- }
- 
- /* Timer colors based on duration */
- .timer.early {
-  background: #4ade80; /* Green */
+}
+/* Timer colors based on duration */
+.timer.early {
+  background: #4ade80;
   color: #064e3b;
- }
- 
- .timer.middle {
-  background: #fbbf24; /* Yellow */
+}
+.timer.middle {
+  background: #fbbf24;
   color: #92400e;
- }
- 
- .timer.late {
-  background: #f87171; /* Red */
+}
+.timer.late {
+  background: #f87171;
   color: #991b1b;
- }
-
+}
 .challengeButton {
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
@@ -176,13 +112,11 @@ canvas {
   color: white;
   border: none;
   cursor: pointer;
- }
-
+}
 .challengeButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
 .challengeButton:hover:not(:disabled) {
   background: #357abd;
 }

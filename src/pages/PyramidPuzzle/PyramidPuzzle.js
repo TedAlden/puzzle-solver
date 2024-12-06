@@ -213,7 +213,9 @@ function PyramidPuzzle() {
               </button>
             </div>
             <div className="solutionsText">
-              {isGeneratingChallenge && <span>Generating challenge ⏳</span>}
+              {isGeneratingChallenge && (
+                <span>Generating challenge ⏳ Wait ~25 secs</span>
+              )}
               {isSolving && <span>Solving ⏳</span>}
               {isSolved && solutions.length > 0 && (
                 <span>Solutions found ✅</span>

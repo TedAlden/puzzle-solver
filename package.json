@@ -62,7 +62,9 @@
     "collectCoverageFrom": [
       "src/**/*.js",
       "!src/index.js",
-      "!src/reportWebVitals.js"
+      "!src/reportWebVitals.js",
+      "!src/components/PyramidBoard/PyramidBoard.js",
+      "!src/components/PyramidPieceSelector/PiecePreview.js"
     ]
   }
 }

@@ -65,25 +65,22 @@ function BoardLoader({ handleImport, handleExport }) {
    * @param {number} index Index of the snapshot to load.
    */
   const handleRenameSnapshot = (index) => {
-    const snapshot = document.getElementsByClassName("snapshot")[index];
-    const span = snapshot.querySelector(".snapshotTitle");
     // Handle keyup event for input element
     const onKeyUp = (event) => {
       event.preventDefault();
       if (event.key === "Enter") {
         const newSnapshotName = input.value;
-        const boards = Array.from(
-          JSON.parse(localStorage.getItem("boards")) || []
-        );
-        // Update board name in local storage and React state
-        boards[index].name = newSnapshotName;
-        localStorage.setItem("boards", JSON.stringify(boards));
-        setBoards(boards);
+        const newBoards = Array.from(boards);
         // Switch back from input to span element
-        span.textContent = input.value;
         snapshot.replaceChild(span, input);
+        // Update board name in local storage and React state
+        newBoards[index].name = newSnapshotName;
+        localStorage.setItem("boards", JSON.stringify(newBoards));
+        setBoards(newBoards);
       }
     };
+    const snapshot = document.getElementsByClassName("snapshot")[index];
+    const span = snapshot.querySelector(".snapshotTitle");
     // Create input element to rename snapshot
     const input = document.createElement("input");
     input.value = span.textContent;
@@ -119,11 +116,14 @@ function BoardLoader({ handleImport, handleExport }) {
    */
   const handleDeleteSnapshot = (index) => {
     // Remove board using index
-    const boards = Array.from(JSON.parse(localStorage.getItem("boards")) || []);
-    boards.splice(index, 1);
+    const newBoards = Array.from(
+      JSON.parse(localStorage.getItem("boards")) || []
+    );
+    console.log(newBoards, index);
+    newBoards.splice(index, 1);
     // Update local storage and React state
-    localStorage.setItem("boards", JSON.stringify(boards));
-    setBoards(boards);
+    localStorage.setItem("boards", JSON.stringify(newBoards));
+    setBoards(newBoards);
   };
 
   /**
@@ -134,7 +134,7 @@ function BoardLoader({ handleImport, handleExport }) {
     return boards.map((board, index) => (
       <div className="snapshot" key={index}>
         <div className="snapshotTitle">
-          <span>{board.name}</span>
+          <span title={board.name}>{board.name}</span>
         </div>
         <div className="snapshotControls">
           <span

@@ -118,7 +118,7 @@ function PyramidPuzzle() {
       key: "c",
       keyAlias: "C",
       description: "Challenge Mode",
-      onClick: handleChallengeMode,
+      onClick: startChallengeMode,
     },
   ];
 

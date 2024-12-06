@@ -40,13 +40,13 @@ function usePyramidPuzzle() {
   // Add timer effect
   useEffect(() => {
     let interval;
-    if (isChallengeMode) {
+    if (isChallengeMode && !isGeneratingChallenge) {
       interval = setInterval(() => setTimer((prev) => prev + 1), 1000);
     }
     return () => {
       clearInterval(interval);
     };
-  }, [isChallengeMode]);
+  }, [isChallengeMode, isGeneratingChallenge]);
 
   useEffect(() => {
     try {

@@ -13,8 +13,12 @@ import pieces from "../../lib/pieces";
  * @returns {React.JSX.Element}
  */
 function PyramidBoard({ board, highlightedCells, selectedShape }) {
-  // Create a map of piece symbols to the corresponding colour, e.g. A:#ff0000
-  const pieceColours = pieces.map((piece) => piece.colour);
+  // Create a hashmap of piece symbols to the corresponding colour, e.g.
+  // A:#ff0000
+  const pieceColours = pieces.reduce((acc, piece) => {
+    acc[piece.symbol] = piece.colour;
+    return acc;
+  }, {});
 
   /**
    * Renders the 3D pyramid board.

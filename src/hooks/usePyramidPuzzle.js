@@ -261,6 +261,7 @@ function usePyramidPuzzle() {
 
   const handleMouseClickCell = (layer, row, col) => {
     if (!selectedShape) return;
+    if (isGeneratingChallenge) return;
     const highlightedCells =
       selectedShape?.coords.map(([x, y, z]) => [x + col, y + layer, z + row]) ||
       [];
@@ -309,7 +310,7 @@ function usePyramidPuzzle() {
   };
 
   const startChallengeMode = () => {
-    handleClear(); 
+    handleClear();
     setIsChallengeMode(true);
     setTimer(0);
     handleChallengeMode();

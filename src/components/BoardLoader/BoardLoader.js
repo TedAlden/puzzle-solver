@@ -97,22 +97,29 @@ function BoardLoader({ handleImport, handleExport }) {
           <span className="snapshotTitle">{board.name}</span>
         </div>
         <div className="snapshotColumn controls">
-          <button title="Load board" onClick={() => handleLoadSnapshot(index)}>
+          <button
+            data-testid="load-button"
+            title="Load board"
+            onClick={() => handleLoadSnapshot(index)}
+          >
             ⬆️
           </button>
           <button
+            data-testid="rename-button"
             title="Rename board"
             onClick={() => handleRenameSnapshot(index)}
           >
             ✏️
           </button>
           <button
+            data-testid="save-button"
             title="Save board to desktop"
             onClick={() => handleDownloadSnapshot(index)}
           >
             💾
           </button>
           <button
+            data-testid="delete-button"
             title="Delete board from local storage"
             onClick={() => handleDeleteSnapshot(index)}
           >
@@ -126,8 +133,15 @@ function BoardLoader({ handleImport, handleExport }) {
   return (
     <div className="boardLoader">
       <span className="panelHeader">Saved Boards</span>
-      <button onClick={handleSaveSnapshot}>Save Board</button>
-      <button onClick={handleClearSnapshots}>Clear Boards</button>
+      <button data-testid="save-snapshot-button" onClick={handleSaveSnapshot}>
+        Save Board
+      </button>
+      <button
+        data-testid="clear-snapshots-button"
+        onClick={handleClearSnapshots}
+      >
+        Clear Boards
+      </button>
       <div className="snapshotsTableWrapper">
         <div className="snapshotsTable">{renderSnapshots()}</div>
       </div>

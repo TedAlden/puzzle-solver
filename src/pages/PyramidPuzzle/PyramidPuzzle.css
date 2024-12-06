@@ -138,12 +138,6 @@ canvas {
   height: 300px;
 }
 
-.pyramid-board {
-  background-color: #37415180;
-  border-radius: 8px;
-  position: relative;
-}
-
 .saveActions {
   display: flex;
   gap: 1rem;
@@ -161,7 +155,6 @@ canvas {
   color: white;
   border: none;
   cursor: pointer;
-
 }
 
 .saveAction button:hover {

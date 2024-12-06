@@ -6,7 +6,17 @@ import "./PolysphereBoard.css";
  * placements are highlighted on the board as the user hovers on different
  * cells.
  *
- * @returns {JSX.Element}
+ * @param {Object} props Component properties.
+ * @param {string[][]} props.board A 2D array representing the polysphere board.
+ * @param {number[][]} props.highlightedCells A list of cells to highlight.
+ * @param {function} props.handleMouseEnterCell A callback for when the mouse
+ *  enters a cell.
+ * @param {function} props.handleMouseLeaveCell A callback for when the mouse
+ * leaves a cell.
+ * @param {function} props.handleMouseClickCell A callback for when the mouse
+ * clicks on a cell.
+ *
+ * @returns {React.JSX.Element}
  */
 function PolysphereBoard({
   board,

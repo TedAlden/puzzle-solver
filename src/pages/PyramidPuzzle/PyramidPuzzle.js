@@ -42,7 +42,6 @@ function PyramidPuzzle() {
     handleMouseClickCell,
     handlePreviousPiece,
     handleNextPiece,
-    handleChallengeMode,
     handleImport,
     handleExport,
   } = usePyramidPuzzle();

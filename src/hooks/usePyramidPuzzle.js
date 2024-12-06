@@ -375,6 +375,24 @@ function usePyramidPuzzle() {
     worker.postMessage({ board, pieces: pieces3D, stopAfterFirst: true });
   };
 
+  const handleExport = () => {
+    return {
+      board,
+      shapes,
+    };
+  };
+
+  const handleImport = ({ board, shapes }) => {
+    setBoard(board);
+    setShapes(shapes);
+    setSelectedShape(shapes[0]);
+    setSolutions([]);
+    setIsSolving(false);
+    setSolutionIndex(0);
+    setIsSolved(false);
+    setMoveStack([]);
+  };
+
   return {
     board,
     shapes,
@@ -405,6 +423,8 @@ function usePyramidPuzzle() {
     handleMouseLeaveCell,
     handleMouseClickCell,
     handleChallengeMode,
+    handleExport,
+    handleImport,
   };
 }
 

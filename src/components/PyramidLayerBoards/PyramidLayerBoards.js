@@ -12,10 +12,14 @@ import "./PyramidLayerBoards.css";
  * Layer 5 (base): 5x5
  *
  * @param {Object} props Component properties.
- * @param {Array<Array<Array<string>>>} props.board The 3D pyramid board state.
- * @param {Array<Array<number>>} props.highlightedCells Array of coordinates for
- *  cells to highlight.
- * @param {Object} props.selectedShape The currently selected shape object.
+ * @param {string[][][]} props.board The 3D array representing the pyramid.
+ * @param {number[][]} props.highlightedCells A list of cells to highlight.
+ * @param {Function} props.handleMouseEnterCell Callback for when a cell is
+ *  hovered over.
+ * @param {Function} props.handleMouseLeaveCell Callback for when a cell is
+ *  no longer hovered over.
+ * @param {Function} props.handleMouseClickCell Callback for when a cell is
+ *  clicked.
  * @returns {React.JSX.Element}
  */
 function PyramidLayerBoards({

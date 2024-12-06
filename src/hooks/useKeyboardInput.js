@@ -19,7 +19,8 @@ function useKeyboardInput(keyActions) {
   useEffect(() => {
     const handleKeydown = (e) => {
       const action = keyActions[e.key];
-      if (action) {
+      const target = e.target.type;
+      if (action && target !== "text" && target !== "textarea") {
         e.preventDefault(); // Prevent default action for mapped keys
         action();
       }

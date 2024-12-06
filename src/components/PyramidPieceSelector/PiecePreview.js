@@ -3,6 +3,14 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
 
+/**
+ * Axis label component that renders a text label in 3D space.
+ *
+ * @param {Object} props Component properties.
+ * @param {string} props.text The text to display.
+ * @param {THREE.Vector3} props.position The position of the label in 3D space.
+ * @returns {React.JSX.Element}
+ */
 const AxisLabel = ({ text, position }) => {
   const color = text === "X" ? "#ff0000" : text === "Y" ? "#00ff00" : "#0088ff";
   const labelRef = useRef();

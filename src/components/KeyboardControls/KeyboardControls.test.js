@@ -60,4 +60,19 @@ describe("KeyboardControls", () => {
       expect(onClick).not.toHaveBeenCalled();
     });
   });
+
+  it("toggles collapse state when button is clicked", () => {
+    render(<KeyboardControls keyMap={keyMap} />);
+    const button = screen.getByText("Collapse");
+    // Initially, the list of controls should be visible
+    expect(screen.getByText("a : Action A")).toBeInTheDocument();
+    // Click the button to collapse and expect the list to be hidden
+    fireEvent.click(button);
+    expect(screen.queryByText("a : Action A")).not.toBeInTheDocument();
+    expect(screen.getByText("Expand")).toBeInTheDocument();
+    // Click the button to expand and expect the list to be visible again
+    fireEvent.click(button);
+    expect(screen.getByText("a : Action A")).toBeInTheDocument();
+    expect(screen.getByText("Collapse")).toBeInTheDocument();
+  });
 });

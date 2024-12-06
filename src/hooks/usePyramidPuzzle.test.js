@@ -10,7 +10,7 @@ import {
 import "@testing-library/jest-dom";
 import usePyramidPuzzle from "./usePyramidPuzzle";
 import createPyramidWorker from "../workers/createPyramidWorker";
-import createBoardPyramid  from "../components/PyramidBoard/PyramidBoard"
+import { createBoardPyramid } from "../lib/utils";
 
 function TestComponent() {
   const hookResult = usePyramidPuzzle();
@@ -970,9 +970,54 @@ describe("PyramidPuzzle Hook", () => {
     unmount();
     expect(worker.terminate).toHaveBeenCalled();
   });
+
+  describe("Export and Import functionality", () => {
+    test("handleExport returns the current board and shapes", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const exportedData = result.current.handleExport();
+
+      expect(exportedData.board).toEqual(result.current.board);
+      expect(exportedData.shapes).toEqual(result.current.shapes);
+    });
+
+    test("handleImport sets the board and shapes correctly", () => {
+      const { result } = renderHook(() => usePyramidPuzzle());
+      const newBoard = createBoardPyramid(5, "A");
+      const newShapes = [
+        {
+          symbol: "B",
+          coords: [
+            [0, 0, 0],
+            [1, 0, 0],
+          ],
+          colour: "#00ff00",
+        },
+      ];
+
+      act(() => {
+        result.current.handleImport({ board: newBoard, shapes: newShapes });
+      });
+
+      expect(result.current.board).toEqual(newBoard);
+      expect(result.current.shapes).toEqual(newShapes);
+      expect(result.current.selectedShape).toEqual(newShapes[0]);
+      expect(result.current.solutions).toEqual([]);
+      expect(result.current.isSolving).toBe(false);
+      expect(result.current.solutionIndex).toBe(0);
+      expect(result.current.isSolved).toBe(false);
+      expect(result.current.moveStack).toEqual([]);
+    });
+  });
 });
 describe("Challenge Mode Functions", () => {
-  let setIsChallengeMode, setTimer, setIsGeneratingChallenge, setBoard, setShapes, setWorker, worker, mockBoard;
+  let setIsChallengeMode,
+    setTimer,
+    setIsGeneratingChallenge,
+    setBoard,
+    setShapes,
+    setWorker,
+    worker,
+    mockBoard;
 
   beforeEach(() => {
     // Mock state setters
@@ -1093,7 +1138,9 @@ describe("Challenge Mode Functions", () => {
 
     expect(setIsGeneratingChallenge).toHaveBeenCalledWith(true);
     expect(worker.addEventListener).toHaveBeenCalled();
-    expect(worker.postMessage).toHaveBeenCalledWith({ board: mockBoard, pieces: [] });
+    expect(worker.postMessage).toHaveBeenCalledWith({
+      board: mockBoard,
+      pieces: [],
+    });
   });
 });
-
